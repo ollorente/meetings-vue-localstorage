@@ -1,12 +1,12 @@
 <template>
-  <div class="home">
-    <h1>This is a home page</h1>
+  <div class="edit-person">
+    <h1>This is a edit person page</h1>
   </div>
 </template>
 
 <script>
 export default {
-  name: "Home",
+  name: "EditPerson",
   components: {},
 };
 </script>
