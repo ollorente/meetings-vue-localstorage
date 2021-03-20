@@ -141,5 +141,8 @@ export default {
       }
     },
   },
+  watch: {
+    $route: ["getPerson"],
+  },
 };
 </script>
