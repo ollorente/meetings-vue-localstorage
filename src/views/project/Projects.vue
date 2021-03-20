@@ -1,6 +1,8 @@
 <template>
   <div class="projects">
-    <h1>{{ total }} {{ total === 1 ? "Proyecto" : "Proyectos" }}</h1>
+    <h1 style="margin: 0">
+      {{ total }} {{ total === 1 ? "Proyecto" : "Proyectos" }}
+    </h1>
     <p>
       <router-link :to="{ name: 'NewProject' }" class="link"
         >Agregar</router-link
