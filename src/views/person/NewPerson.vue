@@ -61,13 +61,9 @@ export default {
   },
   methods: {
     async addPerson() {
-      const user = Object.values(db.people).filter(
-        (e) => e.email === this.person.email
-      );
-
-      if (user.length > 0) {
+      if (this.person.name.trim() === "" || this.person.email.trim() === "") {
         this.alert.error = true;
-        this.alert.msg = `El Correo "${this.person.email}" ya existe.`;
+        this.alert.msg = `El Correo y/o Email no ´pueden ser vacios.`;
 
         setTimeout(() => {
           this.alert.error = false;
@@ -75,29 +71,44 @@ export default {
 
         return;
       } else {
-        const date = Date.now();
+        const user = Object.values(db.people).filter(
+          (e) => e.email === this.person.email
+        );
 
-        const person = {
-          id: date,
-          name: await this.person.name,
-          email: await this.person.email,
-          photoURL: "",
-          role: await this.person.role,
-          isActive: true,
-          isLock: false,
-          createdAt: date,
-          updatedAt: date,
-        };
+        if (user.length > 0) {
+          this.alert.error = true;
+          this.alert.msg = `El Correo "${this.person.email}" ya existe.`;
 
-        db.people[person.id] = person;
+          setTimeout(() => {
+            this.alert.error = false;
+          }, 4000);
 
-        localStorage.setItem(dbName, JSON.stringify(db));
+          return;
+        } else {
+          const date = Date.now();
 
-        this.person.name = "";
-        this.person.email = "";
-        this.person.role = "";
+          const person = {
+            id: date,
+            name: await this.person.name.trim(),
+            email: await this.person.email.trim(),
+            photoURL: "",
+            role: this.person.role ? await this.person.role.trim() : "",
+            isActive: true,
+            isLock: false,
+            createdAt: date,
+            updatedAt: date,
+          };
 
-        await this.$router.replace({ name: "People" });
+          db.people[person.id] = person;
+
+          localStorage.setItem(dbName, JSON.stringify(db));
+
+          this.person.name = "";
+          this.person.email = "";
+          this.person.role = "";
+
+          await this.$router.replace({ name: "People" });
+        }
       }
     },
   },
