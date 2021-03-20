@@ -4,6 +4,24 @@
     <h3 style="margin: 0">{{ person.role }}</h3>
     <p>
       <router-link
+        :to="{ name: 'PersonTasks', params: { person: person.id } }"
+        class="link"
+        >Tareas</router-link
+      >
+      |
+      <router-link
+        :to="{ name: 'PersonMeetings', params: { person: person.id } }"
+        class="link"
+        >Reuniones</router-link
+      >
+      |
+      <router-link
+        :to="{ name: 'PersonProjects', params: { person: person.id } }"
+        class="link"
+        >Proyectos</router-link
+      >
+      |
+      <router-link
         :to="{ name: 'EditPerson', params: { person: person.id } }"
         class="link"
         >Editar</router-link
@@ -14,8 +32,8 @@
     <p style="text-align: left; padding: 0 1rem">
       <img
         :src="
-          person.photURL
-            ? person.photURL
+          person.photoURL
+            ? person.photoURL
             : `https://res.cloudinary.com/dbszizqh4/image/upload/v1592198427/images_lvwix2.png`
         "
         :alt="person.name"
@@ -24,7 +42,8 @@
           height: 5rem;
           object-fit: cover;
           position: center center;
-          border-raduis: 50%;
+          border: solid 1px #ccc;
+          border-radius: 50%;
         "
       />
     </p>
@@ -67,8 +86,17 @@ export default {
   },
   methods: {
     async getPerson() {
-      this.person = await db.people[this.$route.params.person];
+      const data = await db.people[this.$route.params.person];
+
+      if (data === undefined) {
+        this.$router.replace({ name: "Error" });
+      } else {
+        this.person = await db.people[this.$route.params.person];
+      }
     },
+  },
+  watch: {
+    $route: ["getPerson"],
   },
 };
 </script>
