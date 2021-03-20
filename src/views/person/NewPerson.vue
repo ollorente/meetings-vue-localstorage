@@ -1,20 +1,37 @@
 <template>
   <div class="new-person">
-    <h1>New person</h1>
+    <h1>Nueva persona</h1>
+    <p>
+      <router-link :to="{ name: 'People' }" class="link">Volver</router-link>
+    </p>
     <form @submit.prevent="addPerson">
-      <input
-        type="text"
-        v-model="person.name"
-        id="name"
-        placeholder="Nombre de usuario"
-      />
-      <input
-        type="email"
-        v-model="person.email"
-        id="email"
-        placeholder="email@email.com"
-      />
-      <input type="text" v-model="person.role" id="role" placeholder="Cargo" />
+      <div>
+        <input
+          type="text"
+          v-model="person.name"
+          id="name"
+          placeholder="Nombre de usuario"
+          autofocus
+          required
+        />
+      </div>
+      <div>
+        <input
+          type="email"
+          v-model="person.email"
+          id="email"
+          placeholder="email@email.com"
+          required
+        />
+      </div>
+      <div>
+        <input
+          type="text"
+          v-model="person.role"
+          id="role"
+          placeholder="Cargo"
+        />
+      </div>
       <button type="submit">Agregar</button>
     </form>
     <div id="alert" v-if="alert.error">
