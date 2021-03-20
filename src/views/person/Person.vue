@@ -34,7 +34,7 @@
       <b>ID: </b><span>{{ person.id }}</span>
     </p>
     <p style="text-align: left; padding: 0 1rem">
-      <b>{{ isActive ? "Activo" : "Inactivo" }}</b
+      <b>{{ person.isActive ? "Activo" : "Inactivo" }}</b
       ><br />
       <span
         ><b>Creado: </b
