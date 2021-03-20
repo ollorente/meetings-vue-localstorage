@@ -32,4 +32,37 @@
 #nav a.router-link-exact-active {
   color: #42b983;
 }
+
+.parrafo {
+  width: 100%;
+  margin: 1rem 0;
+  text-align: left !important;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.parrafo__info {
+  width: 80%;
+  display: flex;
+  align-items: center;
+}
+
+.parrafo__info__number {
+  margin: 0 1rem;
+}
+
+.parrafo__info__name {
+  margin: 0 1rem;
+}
+
+.link {
+  color: #42b983;
+  font-weight: bold;
+}
+
+.parrafo__status {
+  margin: 0 1rem;
+  text-align: right !important;
+}
 </style>
