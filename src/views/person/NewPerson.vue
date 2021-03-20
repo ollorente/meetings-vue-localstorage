@@ -1,6 +1,6 @@
 <template>
   <div class="new-person">
-    <h1>Nueva persona</h1>
+    <h1 style="margin: 0">Nueva persona</h1>
     <p>
       <router-link :to="{ name: 'People' }" class="link">Volver</router-link>
     </p>

@@ -1,6 +1,8 @@
 <template>
   <div class="people">
-    <h1>{{ total }} {{ total === 1 ? "Persona" : "Personas" }}</h1>
+    <h1 style="margin: 0">
+      {{ total }} {{ total === 1 ? "Persona" : "Personas" }}
+    </h1>
     <p>
       <router-link :to="{ name: 'NewPerson' }" class="link"
         >Agregar</router-link
