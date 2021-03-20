@@ -4,7 +4,6 @@
       <router-link :to="{ name: 'Home' }">Home</router-link> |
       <router-link :to="{ name: 'Projects' }">Proyectos</router-link> |
       <router-link :to="{ name: 'Meetings' }">Reuniones</router-link> |
-      <router-link :to="{ name: 'Tasks' }">Tareas</router-link> |
       <router-link :to="{ name: 'People' }">Usuarios</router-link>
     </div>
     <router-view />
@@ -54,6 +53,8 @@
 
 .parrafo__info__name {
   margin: 0 1rem;
+  display: flex;
+  align-items: center;
 }
 
 .link {
