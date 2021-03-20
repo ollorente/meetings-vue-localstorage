@@ -10,7 +10,23 @@
       <span class="parrafo__info">
         <span class="parrafo__info__number">{{ index + 1 }}</span>
         <span class="parrafo__info__name"
-          ><router-link
+          ><img
+            :src="
+              person.photoURL
+                ? person.photoURL
+                : `https://res.cloudinary.com/dbszizqh4/image/upload/v1592198427/images_lvwix2.png`
+            "
+            :alt="person.name"
+            style="
+              width: 2rem;
+              height: 2rem;
+              margin-right: 0.5rem;
+              object-fit: cover;
+              position: center center;
+              border: solid 1px #ccc;
+              border-radius: 50%;
+            "
+          /><router-link
             :to="{ name: 'Person', params: { person: person.id } }"
             :title="person.email"
             class="link"
@@ -66,6 +82,7 @@ export default {
             id: e.id,
             name: e.name,
             email: e.email,
+            photoURL: e.photoURL,
             isActive: e.isActive,
           };
         });
@@ -76,40 +93,10 @@ export default {
       this.total = Object.values(db.people).length;
     },
   },
+  watch: {
+    $route: ["getPeople", "getTotalPeople"],
+  },
 };
 </script>
 
-<style scoped>
-.parrafo {
-  width: 100%;
-  margin: 1rem 0;
-  text-align: left !important;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.parrafo__info {
-  width: 80%;
-  display: flex;
-  align-items: center;
-}
-
-.parrafo__info__number {
-  margin: 0 1rem;
-}
-
-.parrafo__info__name {
-  margin: 0 1rem;
-}
-
-.link {
-  color: #42b983;
-  font-weight: bold;
-}
-
-.parrafo__status {
-  margin: 0 1rem;
-  text-align: right !important;
-}
-</style>
+<style scoped></style>
