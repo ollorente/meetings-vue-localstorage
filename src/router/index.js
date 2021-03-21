@@ -19,19 +19,19 @@ const routes = [
     meta: { title: `Proyectos ${BASE_URL_TITLE}` },
   },
   {
-    path: "/proyecto/nuevo", // TODO - Craer lógica.
+    path: "/proyecto/nuevo",
     name: "NewProject",
     component: () => import("../views/project/NewProject.vue"),
     meta: { title: `Nuevo proyecto ${BASE_URL_TITLE}` },
   },
   {
-    path: "/proyecto/:project", // TODO - Craer lógica.
+    path: "/proyecto/:project",
     name: "Project",
     component: () => import("../views/project/Project.vue"),
     meta: { title: `Proyecto ${BASE_URL_TITLE}` },
   },
   {
-    path: "/proyecto/:project/editar", // TODO - Craer lógica.
+    path: "/proyecto/:project/editar",
     name: "EditProject",
     component: () => import("../views/project/EditProject.vue"),
     meta: { title: `Editar proyecto ${BASE_URL_TITLE}` },
@@ -55,7 +55,7 @@ const routes = [
     meta: { title: `Nueva tarea de proyecto ${BASE_URL_TITLE}` },
   },
   {
-    path: "/proyecto/:project/usuarios", // TODO - Craer lógica.
+    path: "/proyecto/:project/usuarios",
     name: "ProjectPeople",
     component: () => import("../views/project/ProjectPeople.vue"),
     meta: { title: `Usuarios en el proyecto ${BASE_URL_TITLE}` },
