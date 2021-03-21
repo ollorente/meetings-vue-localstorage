@@ -110,6 +110,28 @@ export default {
 
         db.projects[project.id] = project;
 
+        const collaborators = await project.collaborators;
+
+        if (collaborators.length > 0) {
+          const projectData = await db.projectPeople[project.id];
+
+          if (!projectData) {
+            db.projectPeople[project.id] = {};
+          }
+
+          await collaborators.forEach(async (e) => {
+            const person = await db.people[e];
+
+            db.projectPeople[project.id][person.id] = {
+              id: person.id,
+              name: person.name,
+              email: person.email,
+              isActive: person.isActive,
+              isLock: person.isLock,
+            };
+          });
+        }
+
         localStorage.setItem(dbName, JSON.stringify(db));
 
         this.project.name = "";
