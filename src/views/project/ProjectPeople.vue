@@ -79,7 +79,9 @@ export default {
       this.people = data;
     },
     async getTotalProjectPeople() {
-      this.total = Object.values(db.projectPeople).length;
+      this.total = Object.values(db.projectPeople[this.$route.params.project])
+        .filter((e) => e.isLock === false)
+        .filter((e) => e.isActive === true).length;
     },
   },
   watch: {
