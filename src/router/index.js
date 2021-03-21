@@ -57,8 +57,8 @@ const routes = [
   {
     path: "/proyecto/:project/usuarios", // TODO - Craer lógica.
     name: "ProjectPeople",
-    component: () => import("../views/task/Tasks.vue"),
-    meta: { title: `Usuarios del proyecto ${BASE_URL_TITLE}` },
+    component: () => import("../views/project/ProjectPeople.vue"),
+    meta: { title: `Usuarios en el proyecto ${BASE_URL_TITLE}` },
   },
   {
     path: "/reuniones", // TODO - Craer lógica.
