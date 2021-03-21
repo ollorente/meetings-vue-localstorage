@@ -129,8 +129,8 @@ const routes = [
   {
     path: "/usuario/:person/proyectos", // TODO - Craer lógica.
     name: "PersonProjects",
-    component: () => import("../views/task/Task.vue"),
-    meta: { title: `Tarea ${BASE_URL_TITLE}` },
+    component: () => import("../views/person/PersonProjects.vue"),
+    meta: { title: `Proyectos del usuario ${BASE_URL_TITLE}` },
   },
   {
     path: "/usuario/:person/tareas", // TODO - Craer lógica.
