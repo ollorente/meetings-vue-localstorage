@@ -40,19 +40,25 @@ const routes = [
     path: "/proyecto/:project/reuniones", // TODO - Craer lógica.
     name: "ProjectMeetings",
     component: () => import("../views/meeting/Meetings.vue"),
-    meta: { title: `Reuniones ${BASE_URL_TITLE}` },
+    meta: { title: `Reuniones del proyecto ${BASE_URL_TITLE}` },
   },
   {
     path: "/proyecto/:project/tareas", // TODO - Craer lógica.
     name: "ProjectTasks",
     component: () => import("../views/task/Tasks.vue"),
-    meta: { title: `Tareas ${BASE_URL_TITLE}` },
+    meta: { title: `Tareas del proyecto ${BASE_URL_TITLE}` },
   },
   {
     path: "/proyecto/:project/tarea/nueva", // TODO - Craer lógica.
     name: "NewProjectTask",
     component: () => import("../views/task/NewTask.vue"),
     meta: { title: `Nueva tarea de proyecto ${BASE_URL_TITLE}` },
+  },
+  {
+    path: "/proyecto/:project/usuarios", // TODO - Craer lógica.
+    name: "ProjectPeople",
+    component: () => import("../views/task/Tasks.vue"),
+    meta: { title: `Usuarios del proyecto ${BASE_URL_TITLE}` },
   },
   {
     path: "/reuniones", // TODO - Craer lógica.
