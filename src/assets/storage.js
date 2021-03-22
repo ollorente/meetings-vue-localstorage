@@ -1,8 +1,10 @@
 const db = {
   meetings: {},
   meetingTasks: {},
+  meetingPeople: {},
   progress: {},
   projects: {},
+  projectMeetings: {},
   projectPeople: {},
   projectTasks: {},
   people: {
@@ -152,6 +154,7 @@ const db = {
     },
   },
   peopleMeetings: {},
+  peopleProjects: {},
   peopleTasks: {},
   tasks: {},
 };
