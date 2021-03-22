@@ -6,7 +6,7 @@
     </h1>
     <p>
       <router-link
-        :to="{ name: 'Project', params: { project: $route.params.project } }"
+        :to="{ name: 'Person', params: { project: $route.params.person } }"
         class="link"
         >Volver</router-link
       >
