@@ -160,7 +160,7 @@ export default {
         const meeting = {
           id: date,
           name: await this.meeting.name.trim(),
-          description: await this.meeting.description,
+          description: await this.meeting.description.trim(),
           collaborators: await this.meeting.collaborators,
           project: await this.meeting.project,
           dateInt: Date.parse(this.meeting.dateInt),
@@ -172,6 +172,47 @@ export default {
         };
 
         db.meetings[meeting.id] = meeting;
+
+        const colllaborators = await meeting.collaborators;
+
+        // ------- Agregar a reuniones por usuario -------
+        for (let i = 0; i < colllaborators.length; i++) {
+          const personMeetings = await db.peopleMeetings[colllaborators[i]];
+
+          if (!personMeetings) {
+            db.peopleMeetings[colllaborators[i]] = {};
+          }
+
+          db.peopleMeetings[colllaborators[i]][meeting.id] = {
+            id: meeting.id,
+            name: await meeting.name,
+            dateInt: meeting.dateInt,
+            dateEnd: meeting.dateEnd,
+          };
+        }
+        // ---X--- Agregar a reuniones por usuario ---X---
+
+        // ------- Usuarios por reunión -------
+        for (let i = 0; i < colllaborators.length; i++) {
+          const peopleMeeting = await db.meetingPeople[meeting.id];
+
+          if (!peopleMeeting) {
+            db.meetingPeople[meeting.id] = {};
+          }
+
+          const person = await db.people[colllaborators[i]];
+
+          if (person) {
+            db.meetingPeople[meeting.id][person.id] = {
+              id: person.id,
+              name: person.name,
+              email: person.email,
+              isActive: person.isActive,
+              isLock: person.isLock,
+            };
+          }
+        }
+        // ---X--- Usuarios por reunión ---X---
 
         localStorage.setItem(dbName, JSON.stringify(db));
 
