@@ -61,19 +61,19 @@ const routes = [
     meta: { title: `Usuarios en el proyecto ${BASE_URL_TITLE}` },
   },
   {
-    path: "/reuniones", // TODO - Craer lógica.
+    path: "/reuniones",
     name: "Meetings",
     component: () => import("../views/meeting/Meetings.vue"),
     meta: { title: `Reuniones ${BASE_URL_TITLE}` },
   },
   {
-    path: "/reunion/nueva", // TODO - Craer lógica.
+    path: "/reunion/nueva",
     name: "NewMeeting",
     component: () => import("../views/meeting/NewMeeting.vue"),
     meta: { title: `Nueva reunion ${BASE_URL_TITLE}` },
   },
   {
-    path: "/reunion/:meeting", // TODO - Craer lógica.
+    path: "/reunion/:meeting",
     name: "Meeting",
     component: () => import("../views/meeting/Meeting.vue"),
     meta: { title: `Reunión ${BASE_URL_TITLE}` },
@@ -83,6 +83,12 @@ const routes = [
     name: "EditMeeting",
     component: () => import("../views/meeting/EditMeeting.vue"),
     meta: { title: `Editar reunión ${BASE_URL_TITLE}` },
+  },
+  {
+    path: "/reunion/:meeting/usuarios",
+    name: "MeetingPeople",
+    component: () => import("../views/meeting/MeetingPeople.vue"),
+    meta: { title: `Usuarios en la reunión ${BASE_URL_TITLE}` },
   },
   {
     path: "/reunion/:meeting/tareas", // TODO - Craer lógica.
