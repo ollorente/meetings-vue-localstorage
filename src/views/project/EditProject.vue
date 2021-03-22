@@ -128,35 +128,21 @@ export default {
 
         db.projects[project.id] = project;
 
-        const collaborators = await project.collaborators;
+        const colllaborators = await project.collaborators;
 
-        if (collaborators.length > 0) {
-          await collaborators.forEach(async (e) => {
-            delete db.peopleProjects[e][project.id];
-            const person = await db.peopleProjects[e];
+        // ------- Editar usuarios por projecto -------
+        delete db.projectPeople[project.id];
 
-            if (!person) {
-              db.peopleProjects[e] = {};
-            }
+        for (let i = 0; i < colllaborators.length; i++) {
+          const peopleProject = await db.projectPeople[project.id];
 
-            db.peopleProjects[e][project.id] = {
-              id: project.id,
-              name: project.name,
-              isActive: project.isActive,
-              isLock: project.isLock,
-            };
-          });
-
-          delete db.projectPeople[project.id];
-          const projectData = await db.projectPeople[project.id];
-
-          if (!projectData) {
+          if (!peopleProject) {
             db.projectPeople[project.id] = {};
           }
 
-          await collaborators.forEach(async (e) => {
-            const person = await db.people[e];
+          const person = await db.people[colllaborators[i]];
 
+          if (person) {
             db.projectPeople[project.id][person.id] = {
               id: person.id,
               name: person.name,
@@ -164,8 +150,28 @@ export default {
               isActive: person.isActive,
               isLock: person.isLock,
             };
-          });
+          }
         }
+        // ---X--- Editar usuarios por projecto ---X---
+
+        // ------- Editar projectos por usuario -------
+        for (let i = 0; i < colllaborators.length; i++) {
+          const personProjects = await db.peopleProjects[colllaborators[i]];
+
+          if (!personProjects) {
+            db.peopleProjects[colllaborators[i]] = {};
+          }
+
+          delete db.peopleProjects[colllaborators[i]][project.id];
+
+          db.peopleProjects[colllaborators[i]][project.id] = {
+            id: project.id,
+            name: await project.name,
+            isActive: project.isActive,
+            isLock: project.isLock,
+          };
+        }
+        // ---X--- Editar projectos por usuario ---X---
 
         localStorage.setItem(dbName, JSON.stringify(db));
 
