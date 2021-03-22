@@ -110,18 +110,19 @@ export default {
 
         db.projects[project.id] = project;
 
-        const collaborators = await project.collaborators;
+        const colllaborators = await project.collaborators;
 
-        if (collaborators.length > 0) {
-          const projectData = await db.projectPeople[project.id];
+        // ------- Usuarios por projecto -------
+        for (let i = 0; i < colllaborators.length; i++) {
+          const peopleProject = await db.projectPeople[project.id];
 
-          if (!projectData) {
+          if (!peopleProject) {
             db.projectPeople[project.id] = {};
           }
 
-          await collaborators.forEach(async (e) => {
-            const person = await db.people[e];
+          const person = await db.people[colllaborators[i]];
 
+          if (person) {
             db.projectPeople[project.id][person.id] = {
               id: person.id,
               name: person.name,
@@ -129,8 +130,26 @@ export default {
               isActive: person.isActive,
               isLock: person.isLock,
             };
-          });
+          }
         }
+        // ---X--- Usuarios por projecto ---X---
+
+        // ------- Agregar a projectos por usuario -------
+        for (let i = 0; i < colllaborators.length; i++) {
+          const personProjects = await db.peopleProjects[colllaborators[i]];
+
+          if (!personProjects) {
+            db.peopleProjects[colllaborators[i]] = {};
+          }
+
+          db.peopleProjects[colllaborators[i]][project.id] = {
+            id: project.id,
+            name: await project.name,
+            isActive: project.isActive,
+            isLock: project.isLock,
+          };
+        }
+        // ---X--- Agregar a projectos por usuario ---X---
 
         localStorage.setItem(dbName, JSON.stringify(db));
 
