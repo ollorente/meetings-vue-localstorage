@@ -1,6 +1,8 @@
 <template>
   <div class="meetings">
-    <h1>{{ total }} {{ total === 1 ? "Reunión" : "Reuniones" }}</h1>
+    <h1 style="margin: 0">
+      {{ total }} {{ total === 1 ? "Reunión" : "Reuniones" }}
+    </h1>
     <p>
       <router-link :to="{ name: 'NewMeeting' }" class="link"
         >Agregar</router-link
@@ -17,9 +19,19 @@
           ></span
         ></span
       >
-      <span class="parrafo__status">{{
-        meeting.isActive ? "Activo" : "Inactivo"
-      }}</span>
+      <span class="parrafo__status" style="display: flex">
+        <span style="padding: 0 0.5rem; font-size: 0.8rem; font-weight: 600">{{
+          new Date(meeting.dateInt).getMonth() + 1
+        }}</span>
+        <span style="padding: 0 0.5rem; font-size: 2rem; font-weight: 600">{{
+          new Date(meeting.dateInt).toString().split(" ")[2]
+        }}</span>
+        <span
+          >{{ new Date(meeting.dateInt).toString().split(" ")[4] }}<br />{{
+            new Date(meeting.dateEnd).toString().split(" ")[4]
+          }}</span
+        >
+      </span>
     </p>
   </div>
 </template>
@@ -50,11 +62,12 @@ export default {
       const data = Object.values(db.meetings)
         .filter((e) => e.isLock === false)
         .filter((e) => e.isActive === true)
+        .filter((e) => e.dateInt >= Date.now())
         .sort(function (a, b) {
-          if (a.name > b.name) {
+          if (a.dateInt > b.dateInt) {
             return 1;
           }
-          if (a.name < b.name) {
+          if (a.dateInt < b.dateInt) {
             return -1;
           }
           return 0;
@@ -64,6 +77,8 @@ export default {
           return {
             id: e.id,
             name: e.name,
+            dateInt: e.dateInt,
+            dateEnd: e.dateEnd,
             isActive: e.isActive,
           };
         });
@@ -71,7 +86,10 @@ export default {
       this.meetings = data;
     },
     async getTotalMeetings() {
-      this.total = Object.values(db.meetings).length;
+      this.total = Object.values(db.meetings)
+        .filter((e) => e.isLock === false)
+        .filter((e) => e.isActive === true)
+        .filter((e) => e.dateInt >= Date.now()).length;
     },
   },
   watch: {
