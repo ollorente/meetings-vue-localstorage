@@ -33,7 +33,7 @@
           </option>
         </select>
       </div>
-      <button type="submit">Agregar</button>
+      <button type="submit">Editar</button>
     </form>
     <div id="alert" v-if="alert.error">
       {{ alert.msg }}
@@ -155,14 +155,24 @@ export default {
         // ---X--- Editar usuarios por projecto ---X---
 
         // ------- Editar projectos por usuario -------
+        // ------- Borrar projecto del usuario -------
+        const users = Object.values(db.people);
+
+        users.forEach(async (user) => {
+          const u = await db.peopleProjects[user.id];
+
+          if (u) {
+            delete db.peopleProjects[user.id][project.id];
+          }
+        });
+        // ---X--- Borrar projecto del usuario ---X---
+
         for (let i = 0; i < colllaborators.length; i++) {
           const personProjects = await db.peopleProjects[colllaborators[i]];
 
           if (!personProjects) {
             db.peopleProjects[colllaborators[i]] = {};
           }
-
-          delete db.peopleProjects[colllaborators[i]][project.id];
 
           db.peopleProjects[colllaborators[i]][project.id] = {
             id: project.id,
@@ -187,8 +197,15 @@ export default {
     },
     async deleteProject() {
       if (window.confirm(`Está a punto de borrar un elemento`)) {
-        delete db.projects[this.$route.params.project];
-        delete db.projectPeople[this.$route.params.project];
+        const project = await db.projects[this.$route.params.project];
+        const collaborators = await project.collaborators;
+
+        delete db.projects[project.id];
+        delete db.projectPeople[project.id];
+
+        for (let i = 0; i < collaborators.length; i++) {
+          delete db.peopleProjects[collaborators[1]][project.id];
+        }
 
         localStorage.setItem(dbName, JSON.stringify(db));
 
