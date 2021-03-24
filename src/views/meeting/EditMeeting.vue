@@ -173,7 +173,13 @@ export default {
       this.projects = data;
     },
     async addMeeting() {
-      if (this.meeting.name.trim() === "") {
+      if (
+        this.meeting.name.trim() === "" ||
+        this.meeting.description === "" ||
+        this.meeting.collaborators === "" ||
+        this.meeting.dateInt === "" ||
+        this.meeting.dateEnd == ""
+      ) {
         this.alert.error = true;
         this.alert.msg = `El nombre puede estar vacio.`;
 
