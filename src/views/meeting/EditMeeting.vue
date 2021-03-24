@@ -104,7 +104,6 @@ export default {
   created() {
     this.getMeeting();
     this.getProjects();
-    this.getPeople();
   },
   methods: {
     async getMeeting() {
@@ -123,10 +122,12 @@ export default {
           project: data.project,
           collaborators: data.collaborators,
         };
+
+        await this.getProjectPeople(this.meeting.project);
       }
     },
-    async getPeople() {
-      const data = Object.values(db.people)
+    async getProjectPeople(id) {
+      const data = Object.values(db.projectPeople[id])
         .filter((e) => e.isLock === false)
         .filter((e) => e.isActive === true)
         .sort(function (a, b) {
@@ -142,7 +143,6 @@ export default {
           return {
             id: e.id,
             name: e.name,
-            email: e.email,
             isActive: e.isActive,
           };
         });
@@ -223,7 +223,7 @@ export default {
     },
   },
   watch: {
-    $route: ["getMeeting", "getPeople"],
+    $route: ["getMeeting"],
   },
 };
 </script>

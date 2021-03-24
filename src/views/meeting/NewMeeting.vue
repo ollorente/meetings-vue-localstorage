@@ -43,7 +43,7 @@
         />
       </div>
       <div>
-        <select v-model="meeting.project" id="collaborators">
+        <select v-model="meeting.project" id="collaborators" @change="getuUers">
           <option
             v-for="project in projects"
             :key="project.id"
@@ -53,7 +53,7 @@
           </option>
         </select>
       </div>
-      <div>
+      <div v-if="isCollaborators">
         <select multiple v-model="meeting.collaborators" id="collaborators">
           <option v-for="person in people" :key="person.id" :value="person.id">
             {{ person.name }} - {{ person.email }}
@@ -65,6 +65,7 @@
     <div id="alert" v-if="alert.error">
       {{ alert.msg }}
     </div>
+    <pre class="container" hiddens style="text-align: left">{{ $data }}</pre>
   </div>
 </template>
 
@@ -86,6 +87,7 @@ export default {
       },
       people: [],
       projects: [],
+      isCollaborators: false,
       alert: {
         error: true,
         msg: null,
@@ -94,32 +96,37 @@ export default {
   },
   created() {
     this.getProjects();
-    this.getPeople();
   },
   methods: {
-    async getPeople() {
-      const data = Object.values(db.people)
-        .filter((e) => e.isLock === false)
-        .filter((e) => e.isActive === true)
-        .sort(function (a, b) {
-          if (a.name > b.name) {
-            return 1;
-          }
-          if (a.name < b.name) {
-            return -1;
-          }
-          return 0;
-        })
-        .map((e) => {
-          return {
-            id: e.id,
-            name: e.name,
-            email: e.email,
-            isActive: e.isActive,
-          };
-        });
+    async getProjectPeople(id) {
+      if (id !== null) {
+        const data = Object.values(db.projectPeople[id])
+          .filter((e) => e.isLock === false)
+          .filter((e) => e.isActive === true)
+          .sort(function (a, b) {
+            if (a.name > b.name) {
+              return 1;
+            }
+            if (a.name < b.name) {
+              return -1;
+            }
+            return 0;
+          })
+          .map((e) => {
+            return {
+              id: e.id,
+              name: e.name,
+              isActive: e.isActive,
+            };
+          });
 
-      this.people = data;
+        this.people = data;
+      }
+    },
+    async getuUers() {
+      this.isCollaborators = true;
+
+      this.getProjectPeople(this.meeting.project);
     },
     async getProjects() {
       const data = Object.values(db.projects)
@@ -227,7 +234,7 @@ export default {
     },
   },
   watch: {
-    $route: ["getPeople"],
+    $route: ["getProjectPeople"],
   },
 };
 </script>

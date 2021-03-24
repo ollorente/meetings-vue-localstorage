@@ -204,7 +204,7 @@ export default {
         delete db.projectPeople[project.id];
 
         for (let i = 0; i < collaborators.length; i++) {
-          delete db.peopleProjects[collaborators[1]][project.id];
+          delete db.peopleProjects[collaborators[i]][project.id];
         }
 
         localStorage.setItem(dbName, JSON.stringify(db));
