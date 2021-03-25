@@ -62,10 +62,10 @@
       </div>
       <button type="submit">Agregar</button>
     </form>
+    <pre class="container" hiddens style="text-align: left">{{ $data }}</pre>
     <div id="alert" v-if="alert.error">
       {{ alert.msg }}
     </div>
-    <pre class="container" hiddens style="text-align: left">{{ $data }}</pre>
   </div>
 </template>
 
