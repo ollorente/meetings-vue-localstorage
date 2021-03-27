@@ -134,19 +134,19 @@ export default {
 
         db.projects[project.id] = project;
 
-        const colllaborators = await project.collaborators;
+        const collaborators = await project.collaborators;
 
         // ------- Editar usuarios por proyecto -------
         delete db.projectPeople[project.id];
 
-        for (let i = 0; i < colllaborators.length; i++) {
+        for (let i = 0; i < collaborators.length; i++) {
           const peopleProject = await db.projectPeople[project.id];
 
           if (!peopleProject) {
             db.projectPeople[project.id] = {};
           }
 
-          const person = await db.people[colllaborators[i]];
+          const person = await db.people[collaborators[i]];
 
           if (person) {
             db.projectPeople[project.id][person.id] = {
@@ -173,14 +173,14 @@ export default {
         });
         // ---X--- Borrar proyecto del usuario ---X---
 
-        for (let i = 0; i < colllaborators.length; i++) {
-          const personProjects = await db.peopleProjects[colllaborators[i]];
+        for (let i = 0; i < collaborators.length; i++) {
+          const personProjects = await db.peopleProjects[collaborators[i]];
 
           if (!personProjects) {
-            db.peopleProjects[colllaborators[i]] = {};
+            db.peopleProjects[collaborators[i]] = {};
           }
 
-          db.peopleProjects[colllaborators[i]][project.id] = {
+          db.peopleProjects[collaborators[i]][project.id] = {
             id: project.id,
             name: await project.name,
             isActive: project.isActive,
