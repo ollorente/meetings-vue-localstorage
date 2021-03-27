@@ -62,7 +62,7 @@
       </div>
       <button type="submit">Agregar</button>
     </form>
-    <pre class="container" hiddens style="text-align: left">{{ $data }}</pre>
+    <pre class="container" hidden style="text-align: left">{{ $data }}</pre>
     <div id="alert" v-if="alert.error">
       {{ alert.msg }}
     </div>
@@ -180,6 +180,23 @@ export default {
 
         db.meetings[meeting.id] = meeting;
 
+        // ------- Agregar a reuniones por proyecto -------
+        const meetingsProject = await db.projectMeetings[meeting.project];
+
+        if (!meetingsProject) {
+          db.projectMeetings[meeting.project] = {};
+        }
+
+        db.projectMeetings[meeting.project][meeting.id] = {
+          id: meeting.id,
+          name: await meeting.name,
+          dateInt: meeting.dateInt,
+          dateEnd: meeting.dateEnd,
+          isActive: meeting.isActive,
+          isLock: meeting.isLock,
+        };
+        // ---X--- Agregar a reuniones por proyecto ---X---
+
         const colllaborators = await meeting.collaborators;
 
         // ------- Agregar a reuniones por usuario -------
@@ -195,6 +212,8 @@ export default {
             name: await meeting.name,
             dateInt: meeting.dateInt,
             dateEnd: meeting.dateEnd,
+            isActive: meeting.isActive,
+            isLock: meeting.isLock,
           };
         }
         // ---X--- Agregar a reuniones por usuario ---X---
