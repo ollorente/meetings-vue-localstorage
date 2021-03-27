@@ -37,9 +37,9 @@ const routes = [
     meta: { title: `Editar proyecto ${BASE_URL_TITLE}` },
   },
   {
-    path: "/proyecto/:project/reuniones", // TODO - Craer lógica.
+    path: "/proyecto/:project/reuniones",
     name: "ProjectMeetings",
-    component: () => import("../views/meeting/Meetings.vue"),
+    component: () => import("../views/project/ProjectMeetings.vue"),
     meta: { title: `Reuniones del proyecto ${BASE_URL_TITLE}` },
   },
   {
