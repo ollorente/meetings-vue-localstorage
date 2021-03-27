@@ -1,6 +1,8 @@
 <template>
   <div class="edit-meeting">
     <h1 style="margin: 0">Editar reunión</h1>
+    <h2 style="margin: 0">{{ meeting.name }}</h2>
+    <h3 style="margin: 0">{{ project.name }}</h3>
     <p>
       <a href="#" @click="deleteMeeting" class="link">Eliminar</a>
       |
@@ -10,7 +12,7 @@
         >Volver</router-link
       >
     </p>
-    <form @submit.prevent="addMeeting">
+    <form @submit.prevent="updateMeeting">
       <div>
         <input
           type="text"
@@ -27,39 +29,10 @@
         >
       </div>
       <div>
-        <input
-          type="datetime-local"
-          v-model="meeting.dateInt"
-          id="dateInt"
-          name="trip-start"
-          value="2018-07-22"
-          min="2018-01-01"
-          max="2018-12-31"
-        />
+        <input type="datetime-local" v-model="meeting.dateInt" id="dateInt" />
       </div>
-      {{ meeting.dateInt }}
       <div>
-        <input
-          type="datetime-local"
-          v-model="meeting.dateEnd"
-          id="dateEnd"
-          name="trip-start"
-          value="2018-07-22"
-          min="2018-01-01"
-          max="2018-12-31"
-        />
-      </div>
-      {{ meeting.dateEnd }}
-      <div>
-        <select v-model="meeting.project" id="collaborators">
-          <option
-            v-for="project in projects"
-            :key="project.id"
-            :value="project.id"
-          >
-            {{ project.name }}
-          </option>
-        </select>
+        <input type="datetime-local" v-model="meeting.dateEnd" id="dateEnd" />
       </div>
       <div>
         <select multiple v-model="meeting.collaborators" id="collaborators">
@@ -68,9 +41,14 @@
           </option>
         </select>
       </div>
-      <button type="submit">Agregar</button>
+      <div>
+        <label
+          ><input type="checkbox" v-model="meeting.isActive" /> Estatus</label
+        >
+      </div>
+      <button type="submit">Actualizar</button>
     </form>
-    {{ $data.meeting }}
+    <pre class="container" hidden style="text-align: left">{{ $data }}</pre>
     <div id="alert" v-if="alert.error">
       {{ alert.msg }}
     </div>
@@ -86,15 +64,22 @@ export default {
   data() {
     return {
       meeting: {
+        id: "",
         name: "",
         description: "",
-        dateInt: "",
-        dateEnd: "",
         project: "",
         collaborators: [],
+        dateInt: "",
+        dateEnd: "",
+        isActive: "",
+        isLock: "",
+        createdAt: "",
+        updatedAt: "",
       },
       people: [],
+      project: "",
       projects: [],
+      today: new Date(Date.now()).toISOString().substr(0, 16),
       alert: {
         error: true,
         msg: null,
@@ -113,41 +98,54 @@ export default {
         this.$router.replace({ name: "Error" });
       } else {
         const data = await db.meetings[this.$route.params.meeting];
+        const DateInt = data.dateInt - 18000000;
+        const DateEnd = data.dateEnd - 18000000;
 
         this.meeting = {
+          id: data.id,
           name: data.name,
           description: data.description,
-          dateInt: data.dateInt,
-          dateEnd: data.dateEnd,
           project: data.project,
           collaborators: data.collaborators,
+          dateInt: new Date(DateInt).toISOString().substr(0, 16),
+          dateEnd: new Date(DateEnd).toISOString().substr(0, 16),
+          isActive: data.isActive,
+          isLock: data.isLock,
+          createdAt: data.createdAt,
+          updatedAt: data.updatedAt,
         };
 
         await this.getProjectPeople(this.meeting.project);
+        await this.getProject(this.meeting.project);
       }
     },
     async getProjectPeople(id) {
-      const data = Object.values(db.projectPeople[id])
-        .filter((e) => e.isLock === false)
-        .filter((e) => e.isActive === true)
-        .sort(function (a, b) {
-          if (a.name > b.name) {
-            return 1;
-          }
-          if (a.name < b.name) {
-            return -1;
-          }
-          return 0;
-        })
-        .map((e) => {
-          return {
-            id: e.id,
-            name: e.name,
-            isActive: e.isActive,
-          };
-        });
+      if (id !== null) {
+        const data = Object.values(db.projectPeople[id])
+          .filter((e) => e.isLock === false)
+          .filter((e) => e.isActive === true)
+          .sort(function (a, b) {
+            if (a.name > b.name) {
+              return 1;
+            }
+            if (a.name < b.name) {
+              return -1;
+            }
+            return 0;
+          })
+          .map((e) => {
+            return {
+              id: e.id,
+              name: e.name,
+              isActive: e.isActive,
+            };
+          });
 
-      this.people = data;
+        this.people = data;
+      }
+    },
+    async getProject(id) {
+      this.project = await db.projects[id];
     },
     async getProjects() {
       const data = Object.values(db.projects)
@@ -172,7 +170,7 @@ export default {
 
       this.projects = data;
     },
-    async addMeeting() {
+    async updateMeeting() {
       if (
         this.meeting.name.trim() === "" ||
         this.meeting.description === "" ||
@@ -192,20 +190,94 @@ export default {
         const date = Date.now();
 
         const meeting = {
-          id: date,
+          id: this.meeting.id,
           name: await this.meeting.name.trim(),
           description: await this.meeting.description.trim(),
           collaborators: await this.meeting.collaborators,
           project: await this.meeting.project,
           dateInt: Date.parse(this.meeting.dateInt),
           dateEnd: Date.parse(this.meeting.dateEnd),
-          isActive: true,
-          isLock: false,
-          createdAt: date,
+          isActive: this.meeting.isActive,
+          isLock: this.meeting.isLock,
+          createdAt: this.meeting.createdAt,
           updatedAt: date,
         };
 
         db.meetings[meeting.id] = meeting;
+
+        // ------- Agregar a reuniones por proyecto -------
+        const meetingsProject = await db.projectMeetings[meeting.project];
+
+        if (!meetingsProject) {
+          db.projectMeetings[meeting.project] = {};
+        }
+
+        db.projectMeetings[meeting.project][meeting.id] = {
+          id: meeting.id,
+          name: await meeting.name,
+          dateInt: meeting.dateInt,
+          dateEnd: meeting.dateEnd,
+          isActive: meeting.isActive,
+          isLock: meeting.isLock,
+        };
+        // ---X--- Agregar a reuniones por proyecto ---X---
+
+        const colllaborators = await meeting.collaborators;
+
+        // ------- Editar usuarios por reunión -------
+        delete db.meetingPeople[meeting.id];
+
+        for (let i = 0; i < colllaborators.length; i++) {
+          const peopleMeeting = await db.meetingPeople[meeting.id];
+
+          if (!peopleMeeting) {
+            db.meetingPeople[meeting.id] = {};
+          }
+
+          const person = await db.people[colllaborators[i]];
+
+          if (person) {
+            db.meetingPeople[meeting.id][person.id] = {
+              id: person.id,
+              name: person.name,
+              email: person.email,
+              isActive: person.isActive,
+              isLock: person.isLock,
+            };
+          }
+        }
+        // ---X--- Editar usuarios por reunión ---X---
+
+        // ------- Editar reuniones por usuario -------
+        // ------- Borrar reunión del usuario -------
+        const users = Object.values(db.people);
+
+        users.forEach(async (user) => {
+          const u = await db.peopleMeetings[user.id];
+
+          if (u) {
+            delete db.peopleMeetings[user.id][meeting.id];
+          }
+        });
+        // ---X--- Borrar reunión del usuario ---X---
+
+        for (let i = 0; i < colllaborators.length; i++) {
+          const personMeetings = await db.peopleMeetings[colllaborators[i]];
+
+          if (!personMeetings) {
+            db.peopleMeetings[colllaborators[i]] = {};
+          }
+
+          db.peopleMeetings[colllaborators[i]][meeting.id] = {
+            id: meeting.id,
+            name: await meeting.name,
+            dateInt: meeting.dateInt,
+            dateEnd: meeting.dateEnd,
+            isActive: meeting.isActive,
+            isLock: meeting.isLock,
+          };
+        }
+        // ---X--- Editar reuniones por usuario ---X---
 
         localStorage.setItem(dbName, JSON.stringify(db));
 
@@ -215,7 +287,10 @@ export default {
         this.meeting.dateInt = "";
         this.meeting.dateEnd = "";
 
-        await this.$router.replace({ name: "Meetings" });
+        await this.$router.replace({
+          name: "Meeting",
+          params: { meeting: this.$route.params.meeting },
+        });
       }
     },
     async deleteMeeting() {
