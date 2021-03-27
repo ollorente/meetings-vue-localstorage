@@ -29,20 +29,10 @@
         >
       </div>
       <div>
-        <input
-          type="datetime-local"
-          v-model="meeting.dateInt"
-          id="dateInt"
-          :min="today"
-        />
+        <input type="datetime-local" v-model="meeting.dateInt" id="dateInt" />
       </div>
       <div>
-        <input
-          type="datetime-local"
-          v-model="meeting.dateEnd"
-          id="dateEnd"
-          :min="today"
-        />
+        <input type="datetime-local" v-model="meeting.dateEnd" id="dateEnd" />
       </div>
       <div>
         <select multiple v-model="meeting.collaborators" id="collaborators">
@@ -51,9 +41,14 @@
           </option>
         </select>
       </div>
+      <div>
+        <label
+          ><input type="checkbox" v-model="meeting.isActive" /> Estatus</label
+        >
+      </div>
       <button type="submit">Actualizar</button>
     </form>
-    <pre class="container" hiddens style="text-align: left">{{ $data }}</pre>
+    <pre class="container" hidden style="text-align: left">{{ $data }}</pre>
     <div id="alert" v-if="alert.error">
       {{ alert.msg }}
     </div>
@@ -210,6 +205,80 @@ export default {
 
         db.meetings[meeting.id] = meeting;
 
+        // ------- Agregar a reuniones por proyecto -------
+        const meetingsProject = await db.projectMeetings[meeting.project];
+
+        if (!meetingsProject) {
+          db.projectMeetings[meeting.project] = {};
+        }
+
+        db.projectMeetings[meeting.project][meeting.id] = {
+          id: meeting.id,
+          name: await meeting.name,
+          dateInt: meeting.dateInt,
+          dateEnd: meeting.dateEnd,
+          isActive: meeting.isActive,
+          isLock: meeting.isLock,
+        };
+        // ---X--- Agregar a reuniones por proyecto ---X---
+
+        const colllaborators = await meeting.collaborators;
+
+        // ------- Editar usuarios por reunión -------
+        delete db.meetingPeople[meeting.id];
+
+        for (let i = 0; i < colllaborators.length; i++) {
+          const peopleMeeting = await db.meetingPeople[meeting.id];
+
+          if (!peopleMeeting) {
+            db.meetingPeople[meeting.id] = {};
+          }
+
+          const person = await db.people[colllaborators[i]];
+
+          if (person) {
+            db.meetingPeople[meeting.id][person.id] = {
+              id: person.id,
+              name: person.name,
+              email: person.email,
+              isActive: person.isActive,
+              isLock: person.isLock,
+            };
+          }
+        }
+        // ---X--- Editar usuarios por reunión ---X---
+
+        // ------- Editar reuniones por usuario -------
+        // ------- Borrar reunión del usuario -------
+        const users = Object.values(db.people);
+
+        users.forEach(async (user) => {
+          const u = await db.peopleMeetings[user.id];
+
+          if (u) {
+            delete db.peopleMeetings[user.id][meeting.id];
+          }
+        });
+        // ---X--- Borrar reunión del usuario ---X---
+
+        for (let i = 0; i < colllaborators.length; i++) {
+          const personMeetings = await db.peopleMeetings[colllaborators[i]];
+
+          if (!personMeetings) {
+            db.peopleMeetings[colllaborators[i]] = {};
+          }
+
+          db.peopleMeetings[colllaborators[i]][meeting.id] = {
+            id: meeting.id,
+            name: await meeting.name,
+            dateInt: meeting.dateInt,
+            dateEnd: meeting.dateEnd,
+            isActive: meeting.isActive,
+            isLock: meeting.isLock,
+          };
+        }
+        // ---X--- Editar reuniones por usuario ---X---
+
         localStorage.setItem(dbName, JSON.stringify(db));
 
         this.meeting.name = "";
@@ -218,7 +287,10 @@ export default {
         this.meeting.dateInt = "";
         this.meeting.dateEnd = "";
 
-        await this.$router.replace({ name: "Meetings" });
+        await this.$router.replace({
+          name: "Meeting",
+          params: { meeting: this.$route.params.meeting },
+        });
       }
     },
     async deleteMeeting() {
