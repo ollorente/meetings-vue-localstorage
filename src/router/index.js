@@ -43,16 +43,16 @@ const routes = [
     meta: { title: `Reuniones del proyecto ${BASE_URL_TITLE}` },
   },
   {
+    path: "/proyecto/:project/reunion-nueva",
+    name: "NewProjectMeeting",
+    component: () => import("../views/project/NewProjectMeeting.vue"),
+    meta: { title: `Nueva reunión de proyecto ${BASE_URL_TITLE}` },
+  },
+  {
     path: "/proyecto/:project/tareas", // TODO - Craer lógica.
     name: "ProjectTasks",
     component: () => import("../views/task/Tasks.vue"),
     meta: { title: `Tareas del proyecto ${BASE_URL_TITLE}` },
-  },
-  {
-    path: "/proyecto/:project/tarea/nueva", // TODO - Craer lógica.
-    name: "NewProjectTask",
-    component: () => import("../views/task/NewTask.vue"),
-    meta: { title: `Nueva tarea de proyecto ${BASE_URL_TITLE}` },
   },
   {
     path: "/proyecto/:project/usuarios",
@@ -67,12 +67,6 @@ const routes = [
     meta: { title: `Reuniones ${BASE_URL_TITLE}` },
   },
   {
-    path: "/reunion/nueva",
-    name: "NewMeeting",
-    component: () => import("../views/meeting/NewMeeting.vue"),
-    meta: { title: `Nueva reunion ${BASE_URL_TITLE}` },
-  },
-  {
     path: "/reunion/:meeting",
     name: "Meeting",
     component: () => import("../views/meeting/Meeting.vue"),
@@ -85,16 +79,22 @@ const routes = [
     meta: { title: `Editar reunión ${BASE_URL_TITLE}` },
   },
   {
+    path: "/reunion/:meeting/tareas", // TODO - Craer lógica.
+    name: "MeetingTasks",
+    component: () => import("../views/meeting/MeetingTasks.vue"),
+    meta: { title: `Reunión ${BASE_URL_TITLE}` },
+  },
+  {
+    path: "/reunion/:meeting/tarea-nueva", // TODO - Craer lógica.
+    name: "NewMeetingTask",
+    component: () => import("../views/meeting/NewMeetingTask.vue"),
+    meta: { title: `Nueva tarea de reunión ${BASE_URL_TITLE}` },
+  },
+  {
     path: "/reunion/:meeting/usuarios",
     name: "MeetingPeople",
     component: () => import("../views/meeting/MeetingPeople.vue"),
     meta: { title: `Usuarios en la reunión ${BASE_URL_TITLE}` },
-  },
-  {
-    path: "/reunion/:meeting/tareas", // TODO - Craer lógica.
-    name: "MeetingTasks",
-    component: () => import("../views/meeting/Meeting.vue"),
-    meta: { title: `Reunión ${BASE_URL_TITLE}` },
   },
   {
     path: "/tarea/:task", // TODO - Craer lógica.
