@@ -5,7 +5,12 @@
       {{ total === 1 ? "Reunión del proyecto" : "Reuniones del proyecto" }}
     </h1>
     <p>
-      <router-link :to="{ name: 'NewProject' }" class="link"
+      <router-link
+        :to="{
+          name: 'NewProjectMeeting',
+          params: { project: $route.params.project },
+        }"
+        class="link"
         >Agregar</router-link
       >
       |
