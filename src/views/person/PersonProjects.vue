@@ -52,7 +52,7 @@ export default {
       const limit = this.limit;
       const page = (this.page - 1) * this.limit || 0;
 
-      const data = Object.values(db.projects)
+      const data = Object.values(db.peopleProjects[this.$route.params.person])
         .filter((e) => e.isLock === false)
         .filter((e) => e.isActive === true)
         .sort(function (a, b) {
@@ -76,7 +76,7 @@ export default {
       this.projects = data;
     },
     async getTotalPersonProjects() {
-      this.total = Object.values(db.projects)
+      this.total = Object.values(db.peopleProjects[this.$route.params.person])
         .filter((e) => e.isLock === false)
         .filter((e) => e.isActive === true).length;
     },
