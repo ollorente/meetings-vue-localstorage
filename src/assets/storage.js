@@ -156,6 +156,7 @@ const db = {
   peopleMeetings: {},
   peopleProjects: {},
   peopleTasks: {},
+  taskPeople: {},
   tasks: {},
 };
 
