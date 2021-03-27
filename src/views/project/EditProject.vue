@@ -33,6 +33,11 @@
           </option>
         </select>
       </div>
+      <div>
+        <label
+          ><input type="checkbox" v-model="project.isActive" /> Estatus</label
+        >
+      </div>
       <button type="submit">Editar</button>
     </form>
     <div id="alert" v-if="alert.error">
@@ -54,6 +59,7 @@ export default {
         name: null,
         description: null,
         collaborators: [],
+        isActive: null,
       },
       people: [],
       alert: {
@@ -130,7 +136,7 @@ export default {
 
         const colllaborators = await project.collaborators;
 
-        // ------- Editar usuarios por projecto -------
+        // ------- Editar usuarios por proyecto -------
         delete db.projectPeople[project.id];
 
         for (let i = 0; i < colllaborators.length; i++) {
@@ -152,10 +158,10 @@ export default {
             };
           }
         }
-        // ---X--- Editar usuarios por projecto ---X---
+        // ---X--- Editar usuarios por proyecto ---X---
 
-        // ------- Editar projectos por usuario -------
-        // ------- Borrar projecto del usuario -------
+        // ------- Editar proyectos por usuario -------
+        // ------- Borrar proyecto del usuario -------
         const users = Object.values(db.people);
 
         users.forEach(async (user) => {
@@ -165,7 +171,7 @@ export default {
             delete db.peopleProjects[user.id][project.id];
           }
         });
-        // ---X--- Borrar projecto del usuario ---X---
+        // ---X--- Borrar proyecto del usuario ---X---
 
         for (let i = 0; i < colllaborators.length; i++) {
           const personProjects = await db.peopleProjects[colllaborators[i]];
@@ -181,7 +187,7 @@ export default {
             isLock: project.isLock,
           };
         }
-        // ---X--- Editar projectos por usuario ---X---
+        // ---X--- Editar proyectos por usuario ---X---
 
         localStorage.setItem(dbName, JSON.stringify(db));
 
