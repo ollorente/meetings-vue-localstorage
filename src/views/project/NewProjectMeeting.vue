@@ -156,17 +156,17 @@ export default {
         };
         // ---X--- Agregar a reuniones por proyecto ---X---
 
-        const colllaborators = await meeting.collaborators;
+        const collaborators = await meeting.collaborators;
 
         // ------- Agregar a reuniones por usuario -------
-        for (let i = 0; i < colllaborators.length; i++) {
-          const personMeetings = await db.peopleMeetings[colllaborators[i]];
+        for (let i = 0; i < collaborators.length; i++) {
+          const personMeetings = await db.peopleMeetings[collaborators[i]];
 
           if (!personMeetings) {
-            db.peopleMeetings[colllaborators[i]] = {};
+            db.peopleMeetings[collaborators[i]] = {};
           }
 
-          db.peopleMeetings[colllaborators[i]][meeting.id] = {
+          db.peopleMeetings[collaborators[i]][meeting.id] = {
             id: meeting.id,
             name: await meeting.name,
             dateInt: meeting.dateInt,
@@ -178,14 +178,14 @@ export default {
         // ---X--- Agregar a reuniones por usuario ---X---
 
         // ------- Usuarios por reunión -------
-        for (let i = 0; i < colllaborators.length; i++) {
+        for (let i = 0; i < collaborators.length; i++) {
           const peopleMeeting = await db.meetingPeople[meeting.id];
 
           if (!peopleMeeting) {
             db.meetingPeople[meeting.id] = {};
           }
 
-          const person = await db.people[colllaborators[i]];
+          const person = await db.people[collaborators[i]];
 
           if (person) {
             db.meetingPeople[meeting.id][person.id] = {
