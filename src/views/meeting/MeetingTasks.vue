@@ -56,7 +56,7 @@ export default {
       const limit = this.limit;
       const page = (this.page - 1) * this.limit || 0;
 
-      const data = Object.values(db.tasks)
+      const data = Object.values(db.meetingTasks[this.$route.params.meeting])
         .filter((e) => e.isLock === false)
         .filter((e) => e.isActive === true)
         .sort(function (a, b) {
@@ -80,7 +80,9 @@ export default {
       this.tasks = data;
     },
     async getTotalTasks() {
-      this.total = Object.values(db.tasks).length;
+      this.total = Object.values(db.meetingTasks[this.$route.params.meeting])
+        .filter((e) => e.isLock === false)
+        .filter((e) => e.isActive === true).length;
     },
   },
   watch: {
