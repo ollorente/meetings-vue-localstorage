@@ -16,6 +16,9 @@
         ></span
       >
       <span class="parrafo__status">{{
+        task.start ? "Iniciado" : "SinIniciar"
+      }}</span>
+      <span class="parrafo__status">{{
         task.isActive ? "Activo" : "Inactivo"
       }}</span>
     </p>
@@ -48,6 +51,7 @@ export default {
       const data = Object.values(db.tasks)
         .filter((e) => e.isLock === false)
         .filter((e) => e.isActive === true)
+        .filter((e) => e.check === false)
         .sort(function (a, b) {
           if (a.name > b.name) {
             return 1;
@@ -62,6 +66,8 @@ export default {
           return {
             id: e.id,
             name: e.name,
+            check: e.check,
+            start: e.start,
             isActive: e.isActive,
           };
         });
