@@ -260,12 +260,22 @@ export default {
       if (window.confirm(`Está a punto de borrar un elemento`)) {
         const task = await db.tasks[this.$route.params.task];
         const collaborators = await task.collaborators;
+        const projects = Object.values(db.projects);
+        const meetings = Object.values(db.meetings);
 
         delete db.tasks[task.id];
         delete db.taskPeople[task.id];
 
         for (let i = 0; i < collaborators.length; i++) {
           delete db.peopleTasks[collaborators[i]][task.id];
+        }
+
+        for (let i = 0; i < projects.length; i++) {
+          delete db.projectTasks[projects[i].id][task.id];
+        }
+
+        for (let i = 0; i < meetings.length; i++) {
+          delete db.meetingTasks[meetings[i].id][task.id];
         }
 
         localStorage.setItem(dbName, JSON.stringify(db));
