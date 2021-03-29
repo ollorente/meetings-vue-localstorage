@@ -8,6 +8,8 @@
           : "Proyectos del usuario"
       }}
     </h1>
+    <h2 style="margin: 0">{{ getPerson.name }}</h2>
+    <h4 style="margin: 0">{{ getPerson.email }}</h4>
     <p>
       <router-link
         :to="{ name: 'Person', params: { project: $route.params.person } }"
@@ -50,6 +52,7 @@ export default {
     };
   },
   created() {
+    this.fetchPerson(this.$route.params.person);
     this.fetchPersonProjects({
       id: this.$route.params.person,
       limit: this.limit,
@@ -58,13 +61,17 @@ export default {
     this.fetchAllPersonProjects({ id: this.$route.params.person });
   },
   methods: {
-    ...mapActions(["fetchPersonProjects", "fetchAllPersonProjects"]),
+    ...mapActions([
+      "fetchPerson",
+      "fetchPersonProjects",
+      "fetchAllPersonProjects",
+    ]),
   },
   computed: {
-    ...mapGetters(["getPersonProjects", "getAllPersonProjects"]),
+    ...mapGetters(["getPerson", "getPersonProjects", "getAllPersonProjects"]),
   },
   watch: {
-    $route: ["fetchPersonProjects", "fetchAllPersonProjects"],
+    $route: ["fetchPerson", "fetchPersonProjects", "fetchAllPersonProjects"],
   },
 };
 </script>
