@@ -70,36 +70,47 @@ export default {
     async getProjectMeetings() {
       const limit = this.limit;
       const page = (this.page - 1) * this.limit || 0;
+      const meetings = await db.projectMeetings[this.$route.params.project];
 
-      const data = Object.values(db.projectMeetings[this.$route.params.project])
-        .filter((e) => e.isLock === false)
-        .filter((e) => e.isActive === true)
-        .sort(function (a, b) {
-          if (a.dateInt > b.dateInt) {
-            return 1;
-          }
-          if (a.dateInt < b.dateInt) {
-            return -1;
-          }
-          return 0;
-        })
-        .splice(page, limit)
-        .map((e) => {
-          return {
-            id: e.id,
-            name: e.name,
-            dateInt: e.dateInt,
-            dateEnd: e.dateEnd,
-            isActive: e.isActive,
-          };
-        });
+      if (meetings) {
+        const data = Object.values(meetings)
+          .filter((e) => e.isLock === false)
+          .filter((e) => e.isActive === true)
+          .sort(function (a, b) {
+            if (a.dateInt > b.dateInt) {
+              return 1;
+            }
+            if (a.dateInt < b.dateInt) {
+              return -1;
+            }
+            return 0;
+          })
+          .splice(page, limit)
+          .map((e) => {
+            return {
+              id: e.id,
+              name: e.name,
+              dateInt: e.dateInt,
+              dateEnd: e.dateEnd,
+              isActive: e.isActive,
+            };
+          });
 
-      this.meetings = data;
+        this.meetings = data;
+      } else {
+        this.meetings = [];
+      }
     },
     async getTotalProjectMeetings() {
-      this.total = Object.values(db.projectMeetings[this.$route.params.project])
-        .filter((e) => e.isLock === false)
-        .filter((e) => e.isActive === true).length;
+      const meetings = await db.projectMeetings[this.$route.params.project];
+
+      if (meetings) {
+        this.total = Object.values(meetings)
+          .filter((e) => e.isLock === false)
+          .filter((e) => e.isActive === true).length;
+      } else {
+        this.total = 0;
+      }
     },
   },
   watch: {

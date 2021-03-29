@@ -44,8 +44,8 @@ export default {
   data() {
     return {
       project: {
-        name: null,
-        description: null,
+        name: "",
+        description: "",
         collaborators: [],
       },
       people: [],
@@ -85,9 +85,12 @@ export default {
       this.people = data;
     },
     async addProject() {
-      if (this.project.name.trim() === "") {
+      if (
+        this.project.name.trim() === "" ||
+        this.project.description.trim() === ""
+      ) {
         this.alert.error = true;
-        this.alert.msg = `El nombre puede estar vacio.`;
+        this.alert.msg = `Ni el nombre ni la descripción pueden estar vacios.`;
 
         setTimeout(() => {
           this.alert.error = false;

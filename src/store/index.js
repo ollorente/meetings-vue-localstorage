@@ -3,7 +3,7 @@ import Vuex from "vuex";
 import personProjects from "./modules/personProjects";
 import project from "./modules/project";
 import projectPeople from "./modules/projectPeople";
-import user from "./modules/user";
+import person from "./modules/person";
 
 Vue.use(Vuex);
 
@@ -15,6 +15,6 @@ export default new Vuex.Store({
     personProjects,
     project,
     projectPeople,
-    user,
+    person,
   },
 });

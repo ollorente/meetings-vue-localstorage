@@ -3,19 +3,28 @@
     <h1 style="margin: 0">Reunión</h1>
     <p>
       <router-link
-        :to="{ name: 'MeetingTasks', params: { meeting: meeting.id } }"
+        :to="{
+          name: 'MeetingTasks',
+          params: { meeting: $route.params.meeting },
+        }"
         class="link"
         >Tareas</router-link
       >
       |
       <router-link
-        :to="{ name: 'MeetingPeople', params: { meeting: meeting.id } }"
+        :to="{
+          name: 'MeetingPeople',
+          params: { meeting: $route.params.meeting },
+        }"
         class="link"
         >Usuarios</router-link
       >
       |
       <router-link
-        :to="{ name: 'EditMeeting', params: { meeting: meeting.id } }"
+        :to="{
+          name: 'EditMeeting',
+          params: { meeting: $route.params.meeting },
+        }"
         class="link"
         >Editar</router-link
       >

@@ -205,13 +205,34 @@ export default {
       if (window.confirm(`Está a punto de borrar un elemento`)) {
         const project = await db.projects[this.$route.params.project];
         const collaborators = await project.collaborators;
-
-        delete db.projects[project.id];
-        delete db.projectPeople[project.id];
+        const meetings = Object.values(db.meetings);
+        const meetingProjects = Object.values(db.projectMeetings[project.id]);
 
         for (let i = 0; i < collaborators.length; i++) {
           delete db.peopleProjects[collaborators[i]][project.id];
         }
+
+        for (let i = 0; i < meetings.length; i++) {
+          const people = await db.projectPeople[project.id];
+
+          for (let e = 0; e < people.length; e++) {
+            delete db.meetingPeople[meetings[i].id][people[e].id];
+            delete db.peopleMeetings[[people[e].id]];
+          }
+
+          delete db.meetingPeople[meetings[i].id];
+          delete db.meetingTasks[meetings[i].id];
+        }
+
+        for (let i = 0; i < meetingProjects.length; i++) {
+          delete db.meetings[meetingProjects[i].id][project.id];
+        }
+
+        delete db.projectMeetings[project.id];
+
+        delete db.projects[project.id];
+        delete db.projectPeople[project.id];
+        delete db.projectTasks[project.id];
 
         localStorage.setItem(dbName, JSON.stringify(db));
 

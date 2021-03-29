@@ -173,13 +173,13 @@ export default {
     async updateMeeting() {
       if (
         this.meeting.name.trim() === "" ||
-        this.meeting.description === "" ||
+        this.meeting.description.trim() === "" ||
         this.meeting.collaborators === "" ||
         this.meeting.dateInt === "" ||
         this.meeting.dateEnd == ""
       ) {
         this.alert.error = true;
-        this.alert.msg = `El nombre puede estar vacio.`;
+        this.alert.msg = `Ni el nombre ni la descripción pueden estar vacios.`;
 
         setTimeout(() => {
           this.alert.error = false;
@@ -295,7 +295,21 @@ export default {
     },
     async deleteMeeting() {
       if (window.confirm(`Está a punto de borrar un elemento`)) {
-        delete db.meetings[this.$route.params.meeting];
+        const meeting = await db.meetings[this.$route.params.meeting];
+        const collaborators = await meeting.colllaborators;
+        const projects = Object.values(db.projects);
+
+        delete db.meetings[meeting.id];
+        delete db.meetingPeople[meeting.id];
+        delete db.meetingTasks[meeting.id];
+
+        for (let i = 0; i < collaborators.length; i++) {
+          delete db.peopleMeetings[collaborators[i]][meeting.id];
+        }
+
+        for (let i = 0; i < projects.length; i++) {
+          delete db.projectMeetings[projects[i].id][meeting.id];
+        }
 
         localStorage.setItem(dbName, JSON.stringify(db));
 
