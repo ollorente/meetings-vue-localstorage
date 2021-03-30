@@ -1,28 +1,28 @@
 import { db } from "@/main";
 
 const state = {
-  projectsPeople: [],
+  projectMeetings: [],
 };
 
 const getters = {
-  getAllProjectPeople: (state) => state.projectsPeople,
-  getProjectPeople: (state) => state.projectsPeople,
+  getAllProjectMeetings: (state) => state.projectMeetings,
+  getProjectMeetings: (state) => state.projectMeetings,
 };
 
 const actions = {
-  async fetchProjectPeople({ commit }, data) {
+  async fetchProjectMeetings({ commit }, data) {
     try {
       const limit = data.limit ? data.limit : 20;
       const page = (data.page - 1) * data.limit || 0;
 
-      const people = Object.values(db.projectPeople[data.id])
+      const meetings = Object.values(db.projectMeetings[data.id])
         .filter((e) => e.isLock === false)
         .filter((e) => e.isActive === true)
         .sort(function (a, b) {
-          if (a.name > b.name) {
+          if (a.dateInt > b.dateInt) {
             return 1;
           }
-          if (a.name < b.name) {
+          if (a.dateInt < b.dateInt) {
             return -1;
           }
           return 0;
@@ -32,28 +32,29 @@ const actions = {
           return {
             id: e.id,
             name: e.name,
-            email: e.email,
+            dateInt: e.dateInt,
+            dateEnd: e.dateEnd,
             isActive: e.isActive,
             isLock: e.isLock,
           };
         });
 
-      commit("SET_PROJECT_PEEOPLE", people);
+      commit("SET_PROJECT_MEETINGS", meetings);
     } catch (error) {
       if (error) return;
     }
   },
 
-  async fetchAllProjectPeople({ commit }, id) {
+  async fetchAllProjectMeetings({ commit }, id) {
     try {
-      const people = Object.values(db.projectPeople[id])
+      const meetings = Object.values(db.projectMeetings[id])
         .filter((e) => e.isLock === false)
         .filter((e) => e.isActive === true)
         .sort(function (a, b) {
-          if (a.name > b.name) {
+          if (a.dateInt > b.dateInt) {
             return 1;
           }
-          if (a.name < b.name) {
+          if (a.dateInt < b.dateInt) {
             return -1;
           }
           return 0;
@@ -62,13 +63,14 @@ const actions = {
           return {
             id: e.id,
             name: e.name,
-            email: e.email,
+            dateInt: e.dateInt,
+            dateEnd: e.dateEnd,
             isActive: e.isActive,
             isLock: e.isLock,
           };
         });
 
-      commit("SET_ALL_PROJECT_PEEOPLE", people);
+      commit("SET_PROJECT_MEETINGS", meetings);
     } catch (error) {
       if (error) return;
     }
@@ -76,8 +78,10 @@ const actions = {
 };
 
 const mutations = {
-  SET_ALL_PROJECT_PEEOPLE: (state, project) => (state.projectsPeople = project),
-  SET_PROJECT_PEEOPLE: (state, project) => (state.projectsPeople = project),
+  SET_PROJECT_MEETINGS: (state, meetings) => (state.projectMeetings = meetings),
+  SET_ALL_PROJECT_MEETINGS: (state, meetings) =>
+    (state.projectMeetings = meetings),
+  REMOVE_PROJECT_MEETING: (state, meeting) => (state.projectMeetings = meeting),
 };
 
 export default {

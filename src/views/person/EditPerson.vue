@@ -2,15 +2,15 @@
   <div class="edit-person">
     <h1 style="margin: 0">Editar "{{ person.email }}"</h1>
     <p>
-      <a href="#" @click="deletePerson" class="link">Eliminar</a>
+      <a href="#" @click="removePerson" class="link">Eliminar</a>
       |
       <router-link
-        :to="{ name: 'Person', params: { person: person.id } }"
+        :to="{ name: 'Person', params: { person: this.$route.params.person } }"
         class="link"
         >Volver</router-link
       >
     </p>
-    <form @submit.prevent="updatePerson">
+    <form @submit.prevent="putPerson">
       <div>
         <input
           type="text"
@@ -56,70 +56,45 @@
     <div id="alert" v-if="alert.error">
       {{ alert.msg }}
     </div>
+    <pre class="container" hidden style="text-align: left">{{ $data }}</pre>
   </div>
 </template>
 
 <script>
-import { db, dbName } from "@/main";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   name: "EditPerson",
   components: {},
   data() {
     return {
-      person: {
-        id: "",
-        email: "",
-        name: "",
-        photoURL: "",
-        role: "",
-        isActive: "",
-        isLock: "",
-        createdAt: "",
-      },
+      person: "",
       alert: {
         error: true,
         msg: null,
       },
     };
   },
+  mounted() {
+    this.person = {
+      id: this.getPerson.id,
+      email: this.getPerson.email,
+      name: this.getPerson.name,
+      photoURL: this.getPerson.photoURL,
+      role: this.getPerson.role,
+      isActive: this.getPerson.isActive,
+      isLock: this.getPerson.isLock,
+      createdAt: this.getPerson.createdAt,
+      updatedAt: this.getPerson.updatedAt,
+    };
+  },
   created() {
-    this.getPerson();
+    this.fetchPerson(this.$route.params.person);
   },
   methods: {
-    async getPerson() {
-      const data = await db.people[this.$route.params.person];
-
-      this.person = {
-        id: data.id,
-        email: data.email,
-        name: data.name,
-        photoURL: data.photoURL,
-        role: data.role,
-        isActive: data.isActive,
-        isLock: data.isLock,
-        createdAt: data.createdAt,
-        updatedAt: data.updatedAt,
-      };
-    },
-    async updatePerson() {
-      const date = Date.now();
-
-      const person = {
-        id: this.person.id,
-        name: this.person.name,
-        email: this.person.email,
-        photoURL: this.person.photoURL,
-        role: this.person.role,
-        isActive: this.person.isActive,
-        isLock: this.person.isLock,
-        createdAt: this.person.createdAt,
-        updatedAt: date,
-      };
-
-      db.people[person.id] = person;
-
-      localStorage.setItem(dbName, JSON.stringify(db));
+    ...mapActions(["deletePerson", "fetchPerson", "updatePerson"]),
+    async putPerson() {
+      await this.updatePerson(this.person);
 
       this.person.name = "";
       this.person.email = "";
@@ -128,21 +103,22 @@ export default {
 
       await this.$router.replace({
         name: "Person",
-        params: { person: person.id },
+        params: { person: this.$route.params.person },
       });
     },
-    async deletePerson() {
+    async removePerson() {
       if (window.confirm(`Está a punto de borrar un elemento`)) {
-        delete db.people[this.$route.params.person];
-
-        localStorage.setItem(dbName, JSON.stringify(db));
+        await this.deletePerson(this.$route.params.person);
 
         await this.$router.replace({ name: "People" });
       }
     },
   },
+  computed: {
+    ...mapGetters(["getPerson"]),
+  },
   watch: {
-    $route: ["getPerson"],
+    $route: ["fetchPerson"],
   },
 };
 </script>

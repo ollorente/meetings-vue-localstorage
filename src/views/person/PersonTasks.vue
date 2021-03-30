@@ -1,39 +1,38 @@
 <template>
-  <div class="project-projects">
+  <div class="task-projects">
     <h1 style="margin: 0">
-      {{ getAllPersonProjects.length }}
+      {{ getAllPersonTasks.length }}
       {{
-        getAllPersonProjects.length === 1
-          ? "Proyecto del usuario"
-          : "Proyectos del usuario"
+        getAllPersonTasks.length === 1
+          ? "Tarea del usuario"
+          : "Tareas del usuario"
       }}
     </h1>
     <h2 style="margin: 0">{{ getPerson.name }}</h2>
     <h4 style="margin: 0">{{ getPerson.email }}</h4>
     <p>
       <router-link
-        :to="{ name: 'Person', params: { project: $route.params.person } }"
+        :to="{ name: 'Person', params: { task: $route.params.person } }"
         class="link"
         >Volver</router-link
       >
     </p>
-    <p
-      v-for="(project, index) in getPersonProjects"
-      :key="index"
-      class="parrafo"
-    >
+    <p v-for="(task, index) in getPersonTasks" :key="index" class="parrafo">
       <span class="parrafo__info">
         <span class="parrafo__info__number">{{ index + 1 }}</span>
         <span class="parrafo__info__name"
           ><router-link
-            :to="{ name: 'Project', params: { project: project.id } }"
+            :to="{ name: 'Task', params: { task: task.id } }"
             class="link"
-            >{{ project.name }}</router-link
+            >{{ task.name }}</router-link
           ></span
         ></span
       >
       <span class="parrafo__status">{{
-        project.isActive ? "Activo" : "Inactivo"
+        task.isActive ? "Activo" : "Inactivo"
+      }}</span>
+      <span class="parrafo__status">{{
+        task.isLock ? "Bloqueado" : "Pùblico"
       }}</span>
     </p>
   </div>
@@ -43,7 +42,7 @@
 import { mapActions, mapGetters } from "vuex";
 
 export default {
-  name: "PersonProjects",
+  name: "PersonTasks",
   components: {},
   data() {
     return {
@@ -53,25 +52,21 @@ export default {
   },
   created() {
     this.fetchPerson(this.$route.params.person);
-    this.fetchPersonProjects({
+    this.fetchPersonTasks({
       id: this.$route.params.person,
       limit: this.limit,
       page: this.page,
     });
-    this.fetchAllPersonProjects({ id: this.$route.params.person });
+    this.fetchAllPersonTasks({ id: this.$route.params.person });
   },
   methods: {
-    ...mapActions([
-      "fetchPerson",
-      "fetchPersonProjects",
-      "fetchAllPersonProjects",
-    ]),
+    ...mapActions(["fetchPerson", "fetchPersonTasks", "fetchAllPersonTasks"]),
   },
   computed: {
-    ...mapGetters(["getPerson", "getPersonProjects", "getAllPersonProjects"]),
+    ...mapGetters(["getPerson", "getPersonTasks", "getAllPersonTasks"]),
   },
   watch: {
-    $route: ["fetchPerson", "fetchPersonProjects", "fetchAllPersonProjects"],
+    $route: ["fetchPerson", "fetchPersonTasks", "fetchAllPersonTasks"],
   },
 };
 </script>

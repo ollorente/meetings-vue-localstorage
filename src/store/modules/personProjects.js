@@ -6,39 +6,72 @@ const state = {
 
 const getters = {
   getPersonProjects: (state) => state.personProjects,
+  getAllPersonProjects: (state) => state.personProjects,
 };
 
 const actions = {
-  async addPersonProject({ commit }, data) {
+  async fetchPersonProjects({ commit }, data) {
     try {
-      const collaborators = await data.collaborators;
+      const limit = data.limit ? data.limit : 20;
+      const page = (data.page - 1) * data.limit || 0;
 
-      if (collaborators.length > 0) {
-        await collaborators.forEach(async (e) => {
-          const person = await db.peopleProjects[e];
-
-          if (!person) {
-            db.peopleProjects[e] = {};
+      const projects = Object.values(db.peopleProjects[data.id])
+        .filter((e) => e.isLock === false)
+        .filter((e) => e.isActive === true)
+        .sort(function (a, b) {
+          if (a.name > b.name) {
+            return 1;
           }
-
-          db.peopleProjects[e][data.id] = {
-            id: data.id,
-            name: data.name,
-            isActive: data.isActive,
-            isLock: data.isLock,
+          if (a.name < b.name) {
+            return -1;
+          }
+          return 0;
+        })
+        .splice(page, limit)
+        .map((e) => {
+          return {
+            id: e.id,
+            name: e.name,
+            isActive: e.isActive,
+            isLock: e.isLock,
           };
         });
-      }
 
-      localStorage.setItem(dbName, JSON.stringify(db));
-
-      commit("SET_PERSON_PROJECT", true);
+      commit("SET_PERSON_PROJECTS", projects);
     } catch (error) {
-      if (error) {
-        return;
-      }
+      if (error) return;
     }
   },
+
+  async fetchAllPersonProjects({ commit }, id) {
+    try {
+      const projects = Object.values(db.peopleProjects[id])
+        .filter((e) => e.isLock === false)
+        .filter((e) => e.isActive === true)
+        .sort(function (a, b) {
+          if (a.name > b.name) {
+            return 1;
+          }
+          if (a.name < b.name) {
+            return -1;
+          }
+          return 0;
+        })
+        .map((e) => {
+          return {
+            id: e.id,
+            name: e.name,
+            isActive: e.isActive,
+            isLock: e.isLock,
+          };
+        });
+
+      commit("SET_PERSON_PROJECTS", projects);
+    } catch (error) {
+      if (error) return;
+    }
+  },
+
   async removePersonProject({ commit }, id) {
     delete db.peopleProjects[id];
 
@@ -49,8 +82,10 @@ const actions = {
 };
 
 const mutations = {
-  SET_PERSON_PROJECT: (state, person) => (state.personProjects = person),
-  REMOVE_PERSON_PROJECT: (state, person) => (state.personProjects = person),
+  SET_PERSON_PROJECTS: (state, projects) => (state.personProjects = projects),
+  SET_ALL_PERSON_PROJECTS: (state, projects) =>
+    (state.personProjects = projects),
+  REMOVE_PERSON_PROJECT: (state, project) => (state.personProjects = project),
 };
 
 export default {

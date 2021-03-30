@@ -4,7 +4,7 @@
     <p>
       <router-link :to="{ name: 'People' }" class="link">Volver</router-link>
     </p>
-    <form @submit.prevent="addPerson">
+    <form @submit.prevent="newPerson">
       <div>
         <input
           type="text"
@@ -41,7 +41,8 @@
 </template>
 
 <script>
-import { db, dbName } from "@/main";
+import { mapActions } from "vuex";
+import { db } from "@/main";
 
 export default {
   name: "NewPerson",
@@ -60,10 +61,11 @@ export default {
     };
   },
   methods: {
-    async addPerson() {
+    ...mapActions(["addPerson"]),
+    async newPerson() {
       if (this.person.name.trim() === "" || this.person.email.trim() === "") {
         this.alert.error = true;
-        this.alert.msg = `El Correo y/o Email no ´pueden ser vacios.`;
+        this.alert.msg = `El Correo y/o Email no pueden ser vacios.`;
 
         setTimeout(() => {
           this.alert.error = false;
@@ -85,23 +87,13 @@ export default {
 
           return;
         } else {
-          const date = Date.now();
-
           const person = {
-            id: date,
-            name: await this.person.name.trim(),
-            email: await this.person.email.trim(),
-            photoURL: "",
-            role: this.person.role ? await this.person.role.trim() : "",
-            isActive: true,
-            isLock: false,
-            createdAt: date,
-            updatedAt: date,
+            name: this.person.name,
+            email: this.person.email,
+            role: this.person.role,
           };
 
-          db.people[person.id] = person;
-
-          localStorage.setItem(dbName, JSON.stringify(db));
+          await this.addPerson(person);
 
           this.person.name = "";
           this.person.email = "";

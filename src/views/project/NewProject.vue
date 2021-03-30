@@ -4,7 +4,7 @@
     <p>
       <router-link :to="{ name: 'Projects' }" class="link">Volver</router-link>
     </p>
-    <form @submit.prevent="addProject">
+    <form @submit.prevent="newProject">
       <div>
         <input
           type="text"
@@ -22,7 +22,11 @@
       </div>
       <div>
         <select multiple v-model="project.collaborators" id="collaborators">
-          <option v-for="person in people" :key="person.id" :value="person.id">
+          <option
+            v-for="person in getAllPeople"
+            :key="person.id"
+            :value="person.id"
+          >
             {{ person.name }} - {{ person.email }}
           </option>
         </select>
@@ -36,7 +40,7 @@
 </template>
 
 <script>
-import { db, dbName } from "@/main";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   name: "NewProject",
@@ -44,11 +48,10 @@ export default {
   data() {
     return {
       project: {
-        name: null,
-        description: null,
+        name: "",
+        description: "",
         collaborators: [],
       },
-      people: [],
       alert: {
         error: true,
         msg: null,
@@ -56,38 +59,17 @@ export default {
     };
   },
   created() {
-    this.getPeople();
+    this.fetchAllPeople();
   },
   methods: {
-    async getPeople() {
-      const data = Object.values(db.people)
-        .filter((e) => e.isLock === false)
-        .filter((e) => e.isActive === true)
-        .sort(function (a, b) {
-          if (a.name > b.name) {
-            return 1;
-          }
-          if (a.name < b.name) {
-            return -1;
-          }
-          return 0;
-        })
-        .map((e) => {
-          return {
-            id: e.id,
-            name: e.name,
-            email: e.email,
-            photoURL: e.photoURL,
-            isActive: e.isActive,
-          };
-        });
-
-      this.people = data;
-    },
-    async addProject() {
-      if (this.project.name.trim() === "") {
+    ...mapActions(["addProject", "fetchAllPeople"]),
+    async newProject() {
+      if (
+        this.project.name.trim() === "" ||
+        this.project.description.trim() === ""
+      ) {
         this.alert.error = true;
-        this.alert.msg = `El nombre puede estar vacio.`;
+        this.alert.msg = `Ni el nombre ni la descripción pueden estar vacios.`;
 
         setTimeout(() => {
           this.alert.error = false;
@@ -95,63 +77,13 @@ export default {
 
         return;
       } else {
-        const date = Date.now();
-
         const project = {
-          id: date,
-          name: await this.project.name.trim(),
-          description: await this.project.description.trim(),
+          name: await this.project.name,
+          description: await this.project.description,
           collaborators: await this.project.collaborators,
-          isActive: true,
-          isLock: false,
-          createdAt: date,
-          updatedAt: date,
         };
 
-        db.projects[project.id] = project;
-
-        const colllaborators = await project.collaborators;
-
-        // ------- Usuarios por projecto -------
-        for (let i = 0; i < colllaborators.length; i++) {
-          const peopleProject = await db.projectPeople[project.id];
-
-          if (!peopleProject) {
-            db.projectPeople[project.id] = {};
-          }
-
-          const person = await db.people[colllaborators[i]];
-
-          if (person) {
-            db.projectPeople[project.id][person.id] = {
-              id: person.id,
-              name: person.name,
-              email: person.email,
-              isActive: person.isActive,
-              isLock: person.isLock,
-            };
-          }
-        }
-        // ---X--- Usuarios por projecto ---X---
-
-        // ------- Agregar a projectos por usuario -------
-        for (let i = 0; i < colllaborators.length; i++) {
-          const personProjects = await db.peopleProjects[colllaborators[i]];
-
-          if (!personProjects) {
-            db.peopleProjects[colllaborators[i]] = {};
-          }
-
-          db.peopleProjects[colllaborators[i]][project.id] = {
-            id: project.id,
-            name: await project.name,
-            isActive: project.isActive,
-            isLock: project.isLock,
-          };
-        }
-        // ---X--- Agregar a projectos por usuario ---X---
-
-        localStorage.setItem(dbName, JSON.stringify(db));
+        await this.addProject(project);
 
         this.project.name = "";
         this.project.description = "";
@@ -161,8 +93,11 @@ export default {
       }
     },
   },
+  computed: {
+    ...mapGetters(["getAllPeople"]),
+  },
   watch: {
-    $route: ["getPeople"],
+    $route: ["fetchAllPeople"],
   },
 };
 </script>

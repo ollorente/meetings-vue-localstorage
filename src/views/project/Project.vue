@@ -1,46 +1,60 @@
 <template>
   <div class="project">
-    <h1 style="margin: 0">{{ project.name }}</h1>
+    <h1 style="margin: 0">{{ getProject.name }}</h1>
     <p>
       <router-link
-        :to="{ name: 'ProjectTasks', params: { project: project.id } }"
+        :to="{
+          name: 'ProjectTasks',
+          params: { project: $route.params.project },
+        }"
         class="link"
         >Tareas</router-link
       >
       |
       <router-link
-        :to="{ name: 'ProjectMeetings', params: { project: project.id } }"
+        :to="{
+          name: 'ProjectMeetings',
+          params: { project: $route.params.project },
+        }"
         class="link"
         >Reuniones</router-link
       >
       |
       <router-link
-        :to="{ name: 'ProjectPeople', params: { project: project.id } }"
+        :to="{
+          name: 'ProjectPeople',
+          params: { project: $route.params.project },
+        }"
         class="link"
         >Usuarios</router-link
       >
       |
       <router-link
-        :to="{ name: 'EditProject', params: { project: project.id } }"
+        :to="{
+          name: 'EditProject',
+          params: { project: $route.params.project },
+        }"
         class="link"
         >Editar</router-link
       >
       |
       <router-link :to="{ name: 'Projects' }" class="link">Volver</router-link>
     </p>
-    <div v-html="project.description"></div>
+    <div v-html="getProject.description"></div>
     <p style="text-align: left; padding: 0 1rem">
-      <b>{{ project.isActive ? "Activo" : "Inactivo" }}</b
+      <b>{{ getProject.isActive ? "Activo" : "Inactivo" }}</b
+      ><br />
+      <b>{{ getProject.isLock ? "Bloqueado" : "Público" }}</b
       ><br />
       <span
         ><b>Creado: </b
-        ><span>{{ new Date(project.createdAt).toLocaleDateString() }}</span>
+        ><span>{{ new Date(getProject.createdAt).toLocaleDateString() }}</span>
       </span>
-      <span v-if="project.createdAt !== project.updatedAt"
+      <span v-if="getProject.createdAt !== getProject.updatedAt"
         ><br />
         <b>Actualizado: </b
         ><span>{{
-          new Date(project.updatedAt).toLocaleDateString()
+          new Date(getProject.updatedAt).toLocaleDateString()
         }}</span></span
       >
     </p>
@@ -48,32 +62,25 @@
 </template>
 
 <script>
-import { db } from "@/main";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   name: "Project",
   components: {},
   data() {
-    return {
-      project: "",
-    };
+    return {};
   },
   created() {
-    this.getProject();
+    this.fetchProject(this.$route.params.project);
   },
   methods: {
-    async getProject() {
-      const data = await db.projects[this.$route.params.project];
-
-      if (data === undefined) {
-        this.$router.replace({ name: "Error" });
-      } else {
-        this.project = await db.projects[this.$route.params.project];
-      }
-    },
+    ...mapActions(["fetchProject"]),
+  },
+  computed: {
+    ...mapGetters(["getProject"]),
   },
   watch: {
-    $route: ["getProject"],
+    $route: ["fetchProject"],
   },
 };
 </script>

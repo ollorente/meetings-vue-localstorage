@@ -67,7 +67,7 @@
 import { db } from "@/main";
 
 export default {
-  name: "Meeting",
+  name: "ProjectTask",
   components: {},
   data() {
     return {

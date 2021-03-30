@@ -2,7 +2,14 @@
   <div class="new-meeting">
     <h1 style="margin: 0">Nueva reunión</h1>
     <p>
-      <router-link :to="{ name: 'Meetings' }" class="link">Volver</router-link>
+      <router-link
+        :to="{
+          name: 'ProjectMeetings',
+          params: { project: $route.params.project },
+        }"
+        class="link"
+        >Volver</router-link
+      >
     </p>
     <form @submit.prevent="addMeeting">
       <div>
@@ -55,7 +62,7 @@
     <div id="alert" v-if="alert.error">
       {{ alert.msg }}
     </div>
-    <pre class="container" hidden style="text-align: left">{{ $data }}</pre>
+    <pre class="container" hiddens style="text-align: left">{{ $data }}</pre>
   </div>
 </template>
 
@@ -68,8 +75,8 @@ export default {
   data() {
     return {
       meeting: {
-        name: null,
-        description: null,
+        name: "",
+        description: "",
         dateInt: null,
         dateEnd: null,
         project: parseInt(this.$route.params.project),
@@ -111,9 +118,12 @@ export default {
       this.people = data;
     },
     async addMeeting() {
-      if (this.meeting.name.trim() === "") {
+      if (
+        this.meeting.name.trim() === "" ||
+        this.meeting.description.trim() === ""
+      ) {
         this.alert.error = true;
-        this.alert.msg = `El nombre puede estar vacio.`;
+        this.alert.msg = `Ni el nombre ni la descripción pueden estar vacios.`;
 
         setTimeout(() => {
           this.alert.error = false;
@@ -207,7 +217,10 @@ export default {
         this.meeting.dateInt = "";
         this.meeting.dateEnd = "";
 
-        await this.$router.replace({ name: "Meetings" });
+        await this.$router.replace({
+          name: "ProjectMeetings",
+          params: { project: this.$route.params.project },
+        });
       }
     },
   },

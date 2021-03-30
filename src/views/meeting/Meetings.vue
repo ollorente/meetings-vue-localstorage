@@ -3,11 +3,6 @@
     <h1 style="margin: 0">
       {{ total }} {{ total === 1 ? "Reunión" : "Reuniones" }}
     </h1>
-    <p>
-      <router-link :to="{ name: 'NewMeeting' }" class="link"
-        >Agregar</router-link
-      >
-    </p>
     <p v-for="(meeting, index) in meetings" :key="index" class="parrafo">
       <span class="parrafo__info">
         <span class="parrafo__info__number">{{ index + 1 }}</span>

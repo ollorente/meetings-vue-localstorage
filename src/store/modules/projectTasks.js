@@ -1,21 +1,21 @@
 import { db } from "@/main";
 
 const state = {
-  projectsPeople: [],
+  projectTasks: [],
 };
 
 const getters = {
-  getAllProjectPeople: (state) => state.projectsPeople,
-  getProjectPeople: (state) => state.projectsPeople,
+  getAllProjectTasks: (state) => state.projectTasks,
+  getProjectTasks: (state) => state.projectTasks,
 };
 
 const actions = {
-  async fetchProjectPeople({ commit }, data) {
+  async fetchProjectTasks({ commit }, data) {
     try {
       const limit = data.limit ? data.limit : 20;
       const page = (data.page - 1) * data.limit || 0;
 
-      const people = Object.values(db.projectPeople[data.id])
+      const tasks = Object.values(db.projectTasks[data.id])
         .filter((e) => e.isLock === false)
         .filter((e) => e.isActive === true)
         .sort(function (a, b) {
@@ -32,21 +32,21 @@ const actions = {
           return {
             id: e.id,
             name: e.name,
-            email: e.email,
+            projectId: e.projectId,
             isActive: e.isActive,
             isLock: e.isLock,
           };
         });
 
-      commit("SET_PROJECT_PEEOPLE", people);
+      commit("SET_PROJECT_TASKS", tasks);
     } catch (error) {
       if (error) return;
     }
   },
 
-  async fetchAllProjectPeople({ commit }, id) {
+  async fetchAllProjectTasks({ commit }, id) {
     try {
-      const people = Object.values(db.projectPeople[id])
+      const tasks = Object.values(db.projectTasks[id])
         .filter((e) => e.isLock === false)
         .filter((e) => e.isActive === true)
         .sort(function (a, b) {
@@ -62,13 +62,13 @@ const actions = {
           return {
             id: e.id,
             name: e.name,
-            email: e.email,
+            projectId: e.projectId,
             isActive: e.isActive,
             isLock: e.isLock,
           };
         });
 
-      commit("SET_ALL_PROJECT_PEEOPLE", people);
+      commit("SET_PROJECT_TASKS", tasks);
     } catch (error) {
       if (error) return;
     }
@@ -76,8 +76,8 @@ const actions = {
 };
 
 const mutations = {
-  SET_ALL_PROJECT_PEEOPLE: (state, project) => (state.projectsPeople = project),
-  SET_PROJECT_PEEOPLE: (state, project) => (state.projectsPeople = project),
+  SET_PROJECT_TASKS: (state, tasks) => (state.projectTasks = tasks),
+  SET_ALL_PROJECT_TASKS: (state, tasks) => (state.projectTasks = tasks),
 };
 
 export default {
