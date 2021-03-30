@@ -20,7 +20,10 @@
         <span class="parrafo__info__number">{{ index + 1 }}</span>
         <span class="parrafo__info__name"
           ><router-link
-            :to="{ name: 'Task', params: { task: task.id } }"
+            :to="{
+              name: 'MeetingTask',
+              params: { project: task.projectId, task: task.id },
+            }"
             class="link"
             >{{ task.name }}</router-link
           ></span
