@@ -19,10 +19,10 @@ const actions = {
         .filter((e) => e.isLock === false)
         .filter((e) => e.isActive === true)
         .sort(function (a, b) {
-          if (a.name > b.name) {
+          if (a.dateInt > b.dateInt) {
             return 1;
           }
-          if (a.name < b.name) {
+          if (a.dateInt < b.dateInt) {
             return -1;
           }
           return 0;
@@ -51,10 +51,10 @@ const actions = {
         .filter((e) => e.isLock === false)
         .filter((e) => e.isActive === true)
         .sort(function (a, b) {
-          if (a.name > b.name) {
+          if (a.dateInt > b.dateInt) {
             return 1;
           }
-          if (a.name < b.name) {
+          if (a.dateInt < b.dateInt) {
             return -1;
           }
           return 0;
