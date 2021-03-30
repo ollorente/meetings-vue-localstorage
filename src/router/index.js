@@ -13,31 +13,31 @@ const routes = [
     meta: { title: `Home ${BASE_URL_TITLE}` },
   },
   {
-    path: "/proyectos", // TODO - Montar en el store.
+    path: "/proyectos",
     name: "Projects",
     component: () => import("../views/project/Projects.vue"),
     meta: { title: `Proyectos ${BASE_URL_TITLE}` },
   },
   {
-    path: "/proyecto/nuevo", // TODO - Montar en el store.
+    path: "/proyecto/nuevo",
     name: "NewProject",
     component: () => import("../views/project/NewProject.vue"),
     meta: { title: `Nuevo proyecto ${BASE_URL_TITLE}` },
   },
   {
-    path: "/proyecto/:project", // TODO - Montar en el store.
+    path: "/proyecto/:project",
     name: "Project",
     component: () => import("../views/project/Project.vue"),
     meta: { title: `Proyecto ${BASE_URL_TITLE}` },
   },
   {
-    path: "/proyecto/:project/editar", // TODO - Montar en el store.
+    path: "/proyecto/:project/editar", // TODO - Ajustar Eliminar proyecto y todas sus conexiones.
     name: "EditProject",
     component: () => import("../views/project/EditProject.vue"),
     meta: { title: `Editar proyecto ${BASE_URL_TITLE}` },
   },
   {
-    path: "/proyecto/:project/reuniones", // TODO - Montar en el store.
+    path: "/proyecto/:project/reuniones",
     name: "ProjectMeetings",
     component: () => import("../views/project/ProjectMeetings.vue"),
     meta: { title: `Reuniones del proyecto ${BASE_URL_TITLE}` },
@@ -51,7 +51,7 @@ const routes = [
   {
     path: "/proyecto/:project/tareas", // TODO - Montar en el store.
     name: "ProjectTasks",
-    component: () => import("../views/task/Tasks.vue"),
+    component: () => import("../views/project/ProjectTasks.vue"),
     meta: { title: `Tareas del proyecto ${BASE_URL_TITLE}` },
   },
   {
@@ -59,6 +59,12 @@ const routes = [
     name: "ProjectPeople",
     component: () => import("../views/project/ProjectPeople.vue"),
     meta: { title: `Usuarios en el proyecto ${BASE_URL_TITLE}` },
+  },
+  {
+    path: "/proyecto/:project/tarea/:task", // TODO - Montar en el store.
+    name: "ProjectTask",
+    component: () => import("../views/project/ProjectTask.vue"),
+    meta: { title: `Tarea del proyecto ${BASE_URL_TITLE}` },
   },
   {
     path: "/reuniones", // TODO - Montar en el store.
