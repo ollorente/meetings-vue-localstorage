@@ -11,7 +11,7 @@
         >Volver</router-link
       >
     </p>
-    <form @submit.prevent="addTask">
+    <form @submit.prevent="newTask">
       <div>
         <input
           type="text"
@@ -44,7 +44,8 @@
 </template>
 
 <script>
-import { db, dbName } from "@/main";
+import { mapActions } from "vuex";
+import { db } from "@/main";
 
 export default {
   name: "NewMeetingTask",
@@ -70,6 +71,7 @@ export default {
     this.getMeetingPeople();
   },
   methods: {
+    ...mapActions(["addTask"]),
     async getMeeting() {
       this.meeting = await db.meetings[this.$route.params.meeting];
     },
@@ -97,7 +99,7 @@ export default {
 
       this.people = data;
     },
-    async addTask() {
+    async newTask() {
       if (this.task.name.trim() === "" || this.task.description.trim() === "") {
         this.alert.error = true;
         this.alert.msg = `Ni el nombre ni la descripción pueden estar vacios.`;
@@ -108,109 +110,15 @@ export default {
 
         return;
       } else {
-        const date = Date.now();
-
         const task = {
-          id: date,
-          name: await this.task.name.trim(),
-          description: await this.task.description.trim(),
+          name: await this.task.name,
+          description: await this.task.description,
           collaborators: await this.task.collaborators,
           projectId: await this.meeting.project,
           meetingId: await this.task.meeting,
-          start: false,
-          check: false,
-          isActive: true,
-          isLock: false,
-          createdAt: date,
-          updatedAt: date,
         };
 
-        db.tasks[task.id] = task;
-
-        // ------- Agregar tarea a reunión -------
-        const taskMeetings = await db.meetingTasks[this.$route.params.meeting];
-
-        if (!taskMeetings) {
-          db.meetingTasks[this.$route.params.meeting] = {};
-        }
-
-        db.meetingTasks[this.$route.params.meeting][task.id] = {
-          id: task.id,
-          name: await task.name,
-          projectId: await task.projectId,
-          meetingId: await task.meetingId,
-          start: task.start,
-          check: task.check,
-          isActive: task.isActive,
-          isLock: task.isLock,
-        };
-        // ---X--- Agregar tarea a reunión ---X---
-
-        // ------- Agregar tarea a proyecto -------
-        const taskProjects = await db.projectTasks[task.projectId];
-
-        if (!taskProjects) {
-          db.projectTasks[task.projectId] = {};
-        }
-
-        db.projectTasks[task.projectId][task.id] = {
-          id: task.id,
-          name: await task.name,
-          projectId: await task.projectId,
-          meetingId: await task.meetingId,
-          start: task.start,
-          check: task.check,
-          isActive: task.isActive,
-          isLock: task.isLock,
-        };
-        // ---X--- Agregar tarea a proyecto ---X---
-
-        const collaborators = await task.collaborators;
-
-        // ------- Agregar tarea a usuario -------
-        for (let i = 0; i < collaborators.length; i++) {
-          const taskPerson = await db.peopleTasks[collaborators[i]];
-
-          if (!taskPerson) {
-            db.peopleTasks[collaborators[i]] = {};
-          }
-
-          db.peopleTasks[collaborators[i]][task.id] = {
-            id: task.id,
-            name: await task.name,
-            projectId: await task.projectId,
-            meetingId: await task.meetingId,
-            start: task.start,
-            check: task.check,
-            isActive: task.isActive,
-            isLock: task.isLock,
-          };
-        }
-        // ---X--- Agregar tarea a usuario ---X---
-
-        // ------- Agregar usuarios por tarea -------
-        for (let i = 0; i < collaborators.length; i++) {
-          const peopletask = await db.taskPeople[task.id];
-
-          if (!peopletask) {
-            db.taskPeople[task.id] = {};
-          }
-
-          const person = await db.people[collaborators[i]];
-
-          if (person) {
-            db.taskPeople[task.id][person.id] = {
-              id: person.id,
-              name: person.name,
-              email: person.email,
-              isActive: person.isActive,
-              isLock: person.isLock,
-            };
-          }
-        }
-        // ---X--- Agregar usuarios por tarea ---X---
-
-        localStorage.setItem(dbName, JSON.stringify(db));
+        await this.addTask(task);
 
         this.meeting.name = "";
         this.meeting.description = "";
