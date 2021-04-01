@@ -1,9 +1,14 @@
 <template>
   <div class="people">
     <h1 style="margin: 0">
-      {{ total }}
-      {{ total === 1 ? "Persona en la reunión" : "Personas en la reunión" }}
+      {{ getAllMeetingPeople.length }}
+      {{
+        getAllMeetingPeople.length === 1
+          ? "Persona en la reunión"
+          : "Personas en la reunión"
+      }}
     </h1>
+    <h2 style="margin: 0">{{ getMeeting.name }}</h2>
     <p>
       <router-link
         :to="{ name: 'Meeting', params: { meeting: $route.params.meeting } }"
@@ -11,7 +16,7 @@
         >Volver</router-link
       >
     </p>
-    <p v-for="(person, index) in meetingPeople" :key="index" class="parrafo">
+    <p v-for="(person, index) in getMeetingPeople" :key="index" class="parrafo">
       <span class="parrafo__info">
         <span class="parrafo__info__number">{{ index + 1 }}</span>
         <span class="parrafo__info__name"
@@ -31,7 +36,7 @@
 </template>
 
 <script>
-import { db } from "@/main";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   name: "MeetingPeople",
@@ -40,73 +45,29 @@ export default {
     return {
       limit: parseInt(this.limit || 20),
       page: parseInt(this.page) > 0 ? parseInt(this.page || 1) : 1,
-      total: 0,
-      meetingPeople: [],
-      people: [],
     };
   },
   created() {
-    this.getPeople();
-    this.getMeetingPeople();
-    this.getTotalMeetingPeople();
+    this.fetchAllMeetingPeople(this.$route.params.meeting);
+    this.fetchMeeting(this.$route.params.meeting);
+    this.fetchMeetingPeople({
+      id: this.$route.params.meeting,
+      limit: this.limt,
+      page: this.page,
+    });
   },
   methods: {
-    async getMeetingPeople() {
-      const data = await db.meetings[this.$route.params.meeting];
-
-      const info = await data.collaborators.map((e) => {
-        const person = db.people[e];
-
-        return {
-          id: person.id,
-          name: person.name,
-          email: person.email,
-          isActive: person.isActive,
-        };
-      });
-
-      if (data === undefined) {
-        this.$router.replace({ name: "Error" });
-      } else {
-        this.meetingPeople = await info;
-      }
-    },
-    async getPeople() {
-      const limit = this.limit;
-      const page = (this.page - 1) * this.limit || 0;
-
-      const data = Object.values(db.people)
-        .filter((e) => e.isLock === false)
-        .filter((e) => e.isActive === true)
-        .sort(function (a, b) {
-          if (a.name > b.name) {
-            return 1;
-          }
-          if (a.name < b.name) {
-            return -1;
-          }
-          return 0;
-        })
-        .splice(page, limit)
-        .map((e) => {
-          return {
-            id: e.id,
-            name: e.name,
-            email: e.email,
-            photoURL: e.photoURL,
-            isActive: e.isActive,
-          };
-        });
-
-      this.people = data;
-    },
-    async getTotalMeetingPeople() {
-      this.total = await db.meetings[this.$route.params.meeting].collaborators
-        .length;
-    },
+    ...mapActions([
+      "fetchAllMeetingPeople",
+      "fetchMeeting",
+      "fetchMeetingPeople",
+    ]),
+  },
+  computed: {
+    ...mapGetters(["getMeetingPeople", "getMeeting", "getAllMeetingPeople"]),
   },
   watch: {
-    $route: ["getMeetingPeople", "getPeople", "getTotalMeetingPeople"],
+    $route: ["fetchMeetingPeople", "fetchMeeting", "fetchAllMeetingPeople"],
   },
 };
 </script>
