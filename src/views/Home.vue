@@ -1,9 +1,6 @@
 <template>
   <div class="home">
     <h1>{{ total }} {{ total === 1 ? "Tarea" : "Tareas" }}</h1>
-    <p>
-      <router-link :to="{ name: 'NewTask' }" class="link">Agregar</router-link>
-    </p>
     <p v-for="(task, index) in tasks" :key="index" class="parrafo">
       <span class="parrafo__info">
         <span class="parrafo__info__number">{{ index + 1 }}</span>
@@ -75,7 +72,10 @@ export default {
       this.tasks = data;
     },
     async getTotalTasks() {
-      this.total = Object.values(db.tasks).length;
+      this.total = Object.values(db.tasks)
+        .filter((e) => e.isLock === false)
+        .filter((e) => e.isActive === true)
+        .filter((e) => e.check === false).length;
     },
   },
   watch: {
