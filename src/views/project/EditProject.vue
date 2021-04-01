@@ -61,7 +61,7 @@ export default {
     return {
       project: "",
       alert: {
-        error: true,
+        error: false,
         msg: null,
       },
     };
