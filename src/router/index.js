@@ -49,16 +49,16 @@ const routes = [
     meta: { title: `Nueva reunión de proyecto ${BASE_URL_TITLE}` },
   },
   {
-    path: "/proyecto/:project/tareas", // TODO - Montar en el store.
+    path: "/proyecto/:project/tareas",
     name: "ProjectTasks",
     component: () => import("../views/project/ProjectTasks.vue"),
     meta: { title: `Tareas del proyecto ${BASE_URL_TITLE}` },
   },
   {
-    path: "/proyecto/:project/usuarios", // TODO - Montar en el store.
+    path: "/proyecto/:project/usuarios",
     name: "ProjectPeople",
     component: () => import("../views/project/ProjectPeople.vue"),
-    meta: { title: `Usuarios en el proyecto ${BASE_URL_TITLE}` },
+    meta: { title: `Usuarios del proyecto ${BASE_URL_TITLE}` },
   },
   {
     path: "/proyecto/:project/tarea/:task", // TODO - Montar en el store.
@@ -67,7 +67,7 @@ const routes = [
     meta: { title: `Tarea del proyecto ${BASE_URL_TITLE}` },
   },
   {
-    path: "/reuniones", // TODO - Montar en el store.
+    path: "/reuniones",
     name: "Meetings",
     component: () => import("../views/meeting/Meetings.vue"),
     meta: { title: `Reuniones ${BASE_URL_TITLE}` },
@@ -97,7 +97,7 @@ const routes = [
     meta: { title: `Nueva tarea de reunión ${BASE_URL_TITLE}` },
   },
   {
-    path: "/reunion/:meeting/usuarios", // TODO - Montar en el store.
+    path: "/reunion/:meeting/usuarios",
     name: "MeetingPeople",
     component: () => import("../views/meeting/MeetingPeople.vue"),
     meta: { title: `Usuarios en la reunión ${BASE_URL_TITLE}` },
@@ -113,6 +113,12 @@ const routes = [
     name: "EditTask",
     component: () => import("../views/task/EditTask.vue"),
     meta: { title: `Editar tarea ${BASE_URL_TITLE}` },
+  },
+  {
+    path: "/tarea/:task/usuarios", // TODO - Montar en el store.
+    name: "TaskPeople",
+    component: () => import("../views/task/Task.vue"),
+    meta: { title: `Tarea ${BASE_URL_TITLE}` },
   },
   {
     path: "/usuarios",
