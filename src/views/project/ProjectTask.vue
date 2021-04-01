@@ -1,20 +1,11 @@
 <template>
-  <div class="meeting">
-    <h1 style="margin: 0">Reunión</h1>
+  <div class="project">
+    <h1 style="margin: 0">Tarea de reunión</h1>
     <p>
       <router-link
         :to="{
-          name: 'MeetingTasks',
-          params: { meeting: $route.params.meeting },
-        }"
-        class="link"
-        >Tareas</router-link
-      >
-      |
-      <router-link
-        :to="{
-          name: 'MeetingPeople',
-          params: { meeting: $route.params.meeting },
+          name: 'TaskPeople',
+          params: { task: $route.params.task },
         }"
         class="link"
         >Usuarios</router-link
@@ -22,74 +13,87 @@
       |
       <router-link
         :to="{
-          name: 'EditMeeting',
-          params: { meeting: $route.params.meeting },
+          name: 'EditTask',
+          params: { task: $route.params.task },
         }"
         class="link"
         >Editar</router-link
       >
       |
-      <router-link :to="{ name: 'Meetings' }" class="link">Volver</router-link>
-    </p>
-    <h2 style="margin: 0 1rem; text-align: left">{{ meeting.name }}</h2>
-    <div v-html="meeting.description"></div>
-    <p>
-      <span class="parrafo__status" style="display: flex">
-        <span style="padding: 0 0.5rem; font-size: 2rem; font-weight: 600">{{
-          new Date(meeting.dateInt).toString().split(" ")[2]
-        }}</span>
-        <span
-          >{{ new Date(meeting.dateInt).toString().split(" ")[4] }}<br />{{
-            new Date(meeting.dateEnd).toString().split(" ")[4]
-          }}</span
-        >
-      </span>
-    </p>
-    <p style="text-align: left; padding: 0 1rem">
-      <b>{{ meeting.isActive ? "Activo" : "Inactivo" }}</b
-      ><br />
-      <span
-        ><b>Creado: </b
-        ><span>{{ new Date(meeting.createdAt).toLocaleDateString() }}</span>
-      </span>
-      <span v-if="meeting.createdAt !== meeting.updatedAt"
-        ><br />
-        <b>Actualizado: </b
-        ><span>{{
-          new Date(meeting.updatedAt).toLocaleDateString()
-        }}</span></span
+      <router-link
+        :to="{
+          name: 'ProjectTasks',
+          params: { project: getTask.projectId },
+        }"
+        class="link"
+        >Volver</router-link
       >
     </p>
+    <h2 style="margin: 0">{{ getTask.name }}</h2>
+    <!-- <p>
+      <span>{{ meeting.name }}</span
+      ><br /><span
+        ><router-link
+          :to="{ name: 'Project', params: { project: project.id } }"
+          class="link"
+          >{{ project.name }}</router-link
+        ></span
+      >
+    </p> -->
+    <div v-html="getTask.description"></div>
+    <p>
+      <span v-for="person in getPeople" :key="person.id"
+        ><router-link
+          :to="{ name: 'Person', params: { person: person.id } }"
+          class="link"
+          >{{ person.name }}</router-link
+        ><br
+      /></span>
+    </p>
+    <p>
+      <span>{{ getTask.start ? "Iniciado" : "Sin iniciar" }}</span
+      ><br />
+      <span>{{ getTask.check ? "Terminado" : "Sin terminar" }}</span
+      ><br />
+      <span>{{ getTask.isActive ? "Activo" : "Inactivo" }}</span
+      ><br />
+      <span>{{ getTask.isLock ? "Bloqueado" : "público" }}</span
+      ><br />
+    </p>
+    <p>
+      <span
+        ><span>Asignada:</span>
+        <span>{{ new Date(getTask.createdAt).toLocaleString() }}</span></span
+      >
+      <span v-if="getTask.createdAt !== getTask.updatedAt"
+        ><br /><span>Actualizda:</span>
+        <span>{{ new Date(getTask.updatedAt).toLocaleString() }}</span></span
+      >
+    </p>
+    <pre class="container" hidden style="text-align: left">{{ $data }}</pre>
   </div>
 </template>
 
 <script>
-import { db } from "@/main";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   name: "ProjectTask",
   components: {},
   data() {
-    return {
-      meeting: "",
-    };
+    return {};
   },
   created() {
-    this.getMeeting();
+    this.fetchTask(this.$route.params.task);
   },
   methods: {
-    async getMeeting() {
-      const data = await db.meetings[this.$route.params.meeting];
-
-      if (data === undefined) {
-        this.$router.replace({ name: "Error" });
-      } else {
-        this.meeting = await data;
-      }
-    },
+    ...mapActions(["fetchPeople", "fetchTask"]),
+  },
+  computed: {
+    ...mapGetters(["getPeople", "getTask"]),
   },
   watch: {
-    $route: ["getMeeting"],
+    $route: ["fetchTask"],
   },
 };
 </script>
