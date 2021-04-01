@@ -40,6 +40,9 @@
       <span class="parrafo__status">{{
         person.isActive ? "Activo" : "Inactivo"
       }}</span>
+      <span class="parrafo__status">{{
+        person.isLock ? "Bloqueado" : "Público"
+      }}</span>
     </p>
   </div>
 </template>
