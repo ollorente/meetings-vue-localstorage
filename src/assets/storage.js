@@ -12,7 +12,8 @@ const db = {
       id: 1616200580423,
       name: "Oscar Antonio Llorente Quijano",
       email: "oscar.llorente@unicolmayor.edu.co",
-      photoURL: "",
+      photoURL:
+        "https://lh3.googleusercontent.com/-6kVDwNiAbNg/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucleWBpJpWEjQVKFxjyr1Bg0XDPn1g/s128-c/photo.jpg",
       role: "Diseñador Digital y Multimedia",
       isActive: true,
       isLock: false,
@@ -23,7 +24,8 @@ const db = {
       id: 1616201159389,
       name: "Yina Marcela Romero Suancha",
       email: "marcela.romero@unicolmayor.edu.co",
-      photoURL: "",
+      photoURL:
+        "https://lh3.googleusercontent.com/-6kVDwNiAbNg/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucleWBpJpWEjQVKFxjyr1Bg0XDPn1g/s128-c/photo.jpg",
       role: "Comunicadora",
       isActive: true,
       isLock: false,
@@ -34,7 +36,8 @@ const db = {
       id: 1616201241289,
       name: "Laura Andrea Niño Silva",
       email: "landreanino@unicolmayor.edu.co",
-      photoURL: "",
+      photoURL:
+        "https://lh3.googleusercontent.com/-6kVDwNiAbNg/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucleWBpJpWEjQVKFxjyr1Bg0XDPn1g/s128-c/photo.jpg",
       role: "Líder SIETIC",
       isActive: true,
       isLock: false,
@@ -46,7 +49,8 @@ const db = {
       name: "John Edisson Arévalo Zorro",
       email: "johnarevalo@unicolmayor.edu.co",
       role: "Diseñador Web",
-      photoURL: "",
+      photoURL:
+        "https://lh3.googleusercontent.com/-6kVDwNiAbNg/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucleWBpJpWEjQVKFxjyr1Bg0XDPn1g/s128-c/photo.jpg",
       isActive: true,
       isLock: false,
       createdAt: 1616201314504,
@@ -56,7 +60,8 @@ const db = {
       id: 1616201396852,
       name: "Eder Guiovanny Ramírez Cely",
       email: "eder.ramirez@unicolmayor.edu.co",
-      photoURL: "",
+      photoURL:
+        "https://lh3.googleusercontent.com/-6kVDwNiAbNg/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucleWBpJpWEjQVKFxjyr1Bg0XDPn1g/s128-c/photo.jpg",
       role: "Administrador Plataforma Moodle",
       isActive: true,
       isLock: false,
@@ -67,7 +72,8 @@ const db = {
       id: 1616201472505,
       name: "Cindy Johanna Cuellar Torres",
       email: "cindy.cuellar@unicolmayor.edu.co",
-      photoURL: "",
+      photoURL:
+        "https://lh3.googleusercontent.com/-6kVDwNiAbNg/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucleWBpJpWEjQVKFxjyr1Bg0XDPn1g/s128-c/photo.jpg",
       role: "Diseñadora",
       isActive: true,
       isLock: false,

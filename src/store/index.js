@@ -1,5 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import meeting from "./modules/meeting";
+import meetingPeople from "./modules/meetingPeople";
 import person from "./modules/person";
 import personMeetings from "./modules/personMeetings";
 import personProjects from "./modules/personProjects";
@@ -8,6 +10,7 @@ import project from "./modules/project";
 import projectMeetings from "./modules/projectMeetings";
 import projectPeople from "./modules/projectPeople";
 import projectTasks from "./modules/projectTasks";
+import task from "./modules/task";
 
 Vue.use(Vuex);
 
@@ -16,6 +19,8 @@ export default new Vuex.Store({
   mutations: {},
   actions: {},
   modules: {
+    meeting,
+    meetingPeople,
     person,
     personMeetings,
     personProjects,
@@ -24,5 +29,6 @@ export default new Vuex.Store({
     projectPeople,
     projectMeetings,
     projectTasks,
+    task,
   },
 });
