@@ -2,6 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import meeting from "./modules/meeting";
 import meetingPeople from "./modules/meetingPeople";
+import meetingTasks from "./modules/meetingTasks";
 import person from "./modules/person";
 import personMeetings from "./modules/personMeetings";
 import personProjects from "./modules/personProjects";
@@ -21,6 +22,7 @@ export default new Vuex.Store({
   modules: {
     meeting,
     meetingPeople,
+    meetingTasks,
     person,
     personMeetings,
     personProjects,
