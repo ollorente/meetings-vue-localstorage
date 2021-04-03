@@ -34,13 +34,13 @@ const actions = {
       db.tasks[task.id] = task;
 
       // ------- Agregar tarea a reunión -------
-      const taskMeetings = await db.meetingTasks[this.$route.params.meeting];
+      const taskMeetings = await db.meetingTasks[task.id];
 
       if (!taskMeetings) {
-        db.meetingTasks[this.$route.params.meeting] = {};
+        db.meetingTasks[task.id] = {};
       }
 
-      db.meetingTasks[this.$route.params.meeting][task.id] = {
+      db.meetingTasks[task.id][task.id] = {
         id: task.id,
         name: await task.name,
         projectId: await task.projectId,
@@ -222,13 +222,13 @@ const actions = {
       db.tasks[task.id] = task;
 
       // ------- Editar tarea a reunión -------
-      const taskMeetings = await db.meetingTasks[this.$route.params.meeting];
+      const taskMeetings = await db.meetingTasks[task.id];
 
       if (!taskMeetings) {
-        db.meetingTasks[this.$route.params.meeting] = {};
+        db.meetingTasks[task.id] = {};
       }
 
-      db.meetingTasks[this.$route.params.meeting][task.id] = {
+      db.meetingTasks[task.id][task.id] = {
         id: task.id,
         name: await task.name,
         projectId: await task.projectId,
