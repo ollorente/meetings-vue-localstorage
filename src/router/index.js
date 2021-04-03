@@ -43,7 +43,7 @@ const routes = [
     meta: { title: `Reuniones del proyecto ${BASE_URL_TITLE}` },
   },
   {
-    path: "/proyecto/:project/reunion-nueva", // TODO - Montar en el store.
+    path: "/proyecto/:project/reunion-nueva",
     name: "NewProjectMeeting",
     component: () => import("../views/project/NewProjectMeeting.vue"),
     meta: { title: `Nueva reunión de proyecto ${BASE_URL_TITLE}` },
@@ -73,7 +73,7 @@ const routes = [
     meta: { title: `Reuniones ${BASE_URL_TITLE}` },
   },
   {
-    path: "/reunion/:meeting", // TODO - Montar en el store.
+    path: "/reunion/:meeting",
     name: "Meeting",
     component: () => import("../views/meeting/Meeting.vue"),
     meta: { title: `Reunión ${BASE_URL_TITLE}` },
@@ -88,7 +88,7 @@ const routes = [
     path: "/reunion/:meeting/tareas", // TODO - Montar en el store.
     name: "MeetingTasks",
     component: () => import("../views/meeting/MeetingTasks.vue"),
-    meta: { title: `Reunión ${BASE_URL_TITLE}` },
+    meta: { title: `Tareas de la reunión ${BASE_URL_TITLE}` },
   },
   {
     path: "/reunion/:meeting/tarea-nueva", // TODO - Montar en el store.
