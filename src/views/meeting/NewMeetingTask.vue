@@ -29,7 +29,11 @@
       </div>
       <div>
         <select multiple v-model="task.collaborators" id="collaborators">
-          <option v-for="person in people" :key="person.id" :value="person.id">
+          <option
+            v-for="person in getAllMeetingPeople"
+            :key="person.id"
+            :value="person.id"
+          >
             {{ person.name }} - {{ person.email }}
           </option>
         </select>
@@ -39,13 +43,12 @@
     <div id="alert" v-if="alert.error">
       {{ alert.msg }}
     </div>
-    <pre class="container" hidden style="text-align: left">{{ $data }}</pre>
+    <pre class="container" hiddens style="text-align: left">{{ $data }}</pre>
   </div>
 </template>
 
 <script>
-import { mapActions } from "vuex";
-import { db } from "@/main";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   name: "NewMeetingTask",
@@ -56,9 +59,7 @@ export default {
         name: "",
         description: "",
         collaborators: [],
-        meeting: parseInt(this.$route.params.meeting),
       },
-      people: [],
       meeting: "",
       alert: {
         error: true,
@@ -66,39 +67,15 @@ export default {
       },
     };
   },
+  mounted() {
+    this.meeting = this.getMeeting;
+  },
   created() {
-    this.getMeeting();
-    this.getMeetingPeople();
+    this.fetchMeeting(this.$route.params.meeting);
+    this.fetchAllMeetingPeople(this.$route.params.meeting);
   },
   methods: {
-    ...mapActions(["addTask"]),
-    async getMeeting() {
-      this.meeting = await db.meetings[this.$route.params.meeting];
-    },
-    async getMeetingPeople() {
-      const data = Object.values(db.meetingPeople[this.$route.params.meeting])
-        .filter((e) => e.isLock === false)
-        .filter((e) => e.isActive === true)
-        .sort(function (a, b) {
-          if (a.name > b.name) {
-            return 1;
-          }
-          if (a.name < b.name) {
-            return -1;
-          }
-          return 0;
-        })
-        .map((e) => {
-          return {
-            id: e.id,
-            name: e.name,
-            email: e.email,
-            isActive: e.isActive,
-          };
-        });
-
-      this.people = data;
-    },
+    ...mapActions(["addTask", "fetchMeeting", "fetchAllMeetingPeople"]),
     async newTask() {
       if (this.task.name.trim() === "" || this.task.description.trim() === "") {
         this.alert.error = true;
@@ -114,9 +91,10 @@ export default {
           name: await this.task.name,
           description: await this.task.description,
           collaborators: await this.task.collaborators,
-          projectId: await this.meeting.project,
-          meetingId: await this.task.meeting,
+          project: await this.meeting.project,
+          meeting: parseInt(this.$route.params.meeting),
         };
+        console.log("task component->", task);
 
         await this.addTask(task);
 
@@ -132,8 +110,11 @@ export default {
       }
     },
   },
+  computed: {
+    ...mapGetters(["getMeeting", "getAllMeetingPeople"]),
+  },
   watch: {
-    $route: ["getMeetingPeople"],
+    $route: ["getMeetingPeople", "fetchMeeting", "fetchAllMeetingPeople"],
   },
 };
 </script>
