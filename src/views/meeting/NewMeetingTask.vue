@@ -59,6 +59,7 @@ export default {
         name: "",
         description: "",
         collaborators: [],
+        project: "",
       },
       meeting: "",
       alert: {
@@ -69,6 +70,7 @@ export default {
   },
   mounted() {
     this.meeting = this.getMeeting;
+    this.task.project = this.getMeeting.project;
   },
   created() {
     this.fetchMeeting(this.$route.params.meeting);
@@ -87,21 +89,17 @@ export default {
 
         return;
       } else {
-        const task = {
+        await this.addTask({
           name: await this.task.name,
           description: await this.task.description,
           collaborators: await this.task.collaborators,
-          project: await this.meeting.project,
+          project: parseInt(await this.task.project),
           meeting: parseInt(this.$route.params.meeting),
-        };
-        console.log("task component->", task);
+        });
 
-        await this.addTask(task);
-
-        this.meeting.name = "";
-        this.meeting.description = "";
-        this.meeting.collaborators = "";
-        this.meeting.project = "";
+        this.task.name = "";
+        this.task.description = "";
+        this.task.collaborators = "";
 
         await this.$router.replace({
           name: "MeetingTasks",
@@ -114,7 +112,7 @@ export default {
     ...mapGetters(["getMeeting", "getAllMeetingPeople"]),
   },
   watch: {
-    $route: ["getMeetingPeople", "fetchMeeting", "fetchAllMeetingPeople"],
+    $route: ["fetchMeeting", "fetchAllMeetingPeople"],
   },
 };
 </script>
