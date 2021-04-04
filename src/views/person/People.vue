@@ -1,62 +1,62 @@
 <template>
-  <div class="people">
-    <h1 style="margin: 0">
-      {{ getAllPeople.length }}
-      {{ getAllPeople.length === 1 ? "Persona" : "Personas" }}
-    </h1>
-    <p>
-      <router-link :to="{ name: 'NewPerson' }" class="link"
-        >Agregar</router-link
-      >
-    </p>
-    <p v-for="(person, index) in getPeople" :key="index" class="parrafo">
-      <span class="parrafo__info">
-        <span class="parrafo__info__number">{{ index + 1 }}</span>
-        <span class="parrafo__info__name"
-          ><img
-            :src="
-              person.photoURL
-                ? person.photoURL
-                : `https://res.cloudinary.com/dbszizqh4/image/upload/v1592198427/images_lvwix2.png`
-            "
-            :alt="person.name"
-            style="
-              width: 2rem;
-              height: 2rem;
-              margin-right: 0.5rem;
-              object-fit: cover;
-              position: center center;
-              border: solid 1px #ccc;
-              border-radius: 50%;
-            "
-          /><router-link
-            :to="{ name: 'Person', params: { person: person.id } }"
-            :title="person.email"
-            class="link"
-            >{{ person.name }}</router-link
-          ></span
-        ></span
-      >
-      <span class="parrafo__status">{{
-        person.isActive ? "Activo" : "Inactivo"
-      }}</span>
-      <span class="parrafo__status">{{
-        person.isLock ? "Bloqueado" : "Público"
-      }}</span>
-    </p>
-  </div>
+  <main class="main">
+    <TheNavbar :titleApp="titleApp" :icon="icon" />
+    <div class="main__body">
+      <TheSecondNavbar />
+
+      <div class="main__body__content">
+        <div class="main__body__section">
+          <div class="main__body__section__nav">
+            <router-link
+              v-for="(person, index) in getPeople"
+              :key="index"
+              :to="{ name: 'Person', params: { person: person.id } }"
+              class="main__body__section__user"
+            >
+              <img
+                :src="
+                  person.photoURL
+                    ? person.photoURL
+                    : `https://res.cloudinary.com/dbszizqh4/image/upload/v1592198427/images_lvwix2.png`
+                "
+                :alt="person.name"
+                :title="person.email"
+                class="main__body__section__user__logo"
+              />
+              <div class="main__body__section__user__body">
+                <span class="main__body__section__user__title">{{
+                  person.name
+                }}</span>
+                <span class="main__body__section__user__content">{{
+                  person.email
+                }}</span>
+              </div>
+            </router-link>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
 
+import TheNavbar from "@/components/TheNavbar";
+import TheSecondNavbar from "@/components/TheSecondNavbar";
+
 export default {
   name: "People",
-  components: {},
+  components: {
+    TheNavbar,
+    TheSecondNavbar,
+  },
   data() {
     return {
       limit: parseInt(this.limit || 20),
       page: parseInt(this.page) > 0 ? parseInt(this.page || 1) : 1,
+      titleApp: "Usuarios",
+      icon: "fas fa-users",
     };
   },
   created() {

@@ -1,45 +1,65 @@
 <template>
-  <div class="projects">
-    <h1 style="margin: 0">
-      {{ getAllProjects.length }}
-      {{ getAllProjects.length === 1 ? "Proyecto" : "Proyectos" }}
-    </h1>
-    <p>
-      <router-link :to="{ name: 'NewProject' }" class="link"
-        >Agregar</router-link
-      >
-    </p>
-    <p v-for="(project, index) in getProjects" :key="index" class="parrafo">
-      <span class="parrafo__info">
-        <span class="parrafo__info__number">{{ index + 1 }}</span>
-        <span class="parrafo__info__name"
-          ><router-link
-            :to="{ name: 'Project', params: { project: project.id } }"
-            class="link"
-            >{{ project.name }}</router-link
-          ></span
-        ></span
-      >
-      <span class="parrafo__status">{{
-        project.isActive ? "Activo" : "Inactivo"
-      }}</span>
-      <span class="parrafo__status">{{
-        project.isLock ? "Bloqueado" : "Público"
-      }}</span>
-    </p>
-  </div>
+  <main class="main">
+    <TheNavbar :titleApp="titleApp" :icon="icon" />
+    <div class="main__body">
+      <TheSecondNavbar />
+
+      <div class="main__body__content">
+        <div class="main__body__section">
+          <div class="main__body__section__nav">
+            <div
+              v-for="(project, index) in getProjects"
+              :key="index"
+              class="main__body__section__item"
+            >
+              <router-link
+                :to="{ name: 'Project', params: { project: project.id } }"
+                class="main__body__section__link"
+              >
+                <span class="main__body__section__link__text">
+                  <i class="fas fa-chevron-circle-right"></i>
+                  <span class="main__body__section__link__text__content">
+                    <span class="text-title">{{ project.name }}</span>
+                    <span class="text-content">Proyecto Uno...</span>
+                  </span>
+                </span>
+                <span class="main__body__section__link__icon">
+                  <i
+                    :class="project.isActive ? 'fas' : 'far'"
+                    class="fa-circle"
+                  ></i>
+                  <i
+                    :class="project.isLock ? 'fas' : 'far'"
+                    class="fa-circle"
+                  ></i>
+                </span>
+              </router-link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
 
+import TheNavbar from "@/components/TheNavbar";
+import TheSecondNavbar from "@/components/TheSecondNavbar";
+
 export default {
   name: "Projects",
-  components: {},
+  components: {
+    TheNavbar,
+    TheSecondNavbar,
+  },
   data() {
     return {
       limit: parseInt(this.limit || 20),
       page: parseInt(this.page) > 0 ? parseInt(this.page || 1) : 1,
+      titleApp: "Proyectos",
+      icon: "fas fa-user-tie",
     };
   },
   created() {

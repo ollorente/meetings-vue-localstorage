@@ -34,22 +34,26 @@ const actions = {
       db.tasks[task.id] = task;
 
       // ------- Agregar tarea a reunión -------
-      const taskMeetings = await db.meetingTasks[this.$route.params.meeting];
+      const taskMeetings = await db.meetingTasks[task.id];
 
       if (!taskMeetings) {
-        db.meetingTasks[this.$route.params.meeting] = {};
+        db.meetingTasks[task.id] = {};
+        console.log(`db.meetingTasks->`, db.meetingTasks);
       }
 
-      db.meetingTasks[this.$route.params.meeting][task.id] = {
+      db.meetingTasks[task.meetingId][task.id] = {
         id: task.id,
         name: await task.name,
         projectId: await task.projectId,
-        meetingId: await task.meetingId,
         start: task.start,
         check: task.check,
         isActive: task.isActive,
         isLock: task.isLock,
       };
+      console.log(
+        `db.meetingTasks[${task.meetingId}][${task.id}]->`,
+        db.meetingTasks[task.meetingId][task.id]
+      );
       // ---X--- Agregar tarea a reunión ---X---
 
       // ------- Agregar tarea a proyecto -------
@@ -95,13 +99,13 @@ const actions = {
       // ---X--- Agregar tarea a usuario ---X---
 
       // ------- Agregar usuarios por tarea -------
+      const peopleTask = await db.taskPeople[task.id];
+
+      if (!peopleTask) {
+        db.taskPeople[task.id] = {};
+      }
+
       for (let i = 0; i < collaborators.length; i++) {
-        const peopleTask = await db.taskPeople[task.id];
-
-        if (!peopleTask) {
-          db.taskPeople[task.id] = {};
-        }
-
         const person = await db.people[collaborators[i]];
 
         if (person) {
@@ -222,13 +226,13 @@ const actions = {
       db.tasks[task.id] = task;
 
       // ------- Editar tarea a reunión -------
-      const taskMeetings = await db.meetingTasks[this.$route.params.meeting];
+      const taskMeetings = await db.meetingTasks[task.id];
 
       if (!taskMeetings) {
-        db.meetingTasks[this.$route.params.meeting] = {};
+        db.meetingTasks[task.id] = {};
       }
 
-      db.meetingTasks[this.$route.params.meeting][task.id] = {
+      db.meetingTasks[task.id][task.id] = {
         id: task.id,
         name: await task.name,
         projectId: await task.projectId,
