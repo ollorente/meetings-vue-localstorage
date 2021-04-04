@@ -1,39 +1,59 @@
 <template>
-  <div class="home">
-    <h1>{{ total }} {{ total === 1 ? "Tarea" : "Tareas" }}</h1>
-    <p v-for="(task, index) in tasks" :key="index" class="parrafo">
-      <span class="parrafo__info">
-        <span class="parrafo__info__number">{{ index + 1 }}</span>
-        <span class="parrafo__info__name"
-          ><router-link
-            :to="{ name: 'Task', params: { task: task.id } }"
-            class="link"
-            >{{ task.name }}</router-link
-          ></span
-        ></span
-      >
-      <span class="parrafo__status">{{
-        task.start ? "Iniciado" : "SinIniciar"
-      }}</span>
-      <span class="parrafo__status">{{
-        task.isActive ? "Activo" : "Inactivo"
-      }}</span>
-    </p>
-  </div>
+  <main class="main">
+    <TheNavbar :titleApp="titleApp" :icon="icon" />
+    <div class="main__body">
+      <TheSecondNavbar />
+
+      <div class="main__body__content">
+        <div class="main__body__section">
+          <div class="main__body__section__nav" id="main__body__section__nav">
+            <router-link
+              v-for="(task, index) in tasks"
+              :key="index"
+              :to="{ name: 'Task', params: { task: task.id } }"
+              class="main__body__section__task"
+            >
+              <span class="main__body__section__task__text">
+                <i class="fas fa-clipboard-check"></i>
+                <div class="main__body__section__task__body">
+                  <span class="main__body__section__task__title">{{
+                    task.name
+                  }}</span>
+                  <span class="main__body__section__task__content"
+                    >OVA Toxomasmosis</span
+                  >
+                </div>
+              </span>
+              <span class="main__body__section__task__icon">
+                <i class="fas fa-circle"></i>
+                <i class="far fa-circle"></i>
+              </span>
+            </router-link>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
 </template>
 
 <script>
 import { db } from "@/main";
 
+import TheNavbar from "@/components/TheNavbar";
+import TheSecondNavbar from "@/components/TheSecondNavbar";
+
 export default {
   name: "Home",
-  components: {},
+  components: {
+    TheNavbar,
+    TheSecondNavbar,
+  },
   data() {
     return {
       limit: parseInt(this.limit || 20),
       page: parseInt(this.page) > 0 ? parseInt(this.page || 1) : 1,
-      total: 0,
-      tasks: [],
+      titleApp: "MeetingsApp",
+      icon: "fas fa-tasks",
     };
   },
   created() {
