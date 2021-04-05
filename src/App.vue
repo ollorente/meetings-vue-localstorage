@@ -285,6 +285,7 @@ body .container .main .main__navbar .main__navbar__logo {
   color: var(--light);
   padding: 0;
   margin: 0;
+  cursor: pointer;
 }
 
 body .container .main .main__navbar .main__navbar__items {
