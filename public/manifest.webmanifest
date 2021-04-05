@@ -1,8 +1,8 @@
 {
     "name": "MeetingsApp",
-    "short_name": "meetingsapp",
+    "short_name": "MeetingsApp",
     "description": "Meetings App platform",
-    "start_url": "http://localhost:5500",
+    "start_url": "https://meetingsapp-dev.netlify.app",
     "lang": "Spanish",
     "display": "standalone",
     "theme_color": "#01579b",
