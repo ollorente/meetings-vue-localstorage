@@ -1,59 +1,87 @@
 <template>
-  <div class="project-projects">
-    <h1 style="margin: 0">
-      {{ getAllPersonMeetings.length }}
-      {{
-        getAllPersonMeetings.length === 1
-          ? "Reunión del usuario"
-          : "Reuniones del usuario"
-      }}
-    </h1>
-    <h2 style="margin: 0">{{ getPerson.name }}</h2>
-    <h4 style="margin: 0">{{ getPerson.email }}</h4>
-    <p>
-      <router-link
-        :to="{ name: 'Person', params: { project: $route.params.person } }"
-        class="link"
-        >Volver</router-link
-      >
-    </p>
-    <p
-      v-for="(meeting, index) in getPersonMeetings"
-      :key="index"
-      class="parrafo"
-    >
-      <span class="parrafo__info">
-        <span class="parrafo__info__number">{{ index + 1 }}</span>
-        <span class="parrafo__info__name"
-          ><router-link
-            :to="{ name: 'Meeting', params: { meeting: meeting.id } }"
-            class="link"
-            >{{ meeting.name }}</router-link
-          ></span
-        ></span
-      >
-      <span>{{ new Date(meeting.dateInt).toLocaleString() }}</span>
-      <span>{{ new Date(meeting.dateEnd).toLocaleString() }}</span>
-      <span class="parrafo__status">{{
-        meeting.isActive ? "Activo" : "Inactivo"
-      }}</span>
-      <span class="parrafo__status">{{
-        meeting.isLock ? "Bloqueado" : "Pùblico"
-      }}</span>
-    </p>
-  </div>
+  <main class="main">
+    <TheSectionNavbar
+      :titleApp="titleApp"
+      :icon="icon"
+      :link="link"
+      :options="options"
+    />
+    <div class="main__body">
+      <div class="main__body__content">
+        <div class="main__body__section">
+          <div class="main__body__section__nav">
+            <h1 class="main__body__section__person__title">
+              {{ getPerson.name }}
+            </h1>
+            <h3 class="main__body__section__person__subtitle">
+              {{ getPerson.email }}
+            </h3>
+            <div
+              v-for="(meeting, index) in getPersonMeetings"
+              :key="index"
+              class="main__body__section__card"
+            >
+              <div class="main__body__section__card__date">
+                <span class="main__body__section__card__month">{{
+                  new Date(meeting.dateInt).getMonth() + 1
+                }}</span>
+                <span class="main__body__section__card__day">{{
+                  new Date(meeting.dateInt).toString().split(" ")[2]
+                }}</span>
+              </div>
+              <router-link
+                :to="{ name: 'Meeting', params: { meeting: meeting.id } }"
+                class="main__body__section__card__body"
+              >
+                <span class="main__body__section__link__text__content">
+                  <span class="text-title">{{ meeting.name }}</span>
+                  <span class="text-content"
+                    >{{ new Date(meeting.dateInt).toString().split(" ")[4] }} -
+                    {{
+                      new Date(meeting.dateEnd).toString().split(" ")[4]
+                    }}</span
+                  >
+                </span>
+                <span class="main__body__section__link__icon">
+                  <i
+                    :class="meeting.isActive ? 'fas' : 'far'"
+                    class="fa-circle"
+                  ></i>
+                  <i
+                    :class="meeting.isLock ? 'fas' : 'far'"
+                    class="fa-circle"
+                  ></i>
+                </span>
+              </router-link>
+            </div>
+            <div v-if="getPersonMeetings.length < 1">
+              No tiene reuniones programadas 😊
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
 
+import TheSectionNavbar from "@/components/TheSectionNavbar";
+
 export default {
   name: "PersonMeetings",
-  components: {},
+  components: {
+    TheSectionNavbar,
+  },
   data() {
     return {
       limit: parseInt(this.limit || 20),
       page: parseInt(this.page) > 0 ? parseInt(this.page || 1) : 1,
+      titleApp: "Reuniones",
+      icon: "fas fa-arrow-left",
+      link: `/usuario/${this.$route.params.person}`,
+      options: [],
     };
   },
   created() {
