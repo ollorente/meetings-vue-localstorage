@@ -1,4 +1,4 @@
-if (navigator.serviceworker.controller) {
+if (navigator.serviceWorker.controller) {
   console.log("Active service worker found, no need to register");
 } else {
   // Register the serviceworker
