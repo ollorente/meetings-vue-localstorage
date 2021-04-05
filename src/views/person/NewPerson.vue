@@ -1,63 +1,82 @@
 <template>
-  <div class="new-person">
-    <h1 style="margin: 0">Nueva persona</h1>
-    <p>
-      <router-link :to="{ name: 'People' }" class="link">Volver</router-link>
-    </p>
-    <form @submit.prevent="newPerson">
-      <div>
-        <input
-          type="text"
-          v-model="person.name"
-          id="name"
-          placeholder="Nombre de usuario"
-          autofocus
-          required
-        />
+  <main class="main">
+    <Alert :msg="alert.msg" v-if="alert.error" />
+    <TheSectionNavbar
+      :titleApp="titleApp"
+      :icon="icon"
+      :link="link"
+      :options="options"
+    />
+    <div class="main__body">
+      <div class="main__body__content">
+        <div class="main__body__section">
+          <div class="main__body__section__nav">
+            <h1 class="main__body__section__nav--title">Agregar usuario</h1>
+            <form @submit.prevent="newPerson">
+              <div>
+                <input
+                  type="text"
+                  v-model="person.name"
+                  id="name"
+                  placeholder="Nombre de usuario"
+                  autofocus
+                  required
+                />
+              </div>
+              <div>
+                <input
+                  type="email"
+                  v-model="person.email"
+                  id="email"
+                  placeholder="email@email.com"
+                  required
+                />
+              </div>
+              <div>
+                <input
+                  type="text"
+                  v-model="person.role"
+                  id="role"
+                  placeholder="Cargo"
+                />
+              </div>
+              <button type="submit" class="btn-p-light">Agregar</button>
+            </form>
+          </div>
+        </div>
       </div>
-      <div>
-        <input
-          type="email"
-          v-model="person.email"
-          id="email"
-          placeholder="email@email.com"
-          required
-        />
-      </div>
-      <div>
-        <input
-          type="text"
-          v-model="person.role"
-          id="role"
-          placeholder="Cargo"
-        />
-      </div>
-      <button type="submit">Agregar</button>
-    </form>
-    <div id="alert" v-if="alert.error">
-      {{ alert.msg }}
     </div>
-  </div>
+  </main>
 </template>
 
 <script>
 import { mapActions } from "vuex";
 import { db } from "@/main";
 
+import Alert from "@/components/Alert";
+import TheSectionNavbar from "@/components/TheSectionNavbar";
+
 export default {
   name: "NewPerson",
-  components: {},
+  components: {
+    Alert,
+    TheSectionNavbar,
+  },
   data() {
     return {
       person: {
-        name: null,
-        email: null,
-        role: null,
+        name: "",
+        email: "",
+        role: "",
       },
       alert: {
-        error: true,
+        error: false,
         msg: null,
       },
+      titleApp: "Agregar usuario",
+      icon: "fas fa-arrow-left",
+      link: `/usuarios`,
+      options: [],
     };
   },
   methods: {
