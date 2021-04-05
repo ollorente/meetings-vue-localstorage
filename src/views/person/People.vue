@@ -1,6 +1,11 @@
 <template>
   <main class="main">
-    <TheNavbar :titleApp="titleApp" :icon="icon" />
+    <TheNavbar
+      :titleApp="titleApp"
+      :icon="icon"
+      :link="link"
+      :options="options"
+    />
     <div class="main__body">
       <TheSecondNavbar />
 
@@ -57,6 +62,18 @@ export default {
       page: parseInt(this.page) > 0 ? parseInt(this.page || 1) : 1,
       titleApp: "Usuarios",
       icon: "fas fa-users",
+      link: "",
+      options: [
+        {
+          menus: [
+            {
+              title: "Agregar usuario",
+              link: "/usuario/nuevo",
+              icon: "fas fa-user-plus",
+            },
+          ],
+        },
+      ],
     };
   },
   created() {
