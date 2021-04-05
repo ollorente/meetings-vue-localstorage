@@ -1,11 +1,10 @@
 <template>
   <div class="main__navbar">
-    <div class="main__navbar__logo"><i :class="icon"></i> {{ titleApp }}</div>
-    <div class="main__navbar__items">
-      <a href="#" class="main__navbar_items_link"
-        ><i class="fas fa-search"></i
-      ></a>
-      <span class="main__navbar_items_link" v-if="options" @click="isVisible"
+    <span class="main__navbar__logo" @click="goToBack"
+      ><i :class="icon"></i> {{ titleApp }}</span
+    >
+    <div class="main__navbar__items" v-if="options.length > 0">
+      <span class="main__navbar_items_link" @click="isVisible"
         ><i class="fas fa-ellipsis-v"></i
       ></span>
     </div>
@@ -33,7 +32,7 @@
 
 <script>
 export default {
-  name: "TheNavbar",
+  name: "TheSectionNavbar",
   props: {
     icon: String,
     titleApp: String,
@@ -43,11 +42,15 @@ export default {
   data() {
     return {
       show: false,
+      isParams: this.$props.params ? `params: ${this.$props.params}` : "",
     };
   },
   methods: {
     async isVisible() {
       this.show = !this.show;
+    },
+    async goToBack() {
+      this.$router.go(-1);
     },
   },
 };

@@ -1,59 +1,76 @@
 <template>
-  <div class="project-people">
-    <h1 style="margin: 0">
-      {{ getAllProjectTasks.length }}
-      {{
-        getAllProjectTasks.length === 1
-          ? "tarea en el proyecto"
-          : "tareas en el proyectos"
-      }}
-    </h1>
-    <h2 style="margin: 0">{{ getProject.name }}</h2>
-    <h3 style="margin: 0">{{ getProject.name }}</h3>
-    <p>
-      <router-link
-        :to="{ name: 'Project', params: { project: $route.params.project } }"
-        class="link"
-        >Volver</router-link
-      >
-    </p>
-    <p v-for="(task, index) in getProjectTasks" :key="index" class="parrafo">
-      <span class="parrafo__info">
-        <span class="parrafo__info__number">{{ index + 1 }}</span>
-        <span class="parrafo__info__name"
-          ><router-link
-            :to="{
-              name: 'ProjectTask',
-              params: { project: task.projectId, task: task.id },
-            }"
-            class="link"
-            >{{ task.name }}</router-link
-          ></span
-        ></span
-      >
-      <span class="parrafo__status">{{
-        task.isActive ? "Activo" : "Inactivo"
-      }}</span>
-      <span class="parrafo__status">{{
-        task.isLock ? "Bloqueado" : "Público"
-      }}</span>
-    </p>
-    <pre class="container" hidden style="text-align: left">{{
-      getProjectTasks
-    }}</pre>
-  </div>
+  <main class="main">
+    <TheSectionNavbar
+      :titleApp="titleApp"
+      :icon="icon"
+      :link="link"
+      :options="options"
+    />
+    <div class="main__body">
+      <div class="main__body__content">
+        <div class="main__body__section">
+          <div class="main__body__section__nav">
+            <h1 class="main__body__section__person__title">
+              {{ getProject.name }}
+            </h1>
+            <h3 class="main__body__section__person__subtitle"></h3>
+            <router-link
+              v-for="(task, index) in getProjectTasks"
+              :key="index"
+              :to="{ name: 'Task', params: { task: task.id } }"
+              class="main__body__section__task"
+            >
+              <span class="main__body__section__task__text">
+                <i class="fas fa-clipboard-check"></i>
+                <div class="main__body__section__task__body">
+                  <span class="main__body__section__task__title">{{
+                    task.name
+                  }}</span>
+                  <span class="main__body__section__task__content"
+                    >OVA Toxomasmosis</span
+                  >
+                </div>
+              </span>
+              <span class="main__body__section__task__icon">
+                <i class="fas fa-circle"></i>
+                <i class="far fa-circle"></i>
+              </span>
+            </router-link>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
 
+import TheSectionNavbar from "@/components/TheSectionNavbar";
+
 export default {
   name: "ProjectTasks",
-  components: {},
+  components: {
+    TheSectionNavbar,
+  },
   data() {
     return {
       limit: parseInt(this.limit || 20),
       page: parseInt(this.page) > 0 ? parseInt(this.page || 1) : 1,
+      titleApp: "Tareas del proyecto",
+      icon: "fas fa-arrow-left",
+      link: `/proyecto/${this.$route.params.project}`,
+      options: [
+        {
+          menus: [
+            {
+              title: "Agregar tarea",
+              link: `/proyecto/${this.$route.params.project}/tarea/nueva`,
+              icon: "fas fa-user-edit",
+            },
+          ],
+        },
+      ],
     };
   },
   created() {

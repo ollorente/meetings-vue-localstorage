@@ -1,54 +1,73 @@
 <template>
-  <div class="project-people">
-    <h1 style="margin: 0">
-      {{ getAllProjectPeople.length }}
-      {{
-        getAllProjectPeople.length === 1
-          ? "Usuario en el proyecto"
-          : "Usuarios en el proyectos"
-      }}
-    </h1>
-    <p>
-      <router-link
-        :to="{ name: 'Project', params: { project: $route.params.project } }"
-        class="link"
-        >Volver</router-link
-      >
-    </p>
-    <p v-for="(person, index) in getProjectPeople" :key="index" class="parrafo">
-      <span class="parrafo__info">
-        <span class="parrafo__info__number">{{ index + 1 }}</span>
-        <span class="parrafo__info__name"
-          ><router-link
-            :to="{ name: 'Person', params: { person: person.id } }"
-            class="link"
-            >{{ person.name }}</router-link
-          ></span
-        ></span
-      >
-      <span class="parrafo__status">{{
-        person.isActive ? "Activo" : "Inactivo"
-      }}</span>
-      <span class="parrafo__status">{{
-        person.isLock ? "Bloqueado" : "Público"
-      }}</span>
-    </p>
-  </div>
+  <main class="main">
+    <TheSectionNavbar
+      :titleApp="titleApp"
+      :icon="icon"
+      :link="link"
+      :options="options"
+    />
+    <div class="main__body">
+      <div class="main__body__content">
+        <div class="main__body__section">
+          <div class="main__body__section__nav">
+            <h1 class="main__body__section__person__title">
+              {{ getProject.name }}
+            </h1>
+            <h3 class="main__body__section__person__subtitle"></h3>
+            <router-link
+              v-for="(person, index) in getProjectPeople"
+              :key="index"
+              :to="{ name: 'Person', params: { person: person.id } }"
+              class="main__body__section__user"
+            >
+              <img
+                :src="
+                  person.photoURL
+                    ? person.photoURL
+                    : `https://res.cloudinary.com/dbszizqh4/image/upload/v1592198427/images_lvwix2.png`
+                "
+                :alt="person.name"
+                :title="person.email"
+                class="main__body__section__user__logo"
+              />
+              <div class="main__body__section__user__body">
+                <span class="main__body__section__user__title">{{
+                  person.name
+                }}</span>
+                <span class="main__body__section__user__content">{{
+                  person.email
+                }}</span>
+              </div>
+            </router-link>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
 
+import TheSectionNavbar from "@/components/TheSectionNavbar";
+
 export default {
   name: "ProjectPeople",
-  components: {},
+  components: {
+    TheSectionNavbar,
+  },
   data() {
     return {
       limit: parseInt(this.limit || 20),
       page: parseInt(this.page) > 0 ? parseInt(this.page || 1) : 1,
+      titleApp: "Usuarios del proyecto",
+      icon: "fas fa-arrow-left",
+      link: `/proyecto/${this.$route.params.project}/editar`,
+      options: [],
     };
   },
   created() {
+    this.fetchProject(this.$route.params.project);
     this.fetchProjectPeople({
       id: this.$route.params.project,
       limit: this.limit,
@@ -57,13 +76,17 @@ export default {
     this.fetchAllProjectPeople();
   },
   methods: {
-    ...mapActions(["fetchProjectPeople", "fetchAllProjectPeople"]),
+    ...mapActions([
+      "fetchProjectPeople",
+      "fetchAllProjectPeople",
+      "fetchProject",
+    ]),
   },
   computed: {
-    ...mapGetters(["getProjectPeople", "getAllProjectPeople"]),
+    ...mapGetters(["getProjectPeople", "getAllProjectPeople", "getProject"]),
   },
   watch: {
-    $route: ["fetchProjectPeople", "fetchAllProjectPeople"],
+    $route: ["fetchProjectPeople", "fetchAllProjectPeople", "fetchProject"],
   },
 };
 </script>

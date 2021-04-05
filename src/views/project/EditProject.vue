@@ -1,62 +1,77 @@
 <template>
-  <div class="edit-project">
-    <h1 style="margin: 0">Editar "{{ project.name }}"</h1>
-    <p>
-      <a href="#" @click="deleteProject" class="link">Eliminar</a>
-      |
-      <router-link
-        :to="{ name: 'Project', params: { project: $route.params.project } }"
-        class="link"
-        >Volver</router-link
-      >
-    </p>
-
-    <form @submit.prevent="putProject">
-      <div>
-        <input
-          type="text"
-          v-model="project.name"
-          id="name"
-          placeholder="Nombre de proyecto"
-          autofocus
-          required
-        />
+  <main class="main">
+    <TheSectionNavbar
+      :titleApp="titleApp"
+      :icon="icon"
+      :link="link"
+      :options="options"
+    />
+    <div class="main__body">
+      <div class="main__body__content">
+        <div class="main__body__section">
+          <div class="main__body__section__nav">
+            <h1 class="main__body__section__nav--title">
+              Editar<br />"{{ project.name }}"
+            </h1>
+            <form @submit.prevent="putProject">
+              <div>
+                <input
+                  type="text"
+                  v-model="project.name"
+                  id="name"
+                  placeholder="Nombre de proyecto"
+                  autofocus
+                  required
+                />
+              </div>
+              <div>
+                <textarea
+                  v-model="project.description"
+                  id="description"
+                  rows="10"
+                  placeholder="Agregue una descripción"
+                ></textarea>
+              </div>
+              <div>
+                <select
+                  multiple
+                  v-model="project.collaborators"
+                  id="collaborators"
+                >
+                  <option
+                    v-for="person in getAllPeople"
+                    :key="person.id"
+                    :value="person.id"
+                  >
+                    {{ person.name }} - {{ person.email }}
+                  </option>
+                </select>
+              </div>
+              <div>
+                <label
+                  ><input type="checkbox" v-model="project.isActive" />
+                  Estatus</label
+                >
+              </div>
+              <button type="submit" class="btn-secondary">Editar</button>
+            </form>
+          </div>
+        </div>
       </div>
-      <div>
-        <textarea v-model="project.description" id="description" rows="10">
-          Agregue una descripción</textarea
-        >
-      </div>
-      <div>
-        <select multiple v-model="project.collaborators" id="collaborators">
-          <option
-            v-for="person in getAllPeople"
-            :key="person.id"
-            :value="person.id"
-          >
-            {{ person.name }} - {{ person.email }}
-          </option>
-        </select>
-      </div>
-      <div>
-        <label
-          ><input type="checkbox" v-model="project.isActive" /> Estatus</label
-        >
-      </div>
-      <button type="submit">Editar</button>
-    </form>
-    <div id="alert" v-if="alert.error">
-      {{ alert.msg }}
     </div>
-  </div>
+  </main>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
 
+import TheSectionNavbar from "@/components/TheSectionNavbar";
+
 export default {
   name: "EditProject",
-  components: {},
+  components: {
+    TheSectionNavbar,
+  },
   data() {
     return {
       project: "",
@@ -64,6 +79,10 @@ export default {
         error: false,
         msg: null,
       },
+      titleApp: "Editar proyecto",
+      icon: "fas fa-arrow-left",
+      link: `/proyecto/${this.$route.params.project}`,
+      options: [],
     };
   },
   mounted() {

@@ -91,7 +91,7 @@ const routes = [
     meta: { title: `Tareas de la reunión ${BASE_URL_TITLE}` },
   },
   {
-    path: "/reunion/:meeting/tarea-nueva", // TODO - Montar en el store.
+    path: "/reunion/:meeting/tarea/nueva", // TODO - Montar en el store.
     name: "NewMeetingTask",
     component: () => import("../views/meeting/NewMeetingTask.vue"),
     meta: { title: `Nueva tarea de reunión ${BASE_URL_TITLE}` },
@@ -101,6 +101,12 @@ const routes = [
     name: "MeetingPeople",
     component: () => import("../views/meeting/MeetingPeople.vue"),
     meta: { title: `Usuarios en la reunión ${BASE_URL_TITLE}` },
+  },
+  {
+    path: "/reunion/:meeting/usuario/nuevo", // TODO - Montar en el store.
+    name: "NewMeetingPerson",
+    component: () => import("../views/meeting/Meeting.vue"),
+    meta: { title: `Nuevo usuarios a la reunión ${BASE_URL_TITLE}` },
   },
   {
     path: "/tarea/:task", // TODO - Montar en el store.

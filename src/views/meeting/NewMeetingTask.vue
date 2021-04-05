@@ -1,58 +1,70 @@
 <template>
-  <div class="new-project-task">
-    <h1 style="margin: 0">Nueva tarea</h1>
-    <p>
-      <router-link
-        :to="{
-          name: 'MeetingTasks',
-          params: { meeting: $route.params.meeting },
-        }"
-        class="link"
-        >Volver</router-link
-      >
-    </p>
-    <form @submit.prevent="newTask">
-      <div>
-        <input
-          type="text"
-          v-model="task.name"
-          id="name"
-          placeholder="Nombre de tarea"
-          autofocus
-          required
-        />
+  <main class="main">
+    <TheSectionNavbar
+      :titleApp="titleApp"
+      :icon="icon"
+      :link="link"
+      :options="options"
+    />
+    <div class="main__body">
+      <div class="main__body__content">
+        <div class="main__body__section">
+          <div class="main__body__section__nav">
+            <h1 class="main__body__section__person__title">Nueva tarea</h1>
+            <h3 class="main__body__section__person__subtitle"></h3>
+            <form @submit.prevent="newTask">
+              <div>
+                <input
+                  type="text"
+                  v-model="task.name"
+                  id="name"
+                  placeholder="Nombre de tarea"
+                  autofocus
+                  required
+                />
+              </div>
+              <div>
+                <textarea
+                  v-model="task.description"
+                  id="description"
+                  rows="10"
+                  placeholder="Agregue una descripción"
+                ></textarea>
+              </div>
+              <div>
+                <select
+                  multiple
+                  v-model="task.collaborators"
+                  id="collaborators"
+                >
+                  <option
+                    v-for="person in getAllMeetingPeople"
+                    :key="person.id"
+                    :value="person.id"
+                  >
+                    {{ person.name }} - {{ person.email }}
+                  </option>
+                </select>
+              </div>
+              <button type="submit" class="btn-p-light">Agregar</button>
+            </form>
+          </div>
+        </div>
       </div>
-      <div>
-        <textarea v-model="task.description" id="description" rows="10">
-          Agregue una descripción</textarea
-        >
-      </div>
-      <div>
-        <select multiple v-model="task.collaborators" id="collaborators">
-          <option
-            v-for="person in getAllMeetingPeople"
-            :key="person.id"
-            :value="person.id"
-          >
-            {{ person.name }} - {{ person.email }}
-          </option>
-        </select>
-      </div>
-      <button type="submit">Agregar</button>
-    </form>
-    <div id="alert" v-if="alert.error">
-      {{ alert.msg }}
     </div>
-    <pre class="container" hiddens style="text-align: left">{{ $data }}</pre>
-  </div>
+  </main>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
 
+import TheSectionNavbar from "@/components/TheSectionNavbar";
+
 export default {
   name: "NewMeetingTask",
-  components: {},
+  components: {
+    TheSectionNavbar,
+  },
   data() {
     return {
       task: {
@@ -66,6 +78,10 @@ export default {
         error: true,
         msg: null,
       },
+      titleApp: "Agregar tarea a reunión",
+      icon: "fas fa-arrow-left",
+      link: `/reunion/${this.$route.params.meeting}`,
+      options: [],
     };
   },
   mounted() {

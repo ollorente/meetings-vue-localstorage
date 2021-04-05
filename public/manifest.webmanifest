@@ -1,0 +1,21 @@
+{
+    "name": "MeetingsApp",
+    "short_name": "MeetingsApp",
+    "description": "Meetings App platform",
+    "start_url": "https://meetingsapp-dev.netlify.app",
+    "lang": "Spanish",
+    "display": "standalone",
+    "theme_color": "#01579b",
+    "background_color": "#fff",
+    "orientation": "portrait",
+    "icons": [{
+        "src": "/img/meetingsapp-ico.png",
+        "sizes": "192x192",
+        "type": "image/png"
+    },
+    {
+        "src": "/img/meetingsapp-ico.png",
+        "sizes": "512x512",
+        "type": "image/png"
+    }]
+}
