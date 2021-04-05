@@ -30,9 +30,8 @@
                   v-model="project.description"
                   id="description"
                   rows="10"
-                >
-          Agregue una descripción</textarea
-                >
+                  placeholder="Agregue una descripción"
+                ></textarea>
               </div>
               <div>
                 <select
