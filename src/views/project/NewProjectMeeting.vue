@@ -1,81 +1,101 @@
 <template>
-  <div class="new-meeting">
-    <h1 style="margin: 0">Nueva reunión</h1>
-    <p>
-      <router-link
-        :to="{
-          name: 'ProjectMeetings',
-          params: { project: $route.params.project },
-        }"
-        class="link"
-        >Volver</router-link
-      >
-    </p>
-    <form @submit.prevent="newMeeting">
-      <div>
-        <input
-          type="text"
-          v-model="meeting.name"
-          id="name"
-          placeholder="Nombre de proyecto"
-          autofocus
-          required
-        />
+  <main class="main">
+    <TheSectionNavbar
+      :titleApp="titleApp"
+      :icon="icon"
+      :link="link"
+      :options="options"
+    />
+    <div class="main__body">
+      <div class="main__body__content">
+        <div class="main__body__section">
+          <div class="main__body__section__nav"></div>
+        </div>
       </div>
-      <div>
-        <textarea v-model="meeting.description" id="description" rows="10">
-          Agregue una descripción</textarea
-        >
-      </div>
-      <div>
-        <input
-          type="datetime-local"
-          v-model="meeting.dateInt"
-          id="dateInt"
-          name="trip-start"
-          value="2018-07-22"
-          min="2018-01-01"
-          max="2018-12-31"
-        />
-      </div>
-      <div>
-        <input
-          type="datetime-local"
-          v-model="meeting.dateEnd"
-          id="dateEnd"
-          name="trip-start"
-          value="2018-07-22"
-          min="2018-01-01"
-          max="2018-12-31"
-        />
-      </div>
-      <div>
-        <select multiple v-model="meeting.collaborators" id="collaborators">
-          <option
-            v-for="person in getProjectPeople"
-            :key="person.id"
-            :value="person.id"
-          >
-            {{ person.name }} - {{ person.email }}
-          </option>
-        </select>
-      </div>
-      <button type="submit">Agregar</button>
-    </form>
-    <pre class="container" hidden style="text-align: left">{{ $data }}</pre>
-    <div id="alert" v-if="alert.error">
-      {{ alert.msg }}
     </div>
-    <pre class="container" hidden style="text-align: left">{{ $data }}</pre>
-  </div>
+
+    <div class="new-meeting">
+      <h1 style="margin: 0">Nueva reunión</h1>
+      <p>
+        <router-link
+          :to="{
+            name: 'ProjectMeetings',
+            params: { project: $route.params.project },
+          }"
+          class="link"
+          >Volver</router-link
+        >
+      </p>
+      <form @submit.prevent="newMeeting">
+        <div>
+          <input
+            type="text"
+            v-model="meeting.name"
+            id="name"
+            placeholder="Nombre de proyecto"
+            autofocus
+            required
+          />
+        </div>
+        <div>
+          <textarea v-model="meeting.description" id="description" rows="10">
+          Agregue una descripción</textarea
+          >
+        </div>
+        <div>
+          <input
+            type="datetime-local"
+            v-model="meeting.dateInt"
+            id="dateInt"
+            name="trip-start"
+            value="2018-07-22"
+            min="2018-01-01"
+            max="2018-12-31"
+          />
+        </div>
+        <div>
+          <input
+            type="datetime-local"
+            v-model="meeting.dateEnd"
+            id="dateEnd"
+            name="trip-start"
+            value="2018-07-22"
+            min="2018-01-01"
+            max="2018-12-31"
+          />
+        </div>
+        <div>
+          <select multiple v-model="meeting.collaborators" id="collaborators">
+            <option
+              v-for="person in getProjectPeople"
+              :key="person.id"
+              :value="person.id"
+            >
+              {{ person.name }} - {{ person.email }}
+            </option>
+          </select>
+        </div>
+        <button type="submit">Agregar</button>
+      </form>
+      <pre class="container" hidden style="text-align: left">{{ $data }}</pre>
+      <div id="alert" v-if="alert.error">
+        {{ alert.msg }}
+      </div>
+      <pre class="container" hidden style="text-align: left">{{ $data }}</pre>
+    </div>
+  </main>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
 
+import TheSectionNavbar from "@/components/TheSectionNavbar";
+
 export default {
   name: "NewProjectMeeting",
-  components: {},
+  components: {
+    TheSectionNavbar,
+  },
   data() {
     return {
       meeting: {
@@ -89,6 +109,20 @@ export default {
         error: true,
         msg: null,
       },
+      titleApp: "Proyecto",
+      icon: "fas fa-arrow-left",
+      link: `/proyectos`,
+      options: [
+        {
+          menus: [
+            {
+              title: "Editar",
+              link: `/proyecto/${this.$route.params.project}/editar`,
+              icon: "fas fa-user-edit",
+            },
+          ],
+        },
+      ],
     };
   },
   created() {
