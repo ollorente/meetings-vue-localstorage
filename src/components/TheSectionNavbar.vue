@@ -1,7 +1,7 @@
 <template>
   <div class="main__navbar">
-    <a :href="link" class="main__navbar__logo"
-      ><i :class="icon"></i> {{ titleApp }}</a
+    <span class="main__navbar__logo" @click="goToBack"
+      ><i :class="icon"></i> {{ titleApp }}</span
     >
     <div class="main__navbar__items" v-if="options.length > 0">
       <span class="main__navbar_items_link" @click="isVisible"
@@ -48,6 +48,9 @@ export default {
   methods: {
     async isVisible() {
       this.show = !this.show;
+    },
+    async goToBack() {
+      this.$router.go(-1);
     },
   },
 };
