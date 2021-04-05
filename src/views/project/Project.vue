@@ -10,7 +10,9 @@
       <div class="main__body__content">
         <div class="main__body__section">
           <div class="main__body__section__nav">
-            <h1 style="margin: 0">{{ getProject.name }}</h1>
+            <h1 class="main__body__section__nav--title">
+              {{ getProject.name }}
+            </h1>
             <div v-html="getProject.description"></div>
             <p style="text-align: left; padding: 0 1rem">
               <b>{{ getProject.isActive ? "Activo" : "Inactivo" }}</b
