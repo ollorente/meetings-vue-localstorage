@@ -9,79 +9,76 @@
     <div class="main__body">
       <div class="main__body__content">
         <div class="main__body__section">
-          <div class="main__body__section__nav"></div>
+          <div class="main__body__section__nav">
+            <h1 class="main__body__section__nav--title">Nueva reunión</h1>
+            <h3 class="main__body__section__person__subtitle">
+              {{ getProject.name }}
+            </h3>
+            <form @submit.prevent="newMeeting">
+              <div>
+                <input
+                  type="text"
+                  v-model="meeting.name"
+                  id="name"
+                  placeholder="Nombre de proyecto"
+                  autofocus
+                  required
+                />
+              </div>
+              <div>
+                <textarea
+                  v-model="meeting.description"
+                  id="description"
+                  rows="5"
+                  placeholder="Agregue una descripción"
+                  required
+                ></textarea>
+              </div>
+              <div>
+                <input
+                  type="datetime-local"
+                  v-model="meeting.dateInt"
+                  id="dateInt"
+                  name="trip-start"
+                  value="2018-07-22"
+                  min="2018-01-01"
+                  max="2018-12-31"
+                  required
+                />
+              </div>
+              <div>
+                <input
+                  type="datetime-local"
+                  v-model="meeting.dateEnd"
+                  id="dateEnd"
+                  name="trip-start"
+                  value="2018-07-22"
+                  min="2018-01-01"
+                  max="2018-12-31"
+                  required
+                />
+              </div>
+              <div>
+                <select
+                  multiple
+                  v-model="meeting.collaborators"
+                  id="collaborators"
+                  required
+                >
+                  <option
+                    v-for="person in getAllProjectPeople"
+                    :key="person.id"
+                    :value="person.id"
+                  >
+                    {{ person.name }} - {{ person.email }}
+                  </option>
+                </select>
+              </div>
+              <button type="submit" class="btn-p-light">Agregar</button>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
-
-    <div class="new-meeting">
-      <h1 style="margin: 0">Nueva reunión</h1>
-      <p>
-        <router-link
-          :to="{
-            name: 'ProjectMeetings',
-            params: { project: $route.params.project },
-          }"
-          class="link"
-          >Volver</router-link
-        >
-      </p>
-      <form @submit.prevent="newMeeting">
-        <div>
-          <input
-            type="text"
-            v-model="meeting.name"
-            id="name"
-            placeholder="Nombre de proyecto"
-            autofocus
-            required
-          />
-        </div>
-        <div>
-          <textarea v-model="meeting.description" id="description" rows="10">
-          Agregue una descripción</textarea
-          >
-        </div>
-        <div>
-          <input
-            type="datetime-local"
-            v-model="meeting.dateInt"
-            id="dateInt"
-            name="trip-start"
-            value="2018-07-22"
-            min="2018-01-01"
-            max="2018-12-31"
-          />
-        </div>
-        <div>
-          <input
-            type="datetime-local"
-            v-model="meeting.dateEnd"
-            id="dateEnd"
-            name="trip-start"
-            value="2018-07-22"
-            min="2018-01-01"
-            max="2018-12-31"
-          />
-        </div>
-        <div>
-          <select multiple v-model="meeting.collaborators" id="collaborators">
-            <option
-              v-for="person in getProjectPeople"
-              :key="person.id"
-              :value="person.id"
-            >
-              {{ person.name }} - {{ person.email }}
-            </option>
-          </select>
-        </div>
-        <button type="submit">Agregar</button>
-      </form>
-      <pre class="container" hidden style="text-align: left">{{ $data }}</pre>
-      <div id="alert" v-if="alert.error">
-        {{ alert.msg }}
-      </div>
-      <pre class="container" hidden style="text-align: left">{{ $data }}</pre>
     </div>
   </main>
 </template>
@@ -101,44 +98,36 @@ export default {
       meeting: {
         name: "",
         description: "",
-        dateInt: null,
-        dateEnd: null,
+        dateInt: "",
+        dateEnd: "",
         collaborators: [],
       },
       alert: {
         error: true,
         msg: null,
       },
-      titleApp: "Proyecto",
+      titleApp: "Agregar reunión",
       icon: "fas fa-arrow-left",
       link: `/proyectos`,
-      options: [
-        {
-          menus: [
-            {
-              title: "Editar",
-              link: `/proyecto/${this.$route.params.project}/editar`,
-              icon: "fas fa-user-edit",
-            },
-          ],
-        },
-      ],
+      options: [],
     };
   },
   created() {
     this.fetchAllProjectPeople(this.$route.params.project);
+    this.fetchProject(this.$route.params.project);
   },
   methods: {
-    ...mapActions(["addMeeting", "fetchAllProjectPeople"]),
+    ...mapActions(["addMeeting", "fetchAllProjectPeople", "fetchProject"]),
     async newMeeting() {
       if (
         this.meeting.name.trim() === "" ||
         this.meeting.description.trim() === "" ||
-        this.meeting.dateInt === null ||
-        this.meeting.dateEnd === null
+        this.meeting.dateInt === "" ||
+        this.meeting.dateEnd === "" ||
+        this.meeting.collaborators === ""
       ) {
         this.alert.error = true;
-        this.alert.msg = `Ni el nombre ni la descripción pueden estar vacios.`;
+        this.alert.msg = `Los campos no pueden estar vacios.`;
 
         setTimeout(() => {
           this.alert.error = false;
@@ -171,10 +160,10 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["getProjectPeople"]),
+    ...mapGetters(["getAllProjectPeople", "getProject"]),
   },
   watch: {
-    $route: ["fetchAllProjectPeople"],
+    $route: ["fetchAllProjectPeople", "fetchProject"],
   },
 };
 </script>

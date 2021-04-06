@@ -10,7 +10,7 @@
       <div class="main__body__content">
         <div class="main__body__section">
           <div class="main__body__section__nav">
-            <h1 class="main__body__section__person__title">
+            <h1 class="main__body__section__nav--title">
               {{ getMeeting.name }}
             </h1>
             <h3 class="main__body__section__person__subtitle"></h3>

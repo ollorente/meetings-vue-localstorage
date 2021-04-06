@@ -61,7 +61,7 @@ import { mapActions, mapGetters } from "vuex";
 import TheSectionNavbar from "@/components/TheSectionNavbar";
 
 export default {
-  name: "NewMeetingTask",
+  name: "NewTaskPerson",
   components: {
     TheSectionNavbar,
   },

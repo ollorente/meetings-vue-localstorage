@@ -102,7 +102,25 @@ const actions = {
 
   async fetchMeeting({ commit }, id) {
     try {
-      const meeting = await db.meetings[id];
+      const data = await db.meetings[id];
+
+      const meeting = {
+        id: await data.id,
+        name: await data.name,
+        description: await data.description,
+        collaborators: await data.collaborators,
+        project: await data.project,
+        dateInt: new Date((await data.dateInt) - 18000000)
+          .toISOString()
+          .substr(0, 16),
+        dateEnd: new Date((await data.dateEnd) - 18000000)
+          .toISOString()
+          .substr(0, 16),
+        isActive: await data.isActive,
+        isLock: await data.isLock,
+        createdAt: await data.createdAt,
+        updatedAt: await data.updatedAt,
+      };
 
       commit("SET_MEETING", meeting);
     } catch (error) {
@@ -199,77 +217,77 @@ const actions = {
       db.meetings[meeting.id] = meeting;
 
       // ------- Agregar a reuniones por proyecto -------
-      const meetingsProject = await db.projectMeetings[meeting.project];
+      // const meetingsProject = await db.projectMeetings[meeting.project];
 
-      if (!meetingsProject) {
-        db.projectMeetings[meeting.project] = {};
-      }
+      // if (!meetingsProject) {
+      //   db.projectMeetings[meeting.project] = {};
+      // }
 
-      db.projectMeetings[meeting.project][meeting.id] = {
-        id: meeting.id,
-        name: await meeting.name,
-        dateInt: meeting.dateInt,
-        dateEnd: meeting.dateEnd,
-        isActive: meeting.isActive,
-        isLock: meeting.isLock,
-      };
+      // db.projectMeetings[meeting.project][meeting.id] = {
+      //   id: meeting.id,
+      //   name: await meeting.name,
+      //   dateInt: meeting.dateInt,
+      //   dateEnd: meeting.dateEnd,
+      //   isActive: meeting.isActive,
+      //   isLock: meeting.isLock,
+      // };
       // ---X--- Agregar a reuniones por proyecto ---X---
 
-      const colllaborators = await meeting.collaborators;
+      // const colllaborators = await meeting.collaborators;
 
       // ------- Editar usuarios por reunión -------
-      delete db.meetingPeople[meeting.id];
+      // delete db.meetingPeople[meeting.id];
 
-      for (let i = 0; i < colllaborators.length; i++) {
-        const peopleMeeting = await db.meetingPeople[meeting.id];
+      // for (let i = 0; i < colllaborators.length; i++) {
+      //   const peopleMeeting = await db.meetingPeople[meeting.id];
 
-        if (!peopleMeeting) {
-          db.meetingPeople[meeting.id] = {};
-        }
+      //   if (!peopleMeeting) {
+      //     db.meetingPeople[meeting.id] = {};
+      //   }
 
-        const person = await db.people[colllaborators[i]];
+      //   const person = await db.people[colllaborators[i]];
 
-        if (person) {
-          db.meetingPeople[meeting.id][person.id] = {
-            id: person.id,
-            name: person.name,
-            email: person.email,
-            isActive: person.isActive,
-            isLock: person.isLock,
-          };
-        }
-      }
+      //   if (person) {
+      //     db.meetingPeople[meeting.id][person.id] = {
+      //       id: person.id,
+      //       name: person.name,
+      //       email: person.email,
+      //       isActive: person.isActive,
+      //       isLock: person.isLock,
+      //     };
+      //   }
+      // }
       // ---X--- Editar usuarios por reunión ---X---
 
       // ------- Editar reuniones por usuario -------
       // ------- Borrar reunión del usuario -------
-      const users = Object.values(db.people);
+      // const users = Object.values(db.people);
 
-      users.forEach(async (user) => {
-        const u = await db.peopleMeetings[user.id];
+      // users.forEach(async (user) => {
+      //   const u = await db.peopleMeetings[user.id];
 
-        if (u) {
-          delete db.peopleMeetings[user.id][meeting.id];
-        }
-      });
+      //   if (u) {
+      //     delete db.peopleMeetings[user.id][meeting.id];
+      //   }
+      // });
       // ---X--- Borrar reunión del usuario ---X---
 
-      for (let i = 0; i < colllaborators.length; i++) {
-        const personMeetings = await db.peopleMeetings[colllaborators[i]];
+      // for (let i = 0; i < colllaborators.length; i++) {
+      //   const personMeetings = await db.peopleMeetings[colllaborators[i]];
 
-        if (!personMeetings) {
-          db.peopleMeetings[colllaborators[i]] = {};
-        }
+      //   if (!personMeetings) {
+      //     db.peopleMeetings[colllaborators[i]] = {};
+      //   }
 
-        db.peopleMeetings[colllaborators[i]][meeting.id] = {
-          id: meeting.id,
-          name: await meeting.name,
-          dateInt: meeting.dateInt,
-          dateEnd: meeting.dateEnd,
-          isActive: meeting.isActive,
-          isLock: meeting.isLock,
-        };
-      }
+      //   db.peopleMeetings[colllaborators[i]][meeting.id] = {
+      //     id: meeting.id,
+      //     name: await meeting.name,
+      //     dateInt: meeting.dateInt,
+      //     dateEnd: meeting.dateEnd,
+      //     isActive: meeting.isActive,
+      //     isLock: meeting.isLock,
+      //   };
+      // }
       // ---X--- Editar reuniones por usuario ---X---
 
       localStorage.setItem(dbName, JSON.stringify(db));
@@ -285,29 +303,29 @@ const actions = {
       const meeting = await db.meetings[id];
 
       // ------- Eliminar a reunión del proyecto -------
-      const meetingProject = db.projectMeetings[meeting.project];
-      console.log("meetingProject->", meetingProject);
+      // const meetingProject = db.projectMeetings[meeting.project];
+      // console.log("meetingProject->", meetingProject);
 
-      if (meetingProject) {
-        delete db.projectMeetings[meeting.project][meeting.id];
-      }
+      // if (meetingProject) {
+      //   delete db.projectMeetings[meeting.project][meeting.id];
+      // }
       // ---X--- Eliminar a reunión del proyecto ---X---
 
       // ------- Eliminar a reunión de los usuarios -------
-      const collaborators = await meeting.collaborators;
-      console.log("collaborators->", collaborators);
+      // const collaborators = await meeting.collaborators;
+      // console.log("collaborators->", collaborators);
 
-      await collaborators.forEach(async (e) => {
-        const meetingPeople = await db.peopleMeetings[e];
-        console.log("meetingPeople->", meetingPeople);
+      // await collaborators.forEach(async (e) => {
+      //   const meetingPeople = await db.peopleMeetings[e];
+      //   console.log("meetingPeople->", meetingPeople);
 
-        if (meetingPeople) {
-          delete db.peopleMeetings[e][meeting.id];
-        }
-      });
+      //   if (meetingPeople) {
+      //     delete db.peopleMeetings[e][meeting.id];
+      //   }
+      // });
       // ---X--- Eliminar a reunión de los usuarios ---X---
 
-      // // ------- Eliminar tareas de la reunión -------
+      // ------- Eliminar tareas de la reunión -------
       // const tasks = await db.meetingTasks[meeting.id];
       // console.log("tasks->", tasks);
 
@@ -335,7 +353,7 @@ const actions = {
       //     // ---X--- Eliminar tareas del usuario ---X---
       //   });
       // }
-      // // ---X--- Eliminar tareas de la reunión ---X---
+      // ---X--- Eliminar tareas de la reunión ---X---
 
       // ------- Eliminar a reunión y referencias -------
       delete db.meetingTasks[meeting.id];

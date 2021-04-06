@@ -11,11 +11,11 @@
         <div class="main__body__section">
           <div class="main__body__section__nav">
             <h1 class="main__body__section__nav--title">
-              {{ getProject.name }}
+              {{ getTask.name }}
             </h1>
             <h3 class="main__body__section__person__subtitle"></h3>
             <router-link
-              v-for="(person, index) in getProjectPeople"
+              v-for="(person, index) in getTaskPeople"
               :key="index"
               :to="{ name: 'Person', params: { person: person.id } }"
               class="main__body__section__user"
@@ -52,7 +52,7 @@ import { mapActions, mapGetters } from "vuex";
 import TheSectionNavbar from "@/components/TheSectionNavbar";
 
 export default {
-  name: "ProjectPeople",
+  name: "TaskPeople",
   components: {
     TheSectionNavbar,
   },
@@ -60,16 +60,16 @@ export default {
     return {
       limit: parseInt(this.limit || 20),
       page: parseInt(this.page) > 0 ? parseInt(this.page || 1) : 1,
-      titleApp: "Usuarios del proyecto",
+      titleApp: "Usuarios de la tarea",
       icon: "fas fa-arrow-left",
-      link: `/proyecto/${this.$route.params.project}/editar`,
+      link: `/tarea/${this.$route.params.task}`,
       options: [
         {
           menus: [
             {
               title: "Agregar usuario",
-              link: `/proyecto/${this.$route.params.project}/usuario/nuevo`,
-              icon: "fas fa-hand-paper",
+              link: `/tarea/${this.$route.params.task}/usuario/nuevo`,
+              icon: "fas fa-user-plus",
             },
           ],
         },
@@ -77,26 +77,22 @@ export default {
     };
   },
   created() {
-    this.fetchProject(this.$route.params.project);
-    this.fetchProjectPeople({
-      id: this.$route.params.project,
-      limit: this.limit,
+    this.fetchAllTaskPeople(this.$route.params.task);
+    this.fetchTask(this.$route.params.task);
+    this.fetchTasks({
+      id: this.$route.params.task,
+      limit: this.limt,
       page: this.page,
     });
-    this.fetchAllProjectPeople();
   },
   methods: {
-    ...mapActions([
-      "fetchProjectPeople",
-      "fetchAllProjectPeople",
-      "fetchProject",
-    ]),
+    ...mapActions(["fetchAllTaskPeople", "fetchTask", "fetchTaskPeople"]),
   },
   computed: {
-    ...mapGetters(["getProjectPeople", "getAllProjectPeople", "getProject"]),
+    ...mapGetters(["getTaskPeople", "getTask", "getAllTaskPeople"]),
   },
   watch: {
-    $route: ["fetchProjectPeople", "fetchAllProjectPeople", "fetchProject"],
+    $route: ["fetchTaskPeople", "fetchTask", "fetchAllTaskPeople"],
   },
 };
 </script>

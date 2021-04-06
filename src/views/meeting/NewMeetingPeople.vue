@@ -14,31 +14,6 @@
               {{ getProject.name }}
             </h1>
             <h3 class="main__body__section__person__subtitle"></h3>
-            <router-link
-              v-for="(task, index) in getProjectTasks"
-              :key="index"
-              :to="{ name: 'Task', params: { task: task.id } }"
-              class="main__body__section__task"
-            >
-              <span class="main__body__section__task__text">
-                <i class="fas fa-clipboard-check"></i>
-                <div class="main__body__section__task__body">
-                  <span class="main__body__section__task__title">{{
-                    task.name
-                  }}</span>
-                  <span class="main__body__section__task__content"
-                    >OVA Toxomasmosis</span
-                  >
-                </div>
-              </span>
-              <span class="main__body__section__task__icon">
-                <i class="fas fa-circle"></i>
-                <i class="far fa-circle"></i>
-              </span>
-            </router-link>
-            <div v-if="getProjectTasks.length < 1">
-              No tiene tareas programadas 😊
-            </div>
           </div>
         </div>
       </div>
@@ -52,7 +27,7 @@ import { mapActions, mapGetters } from "vuex";
 import TheSectionNavbar from "@/components/TheSectionNavbar";
 
 export default {
-  name: "ProjectTasks",
+  name: "NewMeetingPeople",
   components: {
     TheSectionNavbar,
   },

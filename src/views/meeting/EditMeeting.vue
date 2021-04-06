@@ -11,14 +11,14 @@
         <div class="main__body__section">
           <div class="main__body__section__nav">
             <h1 class="main__body__section__nav--title">Editar reunión</h1>
-            <h2 class="main__body__section__nav--subtitle">
-              {{ meeting.name }}
+            <h2 class="main__body__section__person__subtitle">
+              {{ getMeeting.name }}
             </h2>
             <form @submit.prevent="putMeeting">
               <div>
                 <input
                   type="text"
-                  v-model="meeting.name"
+                  v-model="getMeeting.name"
                   id="name"
                   placeholder="Nombre de proyecto"
                   autofocus
@@ -27,45 +27,39 @@
               </div>
               <div>
                 <textarea
-                  v-model="meeting.description"
+                  v-model="getMeeting.description"
                   id="description"
-                  rows="10"
+                  rows="5"
                   placeholder="Agregue una descripción"
+                  required
                 ></textarea>
               </div>
               <div>
                 <input
                   type="datetime-local"
-                  v-model="meeting.dateInt"
+                  v-model="getMeeting.dateInt"
                   id="dateInt"
+                  required
                 />
               </div>
               <div>
                 <input
                   type="datetime-local"
-                  v-model="meeting.dateEnd"
+                  v-model="getMeeting.dateEnd"
                   id="dateEnd"
+                  required
                 />
               </div>
               <div>
-                <select
-                  multiple
-                  v-model="meeting.collaborators"
-                  id="collaborators"
-                >
-                  <option
-                    v-for="person in getAllMeetingPeople"
-                    :key="person.id"
-                    :value="person.id"
-                  >
-                    {{ person.name }} - {{ person.email }}
-                  </option>
-                </select>
+                <MeetingCollaborators :project="getMeeting.project" required />
               </div>
               <div>
-                <label
-                  ><input type="checkbox" v-model="meeting.isActive" />
-                  Estatus</label
+                <label for="isActive" class="form-label" @click="isActive"
+                  ><i
+                    :class="getMeeting.isActive ? 'fas' : 'far'"
+                    class="fa-circle"
+                  ></i>
+                  Activa</label
                 >
               </div>
               <button type="submit" class="btn-secondary">Actualizar</button>
@@ -74,23 +68,24 @@
         </div>
       </div>
     </div>
+    <pre class="container" hiddens>{{ $data }}</pre>
   </main>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
 
+import MeetingCollaborators from "@/components/MeetingCollaborators";
 import TheSectionNavbar from "@/components/TheSectionNavbar";
 
 export default {
   name: "EditMeeting",
   components: {
+    MeetingCollaborators,
     TheSectionNavbar,
   },
   data() {
     return {
-      meeting: "",
-      today: new Date(Date.now()).toISOString().substr(0, 16),
       alert: {
         error: false,
         msg: null,
@@ -108,12 +103,8 @@ export default {
       description: this.getMeeting.description,
       collaborators: this.getMeeting.collaborators,
       project: this.getMeeting.project,
-      dateInt: new Date(this.getMeeting.dateInt - 18000000)
-        .toISOString()
-        .substr(0, 16),
-      dateEnd: new Date(this.getMeeting.dateEnd - 18000000)
-        .toISOString()
-        .substr(0, 16),
+      dateInt: this.getMeeting.dateInt,
+      dateEnd: this.getMeeting.dateEnd,
       isActive: this.getMeeting.isActive,
       isLock: this.getMeeting.isLock,
       createdAt: this.getMeeting.createdAt,
@@ -122,25 +113,19 @@ export default {
   },
   created() {
     this.fetchMeeting(this.$route.params.meeting);
-    this.fetchAllMeetingPeople(this.$route.params.meeting);
   },
   methods: {
-    ...mapActions([
-      "deleteMeeting",
-      "fetchAllMeetingPeople",
-      "fetchMeeting",
-      "updateMeeting",
-    ]),
+    ...mapActions(["fetchMeeting", "updateMeeting"]),
     async putMeeting() {
       if (
         this.meeting.name.trim() === "" ||
         this.meeting.description.trim() === "" ||
         this.meeting.collaborators === "" ||
-        this.meeting.dateInt === null ||
-        this.meeting.dateEnd == null
+        this.meeting.dateInt === "" ||
+        this.meeting.dateEnd == ""
       ) {
         this.alert.error = true;
-        this.alert.msg = `Ni el nombre ni la descripción pueden estar vacios.`;
+        this.alert.msg = `Los campos no pueden estar vacios.`;
 
         setTimeout(() => {
           this.alert.error = false;
@@ -175,6 +160,9 @@ export default {
         });
       }
     },
+    async isActive() {
+      this.meeting.isActive = !this.meeting.isActive;
+    },
     async removeMeeting() {
       if (window.confirm(`Está a punto de borrar un elemento`)) {
         await this.deleteMeeting(this.$route.params.meeting);
@@ -184,10 +172,10 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["getMeeting", "getAllMeetingPeople"]),
+    ...mapGetters(["getMeeting"]),
   },
   watch: {
-    $route: ["fetchMeeting", "fetchAllMeetingPeople"],
+    $route: ["fetchMeeting"],
   },
 };
 </script>

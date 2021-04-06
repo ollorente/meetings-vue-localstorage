@@ -20,7 +20,7 @@
               class="main__body__section__person__avatar--img"
             />
           </p>
-          <h1 class="main__body__section__person__title">
+          <h1 class="main__body__section__nav--title">
             {{ getPerson.name }}
           </h1>
           <h3 class="main__body__section__person__subtitle">

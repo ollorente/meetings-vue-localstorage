@@ -1,21 +1,21 @@
 import { db } from "@/main";
 
 const state = {
-  projectsPeople: [],
+  taskPeople: [],
 };
 
 const getters = {
-  getAllProjectPeople: (state) => state.projectsPeople,
-  getProjectPeople: (state) => state.projectsPeople,
+  getAllTaskPeople: (state) => state.taskPeople,
+  getTaskPeople: (state) => state.taskPeople,
 };
 
 const actions = {
-  async fetchProjectPeople({ commit }, data) {
+  async fetchTaskPeople({ commit }, data) {
     try {
       const limit = data.limit ? data.limit : 20;
       const page = (data.page - 1) * data.limit || 0;
 
-      const people = Object.values(db.projectPeople[data.id])
+      const people = Object.values(db.taskPeople[data.id])
         .filter((e) => e.isLock === false)
         .filter((e) => e.isActive === true)
         .sort(function (a, b) {
@@ -38,15 +38,15 @@ const actions = {
           };
         });
 
-      commit("SET_PROJECT_PEEOPLE", people);
+      commit("SET_TASK_PEOPLE", people);
     } catch (error) {
       if (error) return;
     }
   },
 
-  async fetchAllProjectPeople({ commit }, id) {
+  async fetchAllTaskPeople({ commit }, id) {
     try {
-      const people = Object.values(db.projectPeople[id])
+      const people = Object.values(db.taskPeople[id])
         .filter((e) => e.isLock === false)
         .filter((e) => e.isActive === true)
         .sort(function (a, b) {
@@ -68,36 +68,7 @@ const actions = {
           };
         });
 
-      commit("SET_ALL_PROJECT_PEEOPLE", people);
-    } catch (error) {
-      if (error) return;
-    }
-  },
-
-  async updateProjectPeople({ commit }, data) {
-    try {
-      delete db.projectPeople[data.id];
-      const peopleProject = await db.projectPeople[data.id];
-
-      if (!peopleProject) {
-        db.projectPeople[data.id] = {};
-      }
-
-      const people = await data.collaborators;
-
-      for (let i = 0; i < people.length; i++) {
-        const person = await db.people[person[i]];
-
-        db.projectPeople[data.id][person.id] = {
-          id: person[i].id,
-          name: person[i].name,
-          email: person[i].email,
-          isActive: person[i].isActive,
-          isLock: person[i].isLock,
-        };
-      }
-
-      commit("SET_UPDATE_PROJECT_PEOPLE", people);
+      commit("SET_ALL_TASK_PEOPLE", people);
     } catch (error) {
       if (error) return;
     }
@@ -105,10 +76,8 @@ const actions = {
 };
 
 const mutations = {
-  SET_ALL_PROJECT_PEEOPLE: (state, project) => (state.projectsPeople = project),
-  SET_PROJECT_PEEOPLE: (state, project) => (state.projectsPeople = project),
-  SET_UPDATE_PROJECT_PEOPLE: (state, project) =>
-    (state.projectsPeople = project),
+  SET_ALL_TASK_PEOPLE: (state, people) => (state.taskPeople = people),
+  SET_TASK_PEOPLE: (state, people) => (state.taskPeople = people),
 };
 
 export default {

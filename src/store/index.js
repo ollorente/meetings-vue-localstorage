@@ -12,6 +12,7 @@ import projectMeetings from "./modules/projectMeetings";
 import projectPeople from "./modules/projectPeople";
 import projectTasks from "./modules/projectTasks";
 import task from "./modules/task";
+import taskPeople from "./modules/taskPeople";
 
 Vue.use(Vuex);
 
@@ -32,5 +33,6 @@ export default new Vuex.Store({
     projectMeetings,
     projectTasks,
     task,
+    taskPeople,
   },
 });

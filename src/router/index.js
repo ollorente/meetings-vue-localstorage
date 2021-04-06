@@ -43,7 +43,7 @@ const routes = [
     meta: { title: `Reuniones del proyecto ${BASE_URL_TITLE}` },
   },
   {
-    path: "/proyecto/:project/reunion-nueva",
+    path: "/proyecto/:project/reunion/nueva", // TODO - Montar en el store.
     name: "NewProjectMeeting",
     component: () => import("../views/project/NewProjectMeeting.vue"),
     meta: { title: `Nueva reunión de proyecto ${BASE_URL_TITLE}` },
@@ -61,6 +61,12 @@ const routes = [
     meta: { title: `Usuarios del proyecto ${BASE_URL_TITLE}` },
   },
   {
+    path: "/proyecto/:project/usuario/nuevo", // TODO - Montar en el store.
+    name: "NewProjectPerson",
+    component: () => import("../views/project/NewProjectPerson.vue"),
+    meta: { title: `Usuarios del proyecto ${BASE_URL_TITLE}` },
+  },
+  {
     path: "/proyecto/:project/tarea/:task", // TODO - Montar en el store.
     name: "ProjectTask",
     component: () => import("../views/project/ProjectTask.vue"),
@@ -74,6 +80,12 @@ const routes = [
   },
   {
     path: "/reunion/:meeting",
+    name: "Meeting",
+    component: () => import("../views/meeting/Meeting.vue"),
+    meta: { title: `Reunión ${BASE_URL_TITLE}` },
+  },
+  {
+    path: "/proyecto/:project/reunion/:meeting",
     name: "Meeting",
     component: () => import("../views/meeting/Meeting.vue"),
     meta: { title: `Reunión ${BASE_URL_TITLE}` },
@@ -104,9 +116,9 @@ const routes = [
   },
   {
     path: "/reunion/:meeting/usuario/nuevo", // TODO - Montar en el store.
-    name: "NewMeetingPerson",
-    component: () => import("../views/meeting/Meeting.vue"),
-    meta: { title: `Nuevo usuarios a la reunión ${BASE_URL_TITLE}` },
+    name: "NewMeetingPeople",
+    component: () => import("../views/meeting/NewMeetingPeople.vue"),
+    meta: { title: `Nuevo usuario a la reunión ${BASE_URL_TITLE}` },
   },
   {
     path: "/tarea/:task", // TODO - Montar en el store.
@@ -123,8 +135,14 @@ const routes = [
   {
     path: "/tarea/:task/usuarios", // TODO - Montar en el store.
     name: "TaskPeople",
-    component: () => import("../views/task/Task.vue"),
-    meta: { title: `Tarea ${BASE_URL_TITLE}` },
+    component: () => import("../views/task/TaskPeople.vue"),
+    meta: { title: `Usuarios de la tarea ${BASE_URL_TITLE}` },
+  },
+  {
+    path: "/tarea/:task/usuario/nuevo", // TODO - Montar en el store.
+    name: "NewTaskPerson",
+    component: () => import("../views/task/NewTaskPerson.vue"),
+    meta: { title: `Nuevo usuario a la Tarea ${BASE_URL_TITLE}` },
   },
   {
     path: "/usuarios",

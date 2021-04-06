@@ -48,6 +48,12 @@
                 }}</span></span
               >
             </p>
+            <p class="main__body__section__person__block"></p>
+            <form class="main__body__section__person__block">
+              <button @click="removeMeeting" class="btn-outline-s-dark">
+                Eliminar
+              </button>
+            </form>
           </div>
         </div>
       </div>
@@ -97,7 +103,14 @@ export default {
     this.fetchMeeting(this.$route.params.meeting);
   },
   methods: {
-    ...mapActions(["fetchMeeting"]),
+    ...mapActions(["fetchMeeting", "deleteMeeting"]),
+    async removeMeeting() {
+      if (window.confirm(`Está a punto de borrar un elemento`)) {
+        await this.deleteMeeting(this.$route.params.meeting);
+
+        await this.$router.replace({ name: "Meetings" });
+      }
+    },
   },
   computed: {
     ...mapGetters(["getMeeting"]),

@@ -1,61 +1,87 @@
 <template>
-  <div class="edit-task">
-    <h1 style="margin: 0">Editar "{{ task.name }}"</h1>
-    <p>
-      <a href="#" @click="deleteTask" class="link">Eliminar</a>
-      |
-      <router-link
-        :to="{ name: 'Task', params: { task: task.id } }"
-        class="link"
-        >Volver</router-link
-      >
-    </p>
-    <form @submit.prevent="updateTask">
-      <div>
-        <input
-          type="text"
-          v-model="task.name"
-          id="name"
-          placeholder="Nombre de proyecto"
-          autofocus
-          required
-        />
+  <main class="main">
+    <TheSectionNavbar
+      :titleApp="titleApp"
+      :icon="icon"
+      :link="link"
+      :options="options"
+    />
+    <div class="main__body">
+      <div class="main__body__content">
+        <div class="main__body__section">
+          <div class="main__body__section__nav">
+            <h1 style="margin: 0">Editar "{{ task.name }}"</h1>
+            <form @submit.prevent="updateTask">
+              <div>
+                <input
+                  type="text"
+                  v-model="task.name"
+                  id="name"
+                  placeholder="Nombre de proyecto"
+                  autofocus
+                  required
+                />
+              </div>
+              <div>
+                <textarea
+                  v-model="task.description"
+                  id="description"
+                  rows="10"
+                  placeholder=" Agregue una descripción"
+                ></textarea>
+              </div>
+              <div>
+                <select
+                  multiple
+                  v-model="task.collaborators"
+                  id="collaborators"
+                >
+                  <option
+                    v-for="person in people"
+                    :key="person.id"
+                    :value="person.id"
+                  >
+                    {{ person.name }} - {{ person.email }}
+                  </option>
+                </select>
+              </div>
+              <div>
+                <label
+                  ><input type="checkbox" v-model="task.start" />
+                  Iniciada</label
+                >
+              </div>
+              <div>
+                <label
+                  ><input type="checkbox" v-model="task.check" />
+                  Terminada</label
+                >
+              </div>
+              <div>
+                <label
+                  ><input type="checkbox" v-model="task.isActive" />
+                  Estatus</label
+                >
+              </div>
+              <button type="submit">Editar</button>
+            </form>
+          </div>
+        </div>
       </div>
-      <div>
-        <textarea v-model="task.description" id="description" rows="10">
-          Agregue una descripción</textarea
-        >
-      </div>
-      <div>
-        <select multiple v-model="task.collaborators" id="collaborators">
-          <option v-for="person in people" :key="person.id" :value="person.id">
-            {{ person.name }} - {{ person.email }}
-          </option>
-        </select>
-      </div>
-      <div>
-        <label><input type="checkbox" v-model="task.start" /> Iniciada</label>
-      </div>
-      <div>
-        <label><input type="checkbox" v-model="task.check" /> Terminada</label>
-      </div>
-      <div>
-        <label><input type="checkbox" v-model="task.isActive" /> Estatus</label>
-      </div>
-      <button type="submit">Editar</button>
-    </form>
-    <div id="alert" v-if="alert.error">
-      {{ alert.msg }}
     </div>
-  </div>
+  </main>
 </template>
 
 <script>
 import { db, dbName } from "@/main";
 
+import TheSectionNavbar from "@/components/TheSectionNavbar";
+
 export default {
   name: "EditTask",
-  components: {},
+  components: {
+    TheSectionNavbar,
+  },
   data() {
     return {
       task: {
@@ -76,6 +102,10 @@ export default {
         error: true,
         msg: null,
       },
+      titleApp: "Tareas",
+      icon: "fas fa-arrow-left",
+      link: `/tarea/${this.$route.params.meeting}`,
+      options: [],
     };
   },
   created() {

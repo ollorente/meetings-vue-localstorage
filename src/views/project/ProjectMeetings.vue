@@ -10,7 +10,7 @@
       <div class="main__body__content">
         <div class="main__body__section">
           <div class="main__body__section__nav">
-            <h1 class="main__body__section__person__title">
+            <h1 class="main__body__section__nav--title">
               {{ getProject.name }}
             </h1>
             <h3 class="main__body__section__person__subtitle"></h3>
@@ -52,6 +52,9 @@
                 </span>
               </router-link>
             </div>
+            <div v-if="getProjectMeetings.length < 1">
+              No tiene reuniones programadas 😊
+            </div>
           </div>
         </div>
       </div>
@@ -76,7 +79,17 @@ export default {
       titleApp: "Reuniones del proyecto",
       icon: "fas fa-arrow-left",
       link: `/proyecto/${this.$route.params.project}`,
-      options: [],
+      options: [
+        {
+          menus: [
+            {
+              title: "Agregar reunión",
+              link: `/proyecto/${this.$route.params.project}/reunion/nueva`,
+              icon: "fas fa-hand-paper",
+            },
+          ],
+        },
+      ],
     };
   },
   created() {

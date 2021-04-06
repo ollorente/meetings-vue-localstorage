@@ -1,50 +1,61 @@
 <template>
-  <div class="tasks">
-    <h1 style="margin: 0">
-      {{ total }}
-      {{ total === 1 ? "Tarea del proyecto" : "Tareas del proyecto" }}
-    </h1>
-    <p>
-      <router-link :to="{ name: 'NewProjectTask' }" class="link"
-        >Agregar</router-link
-      >
-      |
-      <router-link
-        :to="{ name: 'Project', params: { project: $route.params.project } }"
-        class="link"
-        >Volver</router-link
-      >
-    </p>
-    <p v-for="(task, index) in tasks" :key="index" class="parrafo">
-      <span class="parrafo__info">
-        <span class="parrafo__info__number">{{ index + 1 }}</span>
-        <span class="parrafo__info__name"
-          ><router-link
-            :to="{ name: 'Task', params: { task: task.id } }"
-            class="link"
-            >{{ task.name }}</router-link
-          ></span
-        ></span
-      >
-      <span class="parrafo__status">{{
-        task.isActive ? "Activo" : "Inactivo"
-      }}</span>
-    </p>
-  </div>
+  <main class="main">
+    <TheSectionNavbar
+      :titleApp="titleApp"
+      :icon="icon"
+      :link="link"
+      :options="options"
+    />
+    <div class="main__body">
+      <div class="main__body__content">
+        <div class="main__body__section">
+          <div class="main__body__section__nav">
+            <h1 style="margin: 0">
+              {{ total }}
+              {{ total === 1 ? "Tarea del proyecto" : "Tareas del proyecto" }}
+            </h1>
+            <p v-for="(task, index) in tasks" :key="index" class="parrafo">
+              <span class="parrafo__info">
+                <span class="parrafo__info__number">{{ index + 1 }}</span>
+                <span class="parrafo__info__name"
+                  ><router-link
+                    :to="{ name: 'Task', params: { task: task.id } }"
+                    class="link"
+                    >{{ task.name }}</router-link
+                  ></span
+                ></span
+              >
+              <span class="parrafo__status">{{
+                task.isActive ? "Activo" : "Inactivo"
+              }}</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
 </template>
 
 <script>
 import { db } from "@/main";
 
+import TheSectionNavbar from "@/components/TheSectionNavbar";
+
 export default {
   name: "MeetingTasks",
-  components: {},
+  components: {
+    TheSectionNavbar,
+  },
   data() {
     return {
       limit: parseInt(this.limit || 20),
       page: parseInt(this.page) > 0 ? parseInt(this.page || 1) : 1,
       total: 0,
       tasks: [],
+      titleApp: "Tareas",
+      icon: "fas fa-arrow-left",
+      link: `/tarea/${this.$route.params.meeting}`,
+      options: [],
     };
   },
   created() {
