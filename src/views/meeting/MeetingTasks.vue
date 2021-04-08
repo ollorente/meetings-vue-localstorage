@@ -4,10 +4,8 @@
     <main>
       <section class="section">
         <h1 class="title">{{ getMeeting.name }}</h1>
-        <Task v-for='task in getMeetingTasks' :key='task.id' :task='task' />
-        <div class='card-alert' v-if='getMeetingTasks.length < 1'>
-          No hay tareas 😁
-        </div>
+        <Task v-for='task in tasks' :key='task.id' :task='task' />
+        <infinite-loading @infinite="infiniteHandler"></infinite-loading>
       </section>
     </main>
   </div>
@@ -15,6 +13,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import InfiniteLoading from 'vue-infinite-loading'
 
 import TheNavbar from '@/components/TheNavbar'
 import Task from '@/components/gadgets/Task'
@@ -23,7 +22,8 @@ export default {
   name: 'MeetingTasks',
   components: {
     TheNavbar,
-    Task
+    Task,
+    InfiniteLoading
   },
   data () {
     return {
@@ -51,20 +51,34 @@ export default {
           ]
         }
       ],
+      tasks: [],
       limit: 10,
-      page: 1
+      page: 0
     }
   },
   created () {
     this.fetchMeeting(this.$route.params.meeting)
-    this.fetchMeetingTasks({
-      id: this.$route.params.meeting,
-      limit: this.limit,
-      page: this.page
-    })
   },
   methods: {
-    ...mapActions(['fetchMeetingTasks', 'fetchMeeting'])
+    ...mapActions(['fetchMeetingTasks', 'fetchMeeting']),
+    async infiniteHandler ($state) {
+      this.page++
+
+      this.fetchMeetingTasks({
+        id: this.$route.params.meeting,
+        limit: this.limit,
+        page: this.page
+      })
+
+      let tasks = await this.getMeetingTasks
+
+      if (tasks.length) {
+        this.tasks = this.tasks.concat(tasks)
+        $state.loaded()
+      } else {
+        $state.complete()
+      }
+    }
   },
   computed: {
     ...mapGetters(['getMeetingTasks', 'getMeeting'])

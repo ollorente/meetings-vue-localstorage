@@ -5,10 +5,8 @@
       <TheSecondNavbar />
 
       <section class='section'>
-        <User v-for='person in getPeople' :key='person.id' :person='person' />
-        <div class='card-alert' v-if='getPeople.length < 1'>
-          No hay usuarios 😒
-        </div>
+        <User v-for='person in people' :key='person.id' :person='person' />
+        <infinite-loading @infinite="infiniteHandler"></infinite-loading>
       </section>
     </main>
   </div>
@@ -16,6 +14,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import InfiniteLoading from 'vue-infinite-loading'
 
 import TheNavbar from '@/components/TheNavbar'
 import TheSecondNavbar from '@/components/TheSecondNavbar'
@@ -26,7 +25,8 @@ export default {
   components: {
     TheNavbar,
     TheSecondNavbar,
-    User
+    User,
+    InfiniteLoading
   },
   data () {
     return {
@@ -49,18 +49,30 @@ export default {
           ]
         }
       ],
+      people: [],
       limit: 10,
-      page: 1
+      page: 0
     }
   },
-  created () {
-    this.fetchPeople({
-      limit: this.limit,
-      page: this.page
-    })
-  },
   methods: {
-    ...mapActions(['fetchPeople'])
+    ...mapActions(['fetchPeople']),
+    async infiniteHandler ($state) {
+      this.page++
+
+      this.fetchPeople({
+        limit: this.limit,
+        page: this.page
+      })
+
+      let people = await this.getPeople
+
+      if (people.length) {
+        this.people = this.people.concat(people)
+        $state.loaded()
+      } else {
+        $state.complete()
+      }
+    }
   },
   computed: {
     ...mapGetters(['getPeople'])

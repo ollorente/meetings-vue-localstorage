@@ -4,10 +4,8 @@
     <main>
       <section class="section">
         <h1 class="title">{{ getProject.name }}</h1>
-        <Task v-for='task in getProjectTasks' :key='task.id' :task='task' />
-        <div class='card-alert' v-if='getProjectTasks.length < 1'>
-          No hay tareas 😁
-        </div>
+        <Task v-for='task in tasks' :key='task.id' :task='task' />
+        <infinite-loading @infinite="infiniteHandler"></infinite-loading>
       </section>
     </main>
   </div>
@@ -15,6 +13,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import InfiniteLoading from 'vue-infinite-loading'
 
 import TheNavbar from '@/components/TheNavbar'
 import Task from '@/components/gadgets/Task'
@@ -23,7 +22,8 @@ export default {
   name: 'ProjectTasks',
   components: {
     TheNavbar,
-    Task
+    Task,
+    InfiniteLoading
   },
   data () {
     return {
@@ -39,20 +39,34 @@ export default {
           menus: []
         }
       ],
+      tasks: [],
       limit: 10,
-      page: 1
+      page: 0
     }
   },
   created () {
     this.fetchProject(this.$route.params.project)
-    this.fetchProjectTasks({
-      id: this.$route.params.project,
-      limit: this.limit,
-      page: this.page
-    })
   },
   methods: {
-    ...mapActions(['fetchProjectTasks', 'fetchProject'])
+    ...mapActions(['fetchProjectTasks', 'fetchProject']),
+    async infiniteHandler ($state) {
+      this.page++
+
+      this.fetchProjectTasks({
+        id: this.$route.params.project,
+        limit: this.limit,
+        page: this.page
+      })
+
+      let tasks = await this.getProjectTasks
+
+      if (tasks.length) {
+        this.tasks = this.tasks.concat(tasks)
+        $state.loaded()
+      } else {
+        $state.complete()
+      }
+    }
   },
   computed: {
     ...mapGetters(['getProjectTasks', 'getProject'])

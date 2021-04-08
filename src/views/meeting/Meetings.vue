@@ -5,10 +5,8 @@
       <TheSecondNavbar />
 
       <section class="section">
-        <Meeting v-for='meeting in getMeetings' :key='meeting.id' :meeting='meeting' />
-        <div class='card-alert' v-if='getMeetings.length < 1'>
-          No hay reuniones 😒
-        </div>
+        <Meeting v-for='meeting in meetings' :key='meeting.id' :meeting='meeting' />
+        <infinite-loading @infinite="infiniteHandler"></infinite-loading>
       </section>
     </main>
   </div>
@@ -16,6 +14,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import InfiniteLoading from 'vue-infinite-loading'
 
 import TheNavbar from '@/components/TheNavbar'
 import TheSecondNavbar from '@/components/TheSecondNavbar'
@@ -26,7 +25,8 @@ export default {
   components: {
     TheNavbar,
     TheSecondNavbar,
-    Meeting
+    Meeting,
+    InfiniteLoading
   },
   data () {
     return {
@@ -42,18 +42,30 @@ export default {
           menus: []
         }
       ],
+      meetings: [],
       limit: 10,
-      page: 1
+      page: 0
     }
   },
-  created () {
-    this.fetchMeetings({
-      limit: this.limit,
-      page: this.page
-    })
-  },
   methods: {
-    ...mapActions(['fetchMeetings'])
+    ...mapActions(['fetchMeetings']),
+    async infiniteHandler ($state) {
+      this.page++
+
+      this.fetchMeetings({
+        limit: this.limit,
+        page: this.page
+      })
+
+      let meetings = await this.getMeetings
+
+      if (meetings.length) {
+        this.meetings = this.meetings.concat(meetings)
+        $state.loaded()
+      } else {
+        $state.complete()
+      }
+    }
   },
   computed: {
     ...mapGetters(['getMeetings'])

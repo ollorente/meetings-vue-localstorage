@@ -4,10 +4,8 @@
     <main>
       <section class="section">
         <h1 class="title">{{ getPerson.name }}</h1>
-        <Meeting v-for='meeting in getPeopleMeetings' :key='meeting.id' :meeting='meeting' />
-        <div class='card-alert' v-if='getPeopleMeetings.length < 1'>
-          No hay reuniones 😒
-        </div>
+        <Meeting v-for='meeting in meetings' :key='meeting.id' :meeting='meeting' />
+        <infinite-loading @infinite="infiniteHandler"></infinite-loading>
       </section>
     </main>
   </div>
@@ -15,6 +13,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import InfiniteLoading from 'vue-infinite-loading'
 
 import TheNavbar from '@/components/TheNavbar'
 import Meeting from '@/components/gadgets/Meeting'
@@ -23,7 +22,8 @@ export default {
   name: 'PersonPeopleMeetings',
   components: {
     TheNavbar,
-    Meeting
+    Meeting,
+    InfiniteLoading
   },
   data () {
     return {
@@ -39,20 +39,34 @@ export default {
           menus: []
         }
       ],
+      meetings: [],
       limit: 10,
-      page: 1
+      page: 0
     }
   },
   created () {
     this.fetchPerson(this.$route.params.person)
-    this.fetchPeopleMeetings({
-      id: this.$route.params.person,
-      limit: this.limit,
-      page: this.page
-    })
   },
   methods: {
-    ...mapActions(['fetchPeopleMeetings', 'fetchPerson'])
+    ...mapActions(['fetchPeopleMeetings', 'fetchPerson']),
+    async infiniteHandler ($state) {
+      this.page++
+
+      this.fetchPeopleMeetings({
+        id: this.$route.params.person,
+        limit: this.limit,
+        page: this.page
+      })
+
+      let meetings = await this.getPeopleMeetings
+
+      if (meetings.length) {
+        this.meetings = this.meetings.concat(meetings)
+        $state.loaded()
+      } else {
+        $state.complete()
+      }
+    }
   },
   computed: {
     ...mapGetters(['getPeopleMeetings', 'getPerson'])

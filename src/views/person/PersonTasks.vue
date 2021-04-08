@@ -4,10 +4,8 @@
     <main>
       <section class="section">
         <h1 class="title">{{ getPerson.name }}</h1>
-        <Task v-for='task in getPersonTasks' :key='task.id' :task='task' />
-        <div class='card-alert' v-if='getPersonTasks.length < 1'>
-          No hay tareas 😁
-        </div>
+        <Task v-for='task in tasks' :key='task.id' :task='task' />
+        <infinite-loading @infinite="infiniteHandler"></infinite-loading>
       </section>
     </main>
   </div>
@@ -15,6 +13,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import InfiniteLoading from 'vue-infinite-loading'
 
 import TheNavbar from '@/components/TheNavbar'
 import Task from '@/components/gadgets/Task'
@@ -23,7 +22,8 @@ export default {
   name: 'PersonTasks',
   components: {
     TheNavbar,
-    Task
+    Task,
+    InfiniteLoading
   },
   data () {
     return {
@@ -39,20 +39,34 @@ export default {
           menus: []
         }
       ],
+      tasks: [],
       limit: 10,
-      page: 1
+      page: 0
     }
   },
   created () {
     this.fetchPerson(this.$route.params.person)
-    this.fetchPersonTasks({
-      id: this.$route.params.person,
-      limit: this.limit,
-      page: this.page
-    })
   },
   methods: {
-    ...mapActions(['fetchPersonTasks', 'fetchPerson'])
+    ...mapActions(['fetchPersonTasks', 'fetchPerson']),
+    async infiniteHandler ($state) {
+      this.page++
+
+      this.fetchPersonTasks({
+        id: this.$route.params.person,
+        limit: this.limit,
+        page: this.page
+      })
+
+      let tasks = await this.getPersonTasks
+
+      if (tasks.length) {
+        this.tasks = this.tasks.concat(tasks)
+        $state.loaded()
+      } else {
+        $state.complete()
+      }
+    }
   },
   computed: {
     ...mapGetters(['getPersonTasks', 'getPerson'])

@@ -4,10 +4,8 @@
     <main>
       <section class="section">
         <h1 class="title">{{ getPerson.name }}</h1>
-        <Project v-for='project in getPeopleProjects' :key='project.id' :project='project' />
-        <div class='card-alert' v-if='getPeopleProjects.length < 1'>
-          No hay proyectos 😒
-        </div>
+        <Project v-for='project in projects' :key='project.id' :project='project' />
+        <infinite-loading @infinite="infiniteHandler"></infinite-loading>
       </section>
     </main>
   </div>
@@ -15,6 +13,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import InfiniteLoading from 'vue-infinite-loading'
 
 import TheNavbar from '@/components/TheNavbar'
 import Project from '@/components/gadgets/Project'
@@ -23,7 +22,8 @@ export default {
   name: 'PersonProjects',
   components: {
     TheNavbar,
-    Project
+    Project,
+    InfiniteLoading
   },
   data () {
     return {
@@ -39,20 +39,34 @@ export default {
           menus: []
         }
       ],
+      projects: [],
       limit: 10,
-      page: 1
+      page: 0
     }
   },
   created () {
     this.fetchPerson(this.$route.params.person)
-    this.fetchPeopleProjects({
-      id: this.$route.params.person,
-      limit: this.limit,
-      page: this.page
-    })
   },
   methods: {
-    ...mapActions(['fetchPeopleProjects', 'fetchPerson'])
+    ...mapActions(['fetchPeopleProjects', 'fetchPerson']),
+    async infiniteHandler ($state) {
+      this.page++
+
+      this.fetchPeopleProjects({
+        id: this.$route.params.person,
+        limit: this.limit,
+        page: this.page
+      })
+
+      let projects = await this.getPeopleProjects
+
+      if (projects.length) {
+        this.projects = this.projects.concat(projects)
+        $state.loaded()
+      } else {
+        $state.complete()
+      }
+    }
   },
   computed: {
     ...mapGetters(['getPeopleProjects', 'getPerson'])

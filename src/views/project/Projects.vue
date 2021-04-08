@@ -5,10 +5,8 @@
       <TheSecondNavbar />
 
       <section class="section">
-        <Project v-for='project in getProjects' :key='project.id' :project='project' />
-        <div class='card-alert' v-if='getProjects.length < 1'>
-          No hay proyectos 😒
-        </div>
+        <Project v-for='project in projects' :key='project.id' :project='project' />
+        <infinite-loading @infinite="infiniteHandler"></infinite-loading>
       </section>
     </main>
   </div>
@@ -16,6 +14,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import InfiniteLoading from 'vue-infinite-loading'
 
 import TheNavbar from '@/components/TheNavbar'
 import TheSecondNavbar from '@/components/TheSecondNavbar'
@@ -26,7 +25,8 @@ export default {
   components: {
     TheNavbar,
     TheSecondNavbar,
-    Project
+    Project,
+    InfiniteLoading
   },
   data () {
     return {
@@ -49,18 +49,30 @@ export default {
           ]
         }
       ],
+      projects: [],
       limit: 10,
-      page: 1
+      page: 0
     }
   },
-  created () {
-    this.fetchProjects({
-      limit: this.limit,
-      page: this.page
-    })
-  },
   methods: {
-    ...mapActions(['fetchProjects'])
+    ...mapActions(['fetchProjects']),
+    async infiniteHandler ($state) {
+      this.page++
+
+      this.fetchProjects({
+        limit: this.limit,
+        page: this.page
+      })
+
+      let projects = await this.getProjects
+
+      if (projects.length) {
+        this.projects = this.projects.concat(projects)
+        $state.loaded()
+      } else {
+        $state.complete()
+      }
+    }
   },
   computed: {
     ...mapGetters(['getProjects'])

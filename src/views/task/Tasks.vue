@@ -5,10 +5,8 @@
       <TheSecondNavbar />
 
       <section class="section">
-        <Task v-for='task in getTasks' :key='task.id' :task='task' />
-        <div class='card-alert' v-if='getTasks.length < 1'>
-          No hay tareas 😁
-        </div>
+        <Task v-for='task in tasks' :key='task.id' :task='task' />
+        <infinite-loading @infinite="infiniteHandler"></infinite-loading>
       </section>
     </main>
   </div>
@@ -16,6 +14,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import InfiniteLoading from 'vue-infinite-loading'
 
 import TheNavbar from '@/components/TheNavbar'
 import TheSecondNavbar from '@/components/TheSecondNavbar'
@@ -26,7 +25,8 @@ export default {
   components: {
     TheNavbar,
     TheSecondNavbar,
-    Task
+    Task,
+    InfiniteLoading
   },
   data () {
     return {
@@ -42,18 +42,30 @@ export default {
           menus: []
         }
       ],
+      tasks: [],
       limit: 10,
-      page: 1
+      page: 0
     }
   },
-  created () {
-    this.fetchTasks({
-      limit: this.limit,
-      page: this.page
-    })
-  },
   methods: {
-    ...mapActions(['fetchTasks'])
+    ...mapActions(['fetchTasks']),
+    async infiniteHandler ($state) {
+      this.page++
+
+      this.fetchTasks({
+        limit: this.limit,
+        page: this.page
+      })
+
+      let tasks = await this.getTasks
+
+      if (tasks.length) {
+        this.tasks = this.tasks.concat(tasks)
+        $state.loaded()
+      } else {
+        $state.complete()
+      }
+    }
   },
   computed: {
     ...mapGetters(['getTasks'])
