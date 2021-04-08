@@ -6,32 +6,33 @@
         <Alert :msg="alert.msg" v-if="alert.error" />
         <h1 class="title">Crear proyecto</h1>
         <form @submit.prevent="newProject">
-              <div>
-                <input
-                  type="text"
-                  v-model="project.name"
-                  placeholder="Nombre de proyecto"
-                  autofocus
-                  required
-                />
-              </div>
-              <ckeditor :editor="editor" v-model="project.description" :config="editorConfig"></ckeditor>
-              <div>
-                <select
-                  multiple
-                  v-model="project.collaborators"
-                >
-                  <option
-                    v-for="person in getAllPeople"
-                    :key="person.id"
-                    :value="person.id"
-                  >
-                    {{ person.name }} - {{ person.email }}
-                  </option>
-                </select>
-              </div>
-              <button type="submit" class="btn-p-light">Agregar</button>
-            </form>
+          <div>
+            <input
+              type="text"
+              v-model="project.name"
+              placeholder="Nombre de proyecto"
+              autofocus
+              required
+            />
+          </div>
+          <ckeditor
+            :editor="editor"
+            v-model="project.description"
+            :config="editorConfig"
+          ></ckeditor>
+          <div>
+            <select multiple v-model="project.collaborators">
+              <option
+                v-for="person in getAllPeople"
+                :key="person.id"
+                :value="person.id"
+              >
+                {{ person.name }} - {{ person.email }}
+              </option>
+            </select>
+          </div>
+          <button type="submit" class="btn-p-light">Agregar</button>
+        </form>
       </section>
     </main>
   </div>
