@@ -364,6 +364,8 @@ body {
         align-items: center;
         margin-bottom: 1rem;
         color: var(--dark);
+        border-bottom: solid 1px var(--gray);
+        padding-bottom: 1rem;
 
         .main__section__user__logo {
           width: 3rem;
@@ -390,12 +392,16 @@ body {
         margin-bottom: 1rem;
 
         .main__section__link {
+          width: 100%;
           display: flex;
           justify-content: space-between;
           align-items: flex-start;
           border-bottom: solid 1 var(--dark);
+          border-bottom: solid 1px var((--gray));
+          padding-bottom: 1rem;
 
           .main__section__link__text {
+            width: calc(100% - 2rem);
             font-size: 1.1rem;
             color: var(--dark);
             display: flex;
