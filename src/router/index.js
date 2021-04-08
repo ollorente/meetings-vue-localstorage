@@ -183,7 +183,7 @@ const routes = [
     }
   },
   {
-    path: '/usuario/nuevo', // TODO -> Hacer lógica de la vista
+    path: '/usuario/nuevo',
     name: 'NewPerson',
     component: () => import('../views/person/NewPerson.vue'),
     meta: {
@@ -191,7 +191,7 @@ const routes = [
     }
   },
   {
-    path: '/usuario/:person', // TODO -> Hacer lógica de la vista
+    path: '/usuario/:person',
     name: 'Person',
     component: () => import('../views/person/Person.vue'),
     meta: {
