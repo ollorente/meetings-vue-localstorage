@@ -1,122 +1,70 @@
 <template>
-  <main class="main">
-    <TheSectionNavbar
-      :titleApp="titleApp"
-      :icon="icon"
-      :link="link"
-      :options="options"
-    />
-    <div class="main__body">
-      <div class="main__body__content">
-        <div class="main__body__section">
-          <div class="main__body__section__nav">
-            <h1 class="main__body__section__nav--title">Reunión</h1>
-            <h2 class="main__body__section__nav--subtitle">
-              {{ getMeeting.name }}
-            </h2>
-            <div v-html="getMeeting.description"></div>
-            <p>
-              <span class="parrafo__status" style="display: flex">
-                <span
-                  style="padding: 0 0.5rem; font-size: 2rem; font-weight: 600"
-                  >{{
-                    new Date(getMeeting.dateInt).toString().split(" ")[2]
-                  }}</span
-                >
-                <span
-                  >{{ new Date(getMeeting.dateInt).toString().split(" ")[4]
-                  }}<br />{{
-                    new Date(getMeeting.dateEnd).toString().split(" ")[4]
-                  }}</span
-                >
-              </span>
-            </p>
-            <p style="text-align: left; padding: 0 1rem">
-              <b>{{ getMeeting.isActive ? "Activo" : "Inactivo" }}</b
-              ><br />
-              <span
-                ><b>Creado: </b
-                ><span>{{
-                  new Date(getMeeting.createdAt).toLocaleDateString()
-                }}</span>
-              </span>
-              <span v-if="getMeeting.createdAt !== getMeeting.updatedAt"
-                ><br />
-                <b>Actualizado: </b
-                ><span>{{
-                  new Date(getMeeting.updatedAt).toLocaleDateString()
-                }}</span></span
-              >
-            </p>
-            <p class="main__body__section__person__block"></p>
-            <form class="main__body__section__person__block">
-              <button @click="removeMeeting" class="btn-outline-s-dark">
-                Eliminar
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
+  <div class="content">
+    <TheNavbar :path="path" :options="options" />
+    <main>
+      <section class="section">
+        <h1 class="title">{{ getMeeting.name }}</h1>
+      </section>
+    </main>
+  </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters } from 'vuex'
 
-import TheSectionNavbar from "@/components/TheSectionNavbar";
+import TheNavbar from '@/components/TheNavbar'
 
 export default {
-  name: "Meeting",
+  name: 'Meeting',
   components: {
-    TheSectionNavbar,
+    TheNavbar
   },
-  data() {
+  data () {
     return {
-      titleApp: "Reunión",
-      icon: "fas fa-arrow-left",
-      link: `/reuniones`,
+      path: {
+        title: 'Reunión',
+        link: { name: 'Meetings' },
+        icon: 'fas fa-arrow-left',
+        status: false,
+        search: false
+      },
       options: [
         {
           menus: [
             {
-              title: "Editar",
-              link: `/reunion/${this.$route.params.meeting}/editar`,
-              icon: "fas fa-user-edit",
+              title: 'Editar',
+              link: { name: 'EditMeeting' },
+              icon: 'fas fa-handshake',
+              status: false
             },
             {
-              title: "Tareas",
-              link: `/reunion/${this.$route.params.meeting}/tareas`,
-              icon: "fas fa-tasks",
+              title: 'Tareas',
+              link: { name: 'MeetingTasks' },
+              icon: 'fas fa-tasks',
+              status: false
             },
             {
-              title: "Usuarios",
-              link: `/reunion/${this.$route.params.meeting}/usuarios`,
-              icon: "fas fa-user-tie",
-            },
-          ],
-        },
-      ],
-    };
+              title: 'Usuarios',
+              link: { name: 'MeetingPeople' },
+              icon: 'fas fa-users',
+              status: false
+            }
+          ]
+        }
+      ]
+    }
   },
-  created() {
-    this.fetchMeeting(this.$route.params.meeting);
+  created () {
+    this.fetchMeeting(this.$route.params.meeting)
   },
   methods: {
-    ...mapActions(["fetchMeeting", "deleteMeeting"]),
-    async removeMeeting() {
-      if (window.confirm(`Está a punto de borrar un elemento`)) {
-        await this.deleteMeeting(this.$route.params.meeting);
-
-        await this.$router.replace({ name: "Meetings" });
-      }
-    },
+    ...mapActions(['fetchMeeting'])
   },
   computed: {
-    ...mapGetters(["getMeeting"]),
+    ...mapGetters(['getMeeting'])
   },
   watch: {
-    $route: ["fetchMeeting"],
-  },
-};
+    $route: ['fetchMeeting']
+  }
+}
 </script>

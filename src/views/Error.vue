@@ -1,50 +1,45 @@
 <template>
-  <main class="main">
-    <TheSectionNavbar
-      :titleApp="titleApp"
-      :icon="icon"
-      :link="link"
-      :options="options"
-    />
-    <div class="main__body">
-      <div class="main__body__content">
-        <div class="main__body__section">
-          <div class="main__body__section__nav" style="text-align: center">
-            <i
-              class="fas fa-exclamation-triangle"
-              style="font-size: 12rem; margin-top: 3rem; color: #ddd"
-            ></i>
-            <h1 class="main__body__section__nav__title">
-              ¡404 Page not found!
-            </h1>
-            <router-link
-              :to="{ name: 'Home' }"
-              class="main__body__section__nav--title"
-              style="color: #01579b"
-              >Go to Home</router-link
-            >
-          </div>
-        </div>
-      </div>
+  <div class="content">
+    <div class="navbar">
+      <span class="navbar__brand" @click="goToBack"><i :class="path.icon"></i> {{ path.title }}</span>
     </div>
-  </main>
+    <main>
+      <section class="section error">
+        <i class="fas fa-exclamation-triangle"></i>
+        <h1 class="title"><span class="title--first">404</span><br /><span class="title--second">!Página no encontrada!</span></h1>
+        <router-link :to="{ name: 'Home' }">Volver al Home</router-link>
+      </section>
+    </main>
+  </div>
 </template>
 
 <script>
-import TheSectionNavbar from "@/components/TheSectionNavbar";
+import TheNavbar from '@/components/TheNavbar'
 
 export default {
-  name: "Error",
+  name: 'Error',
   components: {
-    TheSectionNavbar,
+    TheNavbar
   },
-  data() {
+  data () {
     return {
-      titleApp: "Error",
-      icon: "fas fa-arrow-left",
-      link: ``,
-      options: [],
-    };
+      path: {
+        title: 'Error',
+        link: { name: 'Home' },
+        icon: 'fas fa-arrow-left',
+        status: true
+      },
+      options: [
+        {
+          menus: []
+        }
+      ]
+    }
   },
-};
+  methods: {
+    async goToBack () {
+      this.$router.go(-1)
+    }
+  }
+}
 </script>

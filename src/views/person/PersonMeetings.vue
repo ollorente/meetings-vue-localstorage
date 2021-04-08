@@ -1,112 +1,64 @@
 <template>
-  <main class="main">
-    <TheSectionNavbar
-      :titleApp="titleApp"
-      :icon="icon"
-      :link="link"
-      :options="options"
-    />
-    <div class="main__body">
-      <div class="main__body__content">
-        <div class="main__body__section">
-          <div class="main__body__section__nav">
-            <h1 class="main__body__section__nav--title">
-              {{ getPerson.name }}
-            </h1>
-            <h3 class="main__body__section__person__subtitle">
-              {{ getPerson.email }}
-            </h3>
-            <div
-              v-for="(meeting, index) in getPersonMeetings"
-              :key="index"
-              class="main__body__section__card"
-            >
-              <div class="main__body__section__card__date">
-                <span class="main__body__section__card__month">{{
-                  new Date(meeting.dateInt).getMonth() + 1
-                }}</span>
-                <span class="main__body__section__card__day">{{
-                  new Date(meeting.dateInt).toString().split(" ")[2]
-                }}</span>
-              </div>
-              <router-link
-                :to="{ name: 'Meeting', params: { meeting: meeting.id } }"
-                class="main__body__section__card__body"
-              >
-                <span class="main__body__section__link__text__content">
-                  <span class="text-title">{{ meeting.name }}</span>
-                  <span class="text-content"
-                    >{{ new Date(meeting.dateInt).toString().split(" ")[4] }} -
-                    {{
-                      new Date(meeting.dateEnd).toString().split(" ")[4]
-                    }}</span
-                  >
-                </span>
-                <span class="main__body__section__link__icon">
-                  <i
-                    :class="meeting.isActive ? 'fas' : 'far'"
-                    class="fa-circle"
-                  ></i>
-                  <i
-                    :class="meeting.isLock ? 'fas' : 'far'"
-                    class="fa-circle"
-                  ></i>
-                </span>
-              </router-link>
-            </div>
-            <div v-if="getPersonMeetings.length < 1">
-              No tiene reuniones programadas 😊
-            </div>
-          </div>
+  <div class="content">
+    <TheNavbar :path="path" :options="options" />
+    <main>
+      <section class="section">
+        <h1 class="title">{{ getPerson.name }}</h1>
+        <Meeting v-for='meeting in getPeopleMeetings' :key='meeting.id' :meeting='meeting' />
+        <div class='card-alert' v-if='getPeopleMeetings.length < 1'>
+          No hay reuniones 😒
         </div>
-      </div>
-    </div>
-  </main>
+      </section>
+    </main>
+  </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters } from 'vuex'
 
-import TheSectionNavbar from "@/components/TheSectionNavbar";
+import TheNavbar from '@/components/TheNavbar'
+import Meeting from '@/components/gadgets/Meeting'
 
 export default {
-  name: "PersonMeetings",
+  name: 'PersonPeopleMeetings',
   components: {
-    TheSectionNavbar,
+    TheNavbar,
+    Meeting
   },
-  data() {
+  data () {
     return {
-      limit: parseInt(this.limit || 20),
-      page: parseInt(this.page) > 0 ? parseInt(this.page || 1) : 1,
-      titleApp: "Reuniones",
-      icon: "fas fa-arrow-left",
-      link: `/usuario/${this.$route.params.person}`,
-      options: [],
-    };
+      path: {
+        title: 'Reuniones usuario',
+        link: { name: 'Person', params: { person: this.$route.params.person } },
+        icon: 'fas fa-arrow-left',
+        status: false,
+        search: true
+      },
+      options: [
+        {
+          menus: []
+        }
+      ],
+      limit: 10,
+      page: 1
+    }
   },
-  created() {
-    this.fetchPerson(this.$route.params.person);
-    this.fetchPersonMeetings({
+  created () {
+    this.fetchPerson(this.$route.params.person)
+    this.fetchPeopleMeetings({
       id: this.$route.params.person,
       limit: this.limit,
-      page: this.page,
-    });
-    this.fetchAllPersonMeetings({ id: this.$route.params.person });
+      page: this.page
+    })
   },
   methods: {
-    ...mapActions([
-      "fetchPerson",
-      "fetchPersonMeetings",
-      "fetchAllPersonMeetings",
-    ]),
+    ...mapActions(['fetchPeopleMeetings', 'fetchPerson'])
   },
   computed: {
-    ...mapGetters(["getPerson", "getPersonMeetings", "getAllPersonMeetings"]),
+    ...mapGetters(['getPeopleMeetings', 'getPerson'])
   },
   watch: {
-    $route: ["fetchPerson", "fetchPersonMeetings", "fetchAllPersonMeetings"],
-  },
-};
+    $route: ['fetchPeopleMeetings', 'fetchPerson']
+  }
+}
 </script>
-
-<style scoped></style>

@@ -1,99 +1,77 @@
 <template>
-  <main class="main">
-    <TheSectionNavbar
-      :titleApp="titleApp"
-      :icon="icon"
-      :link="link"
-      :options="options"
-    />
-    <div class="main__body">
-      <div class="main__body__content">
-        <div class="main__body__section">
-          <div class="main__body__section__nav">
-            <h1 class="main__body__section__nav--title">
-              {{ getProject.name }}
-            </h1>
-            <div v-html="getProject.description"></div>
-            <p style="text-align: left; padding: 0 1rem">
-              <b>{{ getProject.isActive ? "Activo" : "Inactivo" }}</b
-              ><br />
-              <b>{{ getProject.isLock ? "Bloqueado" : "Público" }}</b
-              ><br />
-              <span
-                ><b>Creado: </b
-                ><span>{{
-                  new Date(getProject.createdAt).toLocaleDateString()
-                }}</span>
-              </span>
-              <span v-if="getProject.createdAt !== getProject.updatedAt"
-                ><br />
-                <b>Actualizado: </b
-                ><span>{{
-                  new Date(getProject.updatedAt).toLocaleDateString()
-                }}</span></span
-              >
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
+  <div class="content">
+    <TheNavbar :path="path" :options="options" />
+    <main>
+      <section class="section">
+        <h1 class="title">{{ getProject.name }}</h1>
+        <div v-html="getProject.description"></div>
+      </section>
+    </main>
+  </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters } from 'vuex'
 
-import TheSectionNavbar from "@/components/TheSectionNavbar";
+import TheNavbar from '@/components/TheNavbar'
 
 export default {
-  name: "Project",
+  name: 'Project',
   components: {
-    TheSectionNavbar,
+    TheNavbar
   },
-  data() {
+  data () {
     return {
-      titleApp: "Proyecto",
-      icon: "fas fa-arrow-left",
-      link: `/proyectos`,
+      path: {
+        title: 'Proyecto',
+        link: { name: 'Projects' },
+        icon: 'fas fa-arrow-left',
+        status: false,
+        search: false
+      },
       options: [
         {
           menus: [
             {
-              title: "Editar",
-              link: `/proyecto/${this.$route.params.project}/editar`,
-              icon: "fas fa-user-edit",
+              title: 'Editar',
+              link: { name: 'EditProject' },
+              icon: 'fas fa-user-tie',
+              status: false
             },
             {
-              title: "Reuniones",
-              link: `/proyecto/${this.$route.params.project}/reuniones`,
-              icon: "fas fa-handshake",
+              title: 'Reuniones',
+              link: { name: 'ProjectMeetings' },
+              icon: 'fas fa-handshake',
+              status: false
             },
             {
-              title: "Tareas",
-              link: `/proyecto/${this.$route.params.project}/tareas`,
-              icon: "fas fa-tasks",
+              title: 'Tareas',
+              link: { name: 'ProjectTasks' },
+              icon: 'fas fa-tasks',
+              status: false
             },
             {
-              title: "Usuarios",
-              link: `/proyecto/${this.$route.params.project}/usuarios`,
-              icon: "fas fa-user-tie",
-            },
-          ],
-        },
-      ],
-    };
+              title: 'Usuarios',
+              link: { name: 'ProjectPeople' },
+              icon: 'fas fa-users',
+              status: false
+            }
+          ]
+        }
+      ]
+    }
   },
-  created() {
-    this.fetchProject(this.$route.params.project);
+  created () {
+    this.fetchProject(this.$route.params.project)
   },
   methods: {
-    ...mapActions(["fetchProject"]),
+    ...mapActions(['fetchProject'])
   },
   computed: {
-    ...mapGetters(["getProject"]),
+    ...mapGetters(['getProject'])
   },
   watch: {
-    $route: ["fetchProject"],
-  },
-};
+    $route: ['fetchProject']
+  }
+}
 </script>

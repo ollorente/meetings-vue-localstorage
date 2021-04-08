@@ -1,97 +1,72 @@
 <template>
-  <main class="main">
-    <TheNavbar
-      :titleApp="titleApp"
-      :icon="icon"
-      :link="link"
-      :options="options"
-    />
-    <div class="main__body">
+  <div class="content">
+    <TheNavbar :path="path" :options="options" />
+    <main>
       <TheSecondNavbar />
 
-      <div class="main__body__content">
-        <div class="main__body__section">
-          <div class="main__body__section__nav">
-            <div
-              v-for="(project, index) in getProjects"
-              :key="index"
-              class="main__body__section__item"
-            >
-              <router-link
-                :to="{ name: 'Project', params: { project: project.id } }"
-                class="main__body__section__link"
-              >
-                <span class="main__body__section__link__text">
-                  <i class="fas fa-chevron-circle-right"></i>
-                  <span class="main__body__section__link__text__content">
-                    <span class="text-title">{{ project.name }}</span>
-                    <span class="text-content">Proyecto Uno...</span>
-                  </span>
-                </span>
-                <span class="main__body__section__link__icon">
-                  <i
-                    :class="project.isActive ? 'fas' : 'far'"
-                    class="fa-circle"
-                  ></i>
-                  <i
-                    :class="project.isLock ? 'fas' : 'far'"
-                    class="fa-circle"
-                  ></i>
-                </span>
-              </router-link>
-            </div>
-          </div>
+      <section class="section">
+        <Project v-for='project in getProjects' :key='project.id' :project='project' />
+        <div class='card-alert' v-if='getProjects.length < 1'>
+          No hay proyectos 😒
         </div>
-      </div>
-    </div>
-  </main>
+      </section>
+    </main>
+  </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters } from 'vuex'
 
-import TheNavbar from "@/components/TheNavbar";
-import TheSecondNavbar from "@/components/TheSecondNavbar";
+import TheNavbar from '@/components/TheNavbar'
+import TheSecondNavbar from '@/components/TheSecondNavbar'
+import Project from '@/components/gadgets/Project'
 
 export default {
-  name: "Projects",
+  name: 'Projects',
   components: {
     TheNavbar,
     TheSecondNavbar,
+    Project
   },
-  data() {
+  data () {
     return {
-      limit: parseInt(this.limit || 20),
-      page: parseInt(this.page) > 0 ? parseInt(this.page || 1) : 1,
-      titleApp: "Proyectos",
-      icon: "fas fa-user-tie",
+      path: {
+        title: 'Proyectos',
+        link: { name: 'Projects' },
+        icon: 'fas fa-user-tie',
+        status: true,
+        search: true
+      },
       options: [
         {
           menus: [
             {
-              title: "Agregar proyecto",
-              link: "/proyecto/nuevo",
-              icon: "fas fa-user-plus",
-            },
-          ],
-        },
+              title: 'Crear proyecto',
+              link: { name: 'NewProject' },
+              icon: 'fas fa-user-tie',
+              status: false
+            }
+          ]
+        }
       ],
-    };
+      limit: 10,
+      page: 1
+    }
   },
-  created() {
-    this.fetchProjects({ limit: this.limit, page: this.page });
-    this.fetchAllProjects();
+  created () {
+    this.fetchProjects({
+      limit: this.limit,
+      page: this.page
+    })
   },
   methods: {
-    ...mapActions(["fetchProjects", "fetchAllProjects"]),
+    ...mapActions(['fetchProjects'])
   },
   computed: {
-    ...mapGetters(["getProjects", "getAllProjects"]),
+    ...mapGetters(['getProjects'])
   },
   watch: {
-    $route: ["fetchProjects", "fetchAllProjects"],
-  },
-};
+    $route: ['fetchProjects']
+  }
+}
 </script>
-
-<style scoped></style>

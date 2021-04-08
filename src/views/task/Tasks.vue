@@ -1,103 +1,65 @@
 <template>
-  <main class="main">
-    <TheSectionNavbar
-      :titleApp="titleApp"
-      :icon="icon"
-      :link="link"
-      :options="options"
-    />
-    <div class="main__body">
-      <div class="main__body__content">
-        <div class="main__body__section">
-          <div class="main__body__section__nav">
-            <h1 style="margin: 0">
-              {{ total }}
-              {{ total === 1 ? "Tarea del proyecto" : "Tareas del proyecto" }}
-            </h1>
-            <p v-for="(task, index) in tasks" :key="index" class="parrafo">
-              <span class="parrafo__info">
-                <span class="parrafo__info__number">{{ index + 1 }}</span>
-                <span class="parrafo__info__name"
-                  ><router-link
-                    :to="{ name: 'Task', params: { task: task.id } }"
-                    class="link"
-                    >{{ task.name }}</router-link
-                  ></span
-                ></span
-              >
-              <span class="parrafo__status">{{
-                task.isActive ? "Activo" : "Inactivo"
-              }}</span>
-            </p>
-          </div>
+  <div class="content">
+    <TheNavbar :path="path" :options="options" />
+    <main>
+      <TheSecondNavbar />
+
+      <section class="section">
+        <Task v-for='task in getTasks' :key='task.id' :task='task' />
+        <div class='card-alert' v-if='getTasks.length < 1'>
+          No hay tareas 😁
         </div>
-      </div>
-    </div>
-  </main>
+      </section>
+    </main>
+  </div>
 </template>
 
 <script>
-import { db } from "@/main";
+import { mapActions, mapGetters } from 'vuex'
 
-import TheSectionNavbar from "@/components/TheSectionNavbar";
+import TheNavbar from '@/components/TheNavbar'
+import TheSecondNavbar from '@/components/TheSecondNavbar'
+import Task from '@/components/gadgets/Task'
 
 export default {
-  name: "MeetingTasks",
+  name: 'Tasks',
   components: {
-    TheSectionNavbar,
+    TheNavbar,
+    TheSecondNavbar,
+    Task
   },
-  data() {
+  data () {
     return {
-      limit: parseInt(this.limit || 20),
-      page: parseInt(this.page) > 0 ? parseInt(this.page || 1) : 1,
-      total: 0,
-      tasks: [],
-      titleApp: "Tareas",
-      icon: "fas fa-arrow-left",
-      link: `/tarea/${this.$route.params.meeting}`,
-      options: [],
-    };
+      path: {
+        title: 'Tareas',
+        link: { name: 'Tasks' },
+        icon: 'fas fa-tasks',
+        status: true,
+        search: true
+      },
+      options: [
+        {
+          menus: []
+        }
+      ],
+      limit: 10,
+      page: 1
+    }
   },
-  created() {
-    this.getTasks();
-    this.getTotalTasks();
+  created () {
+    this.fetchTasks({
+      limit: this.limit,
+      page: this.page
+    })
   },
   methods: {
-    async getTasks() {
-      const limit = this.limit;
-      const page = (this.page - 1) * this.limit || 0;
-
-      const data = Object.values(db.tasks)
-        .filter((e) => e.isLock === false)
-        .filter((e) => e.isActive === true)
-        .sort(function (a, b) {
-          if (a.name > b.name) {
-            return 1;
-          }
-          if (a.name < b.name) {
-            return -1;
-          }
-          return 0;
-        })
-        .splice(page, limit)
-        .map((e) => {
-          return {
-            id: e.id,
-            name: e.name,
-            isActive: e.isActive,
-          };
-        });
-
-      this.tasks = data;
-    },
-    async getTotalTasks() {
-      this.total = Object.values(db.tasks)
-        .filter((e) => e.isLock === false)
-        .filter((e) => e.isActive === true).length;
-    },
+    ...mapActions(['fetchTasks'])
+  },
+  computed: {
+    ...mapGetters(['getTasks'])
   },
   watch: {
-    $route: ["getTasks", "getTotalTasks"],
-  },
-};
+    $route: ['fetchTasks']
+  }
+}
 </script>

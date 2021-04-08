@@ -1,94 +1,64 @@
 <template>
-  <main class="main">
-    <TheSectionNavbar
-      :titleApp="titleApp"
-      :icon="icon"
-      :link="link"
-      :options="options"
-    />
-    <div class="main__body">
-      <div class="main__body__content">
-        <div class="main__body__section">
-          <div class="main__body__section__nav">
-            <h1 class="main__body__section__nav--title">
-              {{ getProject.name }}
-            </h1>
-            <h3 class="main__body__section__person__subtitle"></h3>
-            <router-link
-              v-for="(task, index) in getProjectTasks"
-              :key="index"
-              :to="{ name: 'Task', params: { task: task.id } }"
-              class="main__body__section__task"
-            >
-              <span class="main__body__section__task__text">
-                <i class="fas fa-clipboard-check"></i>
-                <div class="main__body__section__task__body">
-                  <span class="main__body__section__task__title">{{
-                    task.name
-                  }}</span>
-                  <span class="main__body__section__task__content"
-                    >OVA Toxomasmosis</span
-                  >
-                </div>
-              </span>
-              <span class="main__body__section__task__icon">
-                <i class="fas fa-circle"></i>
-                <i class="far fa-circle"></i>
-              </span>
-            </router-link>
-            <div v-if="getProjectTasks.length < 1">
-              No tiene tareas programadas 😊
-            </div>
-          </div>
+  <div class="content">
+    <TheNavbar :path="path" :options="options" />
+    <main>
+      <section class="section">
+        <h1 class="title">{{ getProject.name }}</h1>
+        <Task v-for='task in getProjectTasks' :key='task.id' :task='task' />
+        <div class='card-alert' v-if='getProjectTasks.length < 1'>
+          No hay tareas 😁
         </div>
-      </div>
-    </div>
-  </main>
+      </section>
+    </main>
+  </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters } from 'vuex'
 
-import TheSectionNavbar from "@/components/TheSectionNavbar";
+import TheNavbar from '@/components/TheNavbar'
+import Task from '@/components/gadgets/Task'
 
 export default {
-  name: "ProjectTasks",
+  name: 'ProjectTasks',
   components: {
-    TheSectionNavbar,
+    TheNavbar,
+    Task
   },
-  data() {
+  data () {
     return {
-      limit: parseInt(this.limit || 20),
-      page: parseInt(this.page) > 0 ? parseInt(this.page || 1) : 1,
-      titleApp: "Tareas del proyecto",
-      icon: "fas fa-arrow-left",
-      link: `/proyecto/${this.$route.params.project}`,
-      options: [],
-    };
+      path: {
+        title: 'Tareas proyecto',
+        link: { name: 'Project', params: { project: this.$route.params.project } },
+        icon: 'fas fa-arrow-left',
+        status: false,
+        search: false
+      },
+      options: [
+        {
+          menus: []
+        }
+      ],
+      limit: 10,
+      page: 1
+    }
   },
-  created() {
-    this.fetchProject(this.$route.params.project);
+  created () {
+    this.fetchProject(this.$route.params.project)
     this.fetchProjectTasks({
       id: this.$route.params.project,
       limit: this.limit,
-      page: this.page,
-    });
-    this.fetchAllProjectTasks();
+      page: this.page
+    })
   },
   methods: {
-    ...mapActions([
-      "fetchProject",
-      "fetchProjectTasks",
-      "fetchAllProjectTasks",
-    ]),
+    ...mapActions(['fetchProjectTasks', 'fetchProject'])
   },
   computed: {
-    ...mapGetters(["getProject", "getProjectTasks", "getAllProjectTasks"]),
+    ...mapGetters(['getProjectTasks', 'getProject'])
   },
   watch: {
-    $route: ["fetchProject", "fetchProjectTasks", "fetchAllProjectTasks"],
-  },
-};
+    $route: ['fetchProjectTasks', 'fetchProject']
+  }
+}
 </script>
-
-<style scoped></style>
