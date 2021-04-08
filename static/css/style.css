@@ -391,6 +391,8 @@ body main .section .main__section__user {
           align-items: center;
   margin-bottom: 1rem;
   color: var(--dark);
+  border-bottom: solid 1px var(--gray);
+  padding-bottom: 1rem;
 }
 
 body main .section .main__section__user .main__section__user__logo {
@@ -423,6 +425,7 @@ body main .section .main__section__item {
 }
 
 body main .section .main__section__item .main__section__link {
+  width: 100%;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -433,9 +436,12 @@ body main .section .main__section__item .main__section__link {
       -ms-flex-align: start;
           align-items: flex-start;
   border-bottom: solid 1 var(--dark);
+  border-bottom: solid 1px var(--gray);
+  padding-bottom: 1rem;
 }
 
 body main .section .main__section__item .main__section__link .main__section__link__text {
+  width: calc(100% - 2rem);
   font-size: 1.1rem;
   color: var(--dark);
   display: -webkit-box;
