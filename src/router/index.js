@@ -39,7 +39,7 @@ const routes = [
     }
   },
   {
-    path: '/proyecto/nuevo', // TODO -> Hacer lógica de la vista
+    path: '/proyecto/nuevo',
     name: 'NewProject',
     component: () => import('../views/project/NewProject.vue'),
     meta: {
@@ -47,7 +47,7 @@ const routes = [
     }
   },
   {
-    path: '/proyecto/:project', // TODO -> Hacer lógica de la vista
+    path: '/proyecto/:project',
     name: 'Project',
     component: () => import('../views/project/Project.vue'),
     meta: {
@@ -71,7 +71,7 @@ const routes = [
     }
   },
   {
-    path: '/proyecto/:project/reunion/nueva', // TODO -> Hacer lógica de la vista
+    path: '/proyecto/:project/reunion/nueva',
     name: 'NewProjectMeeting',
     component: () => import('../views/project/NewProjectMeeting.vue'),
     meta: {
