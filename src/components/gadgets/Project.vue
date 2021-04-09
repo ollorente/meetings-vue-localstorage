@@ -13,7 +13,7 @@
       </span>
       <span class="main__section__link__icon">
         <i :class="project.isActive ? 'fas' : 'far'" class="fa-circle"></i>
-        <i :class="project.isLock ? 'fas' : 'far'" class="fa-circle"></i>
+        <i class="fas" :class="project.isLock ? 'fa-lock' : 'fa-lock-open'"></i>
       </span>
     </router-link>
   </div>
