@@ -154,6 +154,38 @@ const actions = {
       // eslint-disable-next-line no-useless-return
       if (error) return
     }
+  },
+
+  async deleteProject ({ commit }, id) {
+    try {
+      const project = await db.projects[id]
+
+      // ------- Eliminando proyecto de los usuarios -------
+      const collaborators = project.collaborators
+
+      for (let i = 0; i < collaborators.length; i++) {
+        const person = await db.peopleProjects[collaborators[i]]
+
+        if (person) {
+          delete db.peopleProjects[collaborators[i]][project.id]
+        }
+      }
+      // ---X--- Eliminando proyecto de los usuarios ---X---
+
+      // ------- Eliminando proyecto y referencias -------
+      delete db.projects[project.id]
+      delete db.projectPeople[project.id]
+      delete db.projectMeetings[project.id]
+      delete db.projectTasks[project.id]
+      // ---X--- Eliminando proyecto y referencias ---X---
+
+      localStorage.setItem(dbName, JSON.stringify(db))
+
+      commit('SET_PROJECT', true)
+    } catch (error) {
+      // eslint-disable-next-line no-useless-return
+      if (error) return
+    }
   }
 }
 
