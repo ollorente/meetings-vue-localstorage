@@ -4,7 +4,7 @@
     <main>
       <section class="section">
         <div class="main__section__person">
-        <p class="main__section__person__avatar">
+          <p class="main__section__person__avatar">
             <img
               :src="
                 getPerson.photoURL
@@ -60,11 +60,8 @@
               ></i>
               {{ getPerson.isActive ? "Activo" : "Inactivo" }}</span
             ><br />
-            <span class="main__section__person__block__content"
-              ><i
-                :class="getPerson.isLock ? '´far' : 'fas'"
-                class="fa-circle"
-              ></i>
+            <span class="main__section__person__block__content">
+              <i class="fas" :class="getPerson.isLock ? 'fa-lock' : 'fa-lock-open'"></i>
               {{ getPerson.isLock ? "Oculto" : "Público" }}</span
             >
           </p>
@@ -138,12 +135,13 @@ export default {
     ...mapActions(['fetchPerson', 'deletePerson', 'deletePeopleMeetings']),
     async removePerson () {
       if (window.confirm(`Está a punto de borrar un elemento`)) {
-        await this.deletePerson(this.$route.params.person)
-        await this.deletePeopleMeetings(this.$route.params.person)
-        await this.deletePeopleProjects(this.$route.params.person)
-        await this.deletePeopleTasks(this.$route.params.person)
+        console.log('PERSON->', this.$route.params.person)
+        // await this.deletePerson(this.$route.params.person)
+        // await this.deletePeopleMeetings(this.$route.params.person)
+        // await this.deletePeopleProjects(this.$route.params.person)
+        // await this.deletePeopleTasks(this.$route.params.person)
 
-        await this.$router.replace({ name: 'People' })
+        // await this.$router.replace({ name: 'People' })
       }
     }
   },
