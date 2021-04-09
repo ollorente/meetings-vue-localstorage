@@ -4,6 +4,53 @@
     <main>
       <section class="section">
         <h1 class="title">{{ getProject.name }}</h1>
+        
+        <form @submit.prevent="newMeeting">
+          <div>
+            <input
+              type="text"
+              v-model="meeting.name"
+              placeholder="Nombre de proyecto"
+              autofocus
+              required
+            />
+          </div>
+          <ckeditor
+            :editor="editor"
+            v-model="meeting.description"
+            :config="editorConfig"
+          ></ckeditor>
+          <div>
+            <input
+              type="datetime-local"
+              v-model="meeting.dateInt"
+              value="today"
+              min="today"
+              required
+            >
+          </div>
+          <div>
+            <input
+              type="datetime-local"
+              v-model="meeting.dateEnd"
+              value="today"
+              min="today"
+              required
+            >
+          </div>
+          <div>
+            <select multiple v-model="meeting.collaborators">
+              <option
+                v-for="person in getAllProjectPeople"
+                :key="person.id"
+                :value="person.id"
+              >
+                {{ person.name }} - {{ person.email }}
+              </option>
+            </select>
+          </div>
+          <button type="submit" class="btn-p-light">Agregar</button>
+        </form>
       </section>
     </main>
   </div>
@@ -11,13 +58,16 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 
 import TheNavbar from '@/components/TheNavbar'
+import Alert from '@/components/gadgets/Alert'
 
 export default {
   name: 'NewProjectMeeting',
   components: {
-    TheNavbar
+    TheNavbar,
+    Alert
   },
   data () {
     return {
@@ -35,20 +85,78 @@ export default {
         {
           menus: []
         }
-      ]
+      ],
+      alert: {
+        error: false,
+        msg: null
+      },
+      meeting: {
+        name: '',
+        description: '',
+        collaborators: [],
+        dateInt: '',
+        dateEnd: ''
+      },
+      editor: ClassicEditor,
+      editorConfig: {
+        // The configuration of the editor.
+      },
+      today: new Date().toLocaleString()
     }
   },
   created () {
     this.fetchProject(this.$route.params.project)
+    this.fetchAllProjectPeople(this.$route.params.project)
   },
   methods: {
-    ...mapActions(['fetchProject'])
+    ...mapActions(['addMeeting', 'fetchProject', 'fetchAllProjectPeople']),
+    async newMeeting () {
+      if (
+        this.meeting.name.trim() === '' ||
+        this.meeting.description.trim() === '' ||
+        this.meeting.dateInt === '' ||
+        this.meeting.dateEnd === '' ||
+        this.meeting.collaborators === ''
+      ) {
+        this.alert.error = true
+        this.alert.msg = `Los campos no pueden estar vacios.`
+
+        setTimeout(() => {
+          this.alert.error = false
+        }, 4000)
+
+        // eslint-disable-next-line no-useless-return
+        return
+      } else {
+        const meeting = {
+          name: await this.meeting.name,
+          description: await this.meeting.description,
+          collaborators: await this.meeting.collaborators,
+          project: this.$route.params.project,
+          dateInt: await this.meeting.dateInt,
+          dateEnd: await this.meeting.dateEnd
+        }
+
+        await this.addMeeting(meeting)
+
+        this.meeting.name = ''
+        this.meeting.description = ''
+        this.meeting.collaborators = ''
+        this.meeting.dateInt = ''
+        this.meeting.dateEnd = ''
+
+        await this.$router.replace({
+          name: 'ProjectMeetings',
+          params: { project: this.$route.params.project }
+        })
+      }
+    }
   },
   computed: {
-    ...mapGetters(['getProject'])
+    ...mapGetters(['getProject', 'getAllProjectPeople'])
   },
   watch: {
-    $route: ['fetchProject']
+    $route: ['fetchProject', 'fetchAllProjectPeople']
   }
 }
 </script>
