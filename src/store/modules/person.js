@@ -119,6 +119,94 @@ const actions = {
     }
   },
 
+  async updatePerson ({ commit }, data) {
+    try {
+      const person = {
+        id: await data.id,
+        name: await data.name.trim(),
+        email: await data.email.trim(),
+        photoURL: data.photoURL ? await data.photoURL.trim() : '',
+        role: data.role ? await data.role.trim() : '',
+        phone: data.phone ? await data.phone.trim() : '',
+        isActive: await data.isActive,
+        isLock: await data.isLock,
+        createdAt: await data.createdAt,
+        updatedAt: Date.now()
+      }
+
+      const personId = person.id
+
+      db.people[personId] = person
+
+      // ------- Actualizando usuario en proyectos -------
+      const projects = Object.values(db.projects)
+
+      for (let i = 0; i < projects.length; i++) {
+        const projectId = await projects[i].id
+        const project = await db.projectPeople[projectId][personId]
+
+        if (project) {
+          db.projectPeople[projectId][personId] = {
+            id: await person.d,
+            name: await person.name,
+            email: await person.email,
+            photoURL: await person.photoURL,
+            isActive: await person.isActive
+          }
+        }
+      }
+      // ---X--- Actualizando usuario en proyectos ---X---
+
+      // ------- Actualizando usuario en reuniones -------
+      const meetings = Object.values(db.meetings)
+
+      for (let i = 0; i < meetings.length; i++) {
+        const meetingId = await meetings[i].id
+        const meeting = await db.meetingPeople[meetingId][personId]
+
+        if (meeting) {
+          db.meetingPeople[meetingId][personId] = {
+            id: await person.d,
+            name: await person.name,
+            email: await person.email,
+            photoURL: await person.photoURL,
+            isActive: await person.isActive
+          }
+        }
+      }
+      // ---X--- Actualizando usuario en reuniones ---X---
+
+      // ------- Actualizando usuario en tareas -------
+      // const tasks = Object.values(db.tasks)
+      // console.log('tasks->', tasks)
+
+      // for (let i = 0; i < tasks.length; i++) {
+      //   const taskId = await tasks[i].id
+      //   console.log('taskId->', taskId)
+      //   const task = await db.taskPeople[taskId][personId]
+      //   console.log('task->', task)
+
+      //   if (task) {
+      //     db.taskPeople[taskId][personId] = {
+      //       id: await person.d,
+      //       name: await person.name,
+      //       email: await person.email,
+      //       photoURL: await person.photoURL,
+      //       isActive: await person.isActive
+      //     }
+      //   }
+      // }
+      // ---X--- Actualizando usuario en tareas ---X---
+
+      localStorage.setItem(dbName, JSON.stringify(db))
+
+      commit('SET_PERSON', person)
+    } catch (error) {
+      // eslint-disable-next-line no-useless-return
+      if (error) return
+    }
+  },
+
   async deletePerson ({ commit }, id) {
     try {
       // ------- Eliminando usuario de proyectos -------
