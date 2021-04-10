@@ -35,7 +35,7 @@ const actions = {
           return {
             id: e.id,
             name: e.name,
-            projectId: e.projectId,
+            project: e.project,
             isActive: e.isActive,
             isLock: e.isLock
           }
@@ -66,7 +66,7 @@ const actions = {
           return {
             id: e.id,
             name: e.name,
-            projectId: e.projectId,
+            project: e.project,
             isActive: e.isActive,
             isLock: e.isLock
           }
