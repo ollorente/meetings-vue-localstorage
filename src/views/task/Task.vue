@@ -16,7 +16,7 @@
               <span class="main__section__person__block__label">Proyecto:</span
               ><br />
               <span class="main__section__person__block__content">
-                <router-link :to="{ name: 'Project', params: { project: project.id } }">{{ project.name }}</router-link>
+                <router-link :to="{ name: 'Project', params: { project: project.id } }" class="text-p-light text-500">{{ project.name }}</router-link>
               </span>
             </p>
             <div class="main__section__person__block">
