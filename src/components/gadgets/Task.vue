@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { db } from '@/main'
 
 export default {
   name: 'Task',
@@ -34,6 +34,16 @@ export default {
       project: ''
     }
   },
+  methods: {
+    async getProject (id) {
+      try {
+        this.project = await db.projects[id]
+      } catch (error) {
+        // eslint-disable-next-line no-useless-return
+        if (error) return
+      }
+    }
+  },
   mounted () {
     this.taskItem = {
       id: this.$props.task.id,
@@ -41,19 +51,10 @@ export default {
       isActive: this.$props.task.isActive,
       isLock: this.$props.task.isLock
     }
-    this.project = this.getProject
-  },
-  created () {
-    this.fetchProject(this.$props.task.project)
-  },
-  methods: {
-    ...mapActions(['fetchProject'])
-  },
-  computed: {
-    ...mapGetters(['getProject'])
+    this.getProject(this.$props.task.project)
   },
   watch: {
-    $route: ['fetchProject']
+    $route: ['getProject']
   }
 }
 </script>
