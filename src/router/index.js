@@ -23,7 +23,7 @@ const routes = [
     }
   },
   {
-    path: '/registro', // TODO -> Hacer lógica de la vista
+    path: '/registro',
     name: 'Logup',
     component: () => import('../views/Logup.vue'),
     meta: {
@@ -103,7 +103,7 @@ const routes = [
     }
   },
   {
-    path: '/reunion/:meeting', // TODO -> Hacer lógica de la vista
+    path: '/reunion/:meeting',
     name: 'Meeting',
     component: () => import('../views/meeting/Meeting.vue'),
     meta: {
