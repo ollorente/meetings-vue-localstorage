@@ -5,15 +5,20 @@
       <transition name="fade">
         <section class="section">
           <div class="main__section__person">
-            <h1 class="title">{{ getMeeting.name }}</h1>
-            <p>{{ new Date(getMeeting.dateInt).toString().split(" ")[0] }} {{ new Date(getMeeting.dateInt).toString().split(" ")[1] }} {{ new Date(getMeeting.dateInt).toString().split(" ")[2] }} &bull; {{ new Date(getMeeting.dateInt).toString().split(" ")[4] }} -  {{ new Date(getMeeting.dateEnd).toString().split(" ")[4] }}</p>
-            <div v-html="getMeeting.description"></div>
+            <h1 class="title">{{ meeting.name }}</h1>
+            <p>{{ new Date(meeting.dateInt).toString().split(" ")[0] }} {{ new Date(meeting.dateInt).toString().split(" ")[1] }} {{ new Date(meeting.dateInt).toString().split(" ")[2] }} &bull; {{ new Date(meeting.dateInt).toString().split(" ")[4] }} -  {{ new Date(meeting.dateEnd).toString().split(" ")[4] }}</p>
+            <div v-html="meeting.description"></div>
+            <p class="main__section__person__block">
+              <span class="main__section__person__block__content">
+                <b>{{ meeting.collaborators.length }}</b> {{ meeting.collaborators.length === 1 ? 'Invitado' : 'Invitados' }}
+              </span>
+            </p>
             <p class="main__section__person__block">
               <span class="main__section__person__block__label"
                 >Proyecto:</span
               ><br />
               <span class="main__section__person__block__content">
-                <LinkProject :projectId="getMeeting.project" />
+                <router-link :to="{ name: 'Project', params: { project: project.id } }">{{ project.name }}</router-link>
               </span>
             </p>
             <p class="main__section__person__block">
@@ -21,31 +26,31 @@
                 >Programada:</span
               ><br />
               <span class="main__section__person__block__content">{{
-                new Date(getMeeting.createdAt).toLocaleDateString()
+                new Date(meeting.createdAt).toLocaleDateString()
               }}</span>
             </p>
             <p
-              v-if="getMeeting.createdAt !== getMeeting.updatedAt"
+              v-if="meeting.createdAt !== meeting.updatedAt"
               class="main__section__person__block"
             >
               <span class="main__section__person__block__label"
                 >Actualizada:</span
               ><br />
               <span class="main__section__person__block__content">{{
-                new Date(getMeeting.updatedAt).toLocaleDateString()
+                new Date(meeting.updatedAt).toLocaleDateString()
               }}</span>
             </p>
             <p class="main__section__person__block">
               <span class="main__section__person__block__content"
                 ><i
-                  :class="getMeeting.isActive ? 'fas' : 'far'"
+                  :class="meeting.isActive ? 'fas' : 'far'"
                   class="fa-circle"
                 ></i>
-                {{ getMeeting.isActive ? "Activa" : "Cancelada" }}</span
+                {{ meeting.isActive ? "Activa" : "Cancelada" }}</span
               ><br />
               <span class="main__section__person__block__content">
-                <i class="fas" :class="getMeeting.isLock ? 'fa-lock' : 'fa-lock-open'"></i>
-                {{ getMeeting.isLock ? "Oculta" : "Pública" }}</span
+                <i class="fas" :class="meeting.isLock ? 'fa-lock' : 'fa-lock-open'"></i>
+                {{ meeting.isLock ? "Oculta" : "Pública" }}</span
               >
             </p>
             <p class="main__section__person__block"></p>
@@ -62,7 +67,8 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions } from 'vuex'
+import { db } from '@/main'
 
 import LinkProject from '@/components/gadgets/LinkProject'
 import TheNavbar from '@/components/TheNavbar'
@@ -105,14 +111,60 @@ export default {
             }
           ]
         }
-      ]
+      ],
+      meeting: {
+        id: '',
+        name: '',
+        description: '',
+        collaborators: [],
+        project: '',
+        dateInt: '',
+        dateEnd: '',
+        isActive: '',
+        isLock: '',
+        createdAt: '',
+        updatedAt: ''
+      },
+      project: ''
     }
   },
   created () {
-    this.fetchMeeting(this.$route.params.meeting)
+    this.getMeeting()
   },
   methods: {
-    ...mapActions(['fetchMeeting', 'deleteMeeting']),
+    ...mapActions(['deleteMeeting']),
+    async getMeeting () {
+      try {
+        const data = await db.meetings[this.$route.params.meeting]
+
+        this.meeting = {
+          id: await data.id,
+          name: await data.name,
+          description: await data.description,
+          collaborators: await data.collaborators,
+          project: await data.project,
+          dateInt: await data.dateInt,
+          dateEnd: await data.dateEnd,
+          isActive: await data.isActive,
+          isLock: await data.isLock,
+          createdAt: await data.createdAt,
+          updatedAt: await data.updatedAt
+        }
+
+        await this.getProject(this.meeting.project)
+      } catch (error) {
+        // eslint-disable-next-line no-useless-return
+        if (error) return
+      }
+    },
+    async getProject (id) {
+      try {
+        this.project = await db.projects[id]
+      } catch (error) {
+        // eslint-disable-next-line no-useless-return
+        if (error) return
+      }
+    },
     async removeMeeting () {
       if (window.confirm(`Está a punto de borrar un elemento`)) {
         await this.deleteMeeting(this.$route.params.meeting)
@@ -121,11 +173,8 @@ export default {
       }
     }
   },
-  computed: {
-    ...mapGetters(['getMeeting'])
-  },
   watch: {
-    $route: ['fetchMeeting']
+    $route: ['getMeeting']
   }
 }
 </script>
