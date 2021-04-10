@@ -177,25 +177,25 @@ const actions = {
       // ---X--- Actualizando usuario en reuniones ---X---
 
       // ------- Actualizando usuario en tareas -------
-      // const tasks = Object.values(db.tasks)
-      // console.log('tasks->', tasks)
+      const tasks = Object.values(db.tasks)
+      console.log('tasks->', tasks)
 
-      // for (let i = 0; i < tasks.length; i++) {
-      //   const taskId = await tasks[i].id
-      //   console.log('taskId->', taskId)
-      //   const task = await db.taskPeople[taskId][personId]
-      //   console.log('task->', task)
+      for (let i = 0; i < tasks.length; i++) {
+        const taskId = await tasks[i].id
+        console.log('taskId->', taskId)
+        const task = await db.taskPeople[taskId][personId]
+        console.log('task->', task)
 
-      //   if (task) {
-      //     db.taskPeople[taskId][personId] = {
-      //       id: await person.d,
-      //       name: await person.name,
-      //       email: await person.email,
-      //       photoURL: await person.photoURL,
-      //       isActive: await person.isActive
-      //     }
-      //   }
-      // }
+        if (task) {
+          db.taskPeople[taskId][personId] = {
+            id: await person.d,
+            name: await person.name,
+            email: await person.email,
+            photoURL: await person.photoURL,
+            isActive: await person.isActive
+          }
+        }
+      }
       // ---X--- Actualizando usuario en tareas ---X---
 
       localStorage.setItem(dbName, JSON.stringify(db))
