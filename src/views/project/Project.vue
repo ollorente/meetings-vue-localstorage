@@ -9,7 +9,7 @@
             <div v-html="project.description"></div>
             <p class="main__section__person__block">
               <span class="main__section__person__block__content">
-                <b>{{ project.collaborators.length }}</b> {{ project.collaborators.length === 1 ? 'Collaborador' : 'Collaboradores' }}
+                <b>{{ project.collaborators.length }}</b> {{ project.collaborators.length === 1 ? 'Colaborador' : 'Colaboradores' }}
               </span>
             </p>
             <p class="main__section__person__block">
