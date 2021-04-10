@@ -4,10 +4,12 @@
     <main>
       <TheSecondNavbar />
 
-      <section class='section'>
-        <User v-for='person in people' :key='person.id' :person='person' />
-        <infinite-loading @infinite="infiniteHandler"></infinite-loading>
-      </section>
+      <transition name="bounce">
+        <section class='section'>
+          <User v-for='person in people' :key='person.id' :person='person' />
+          <infinite-loading @infinite="infiniteHandler"></infinite-loading>
+        </section>
+      </transition>
     </main>
   </div>
 </template>

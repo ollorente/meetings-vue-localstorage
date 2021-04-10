@@ -2,9 +2,11 @@
   <div class="content">
     <TheNavbar :path="path" :options="options" />
     <main>
-      <section class="section">
-        <h1 class="title">{{ getMeeting.name }}</h1>
-      </section>
+      <transition name="fade">
+        <section class="section">
+          <h1 class="title">{{ getMeeting.name }}</h1>
+        </section>
+      </transition>
     </main>
   </div>
 </template>

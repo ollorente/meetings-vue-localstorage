@@ -4,10 +4,12 @@
     <main>
       <TheSecondNavbar />
 
-      <section class="section">
-        <Meeting v-for='meeting in meetings' :key='meeting.id' :meeting='meeting' />
-        <infinite-loading @infinite="infiniteHandler"></infinite-loading>
-      </section>
+      <transition name="fade">
+        <section class="section">
+          <Meeting v-for='meeting in meetings' :key='meeting.id' :meeting='meeting' />
+          <infinite-loading @infinite="infiniteHandler"></infinite-loading>
+        </section>
+      </transition>
     </main>
   </div>
 </template>

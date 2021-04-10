@@ -2,46 +2,48 @@
   <div class="content">
     <TheNavbar :path="path" :options="options" />
     <main>
-      <section class="section">
-        <h1 class="title">{{ getProject.name }}</h1>
-        <div class="main__section__person">
-          <div v-html="getProject.description"></div>
-          <p class="main__section__person__block">
-            <span class="main__section__person__block__label">Creado:</span><br />
-            <span class="main__section__person__block__content">{{
-              new Date(getProject.createdAt).toLocaleDateString()
-            }}</span>
-          </p>
-          <p
-            v-if="getProject.createdAt !== getProject.updatedAt"
-            class="main__section__person__block"
-          >
-            <span class="main__section__person__block__label">Actualizado:</span
-            ><br />
-            <span class="main__section__person__block__content">{{
-              new Date(getProject.updatedAt).toLocaleDateString()
-            }}</span>
-          </p>
-          <p class="main__section__person__block">
-            <span class="main__section__person__block__content"
-              ><i
-                :class="getProject.isActive ? 'fas' : 'far'"
-                class="fa-circle"
-              ></i>
-              {{ getProject.isActive ? "Activo" : "Inactivo" }}</span
-            ><br />
-            <span class="main__section__person__block__content">
-              <i class="fas" :class="getProject.isLock ? 'fa-lock' : 'fa-lock-open'"></i> {{ getProject.isLock ? "Oculto" : "Público" }}
-            </span>
-          </p>
-          <p class="main__section__person__block"></p>
-          <form class="main__section__person__block">
-            <button @click="removeProject" class="btn-outline-s-dark">
-              Eliminar
-            </button>
-          </form>
-        </div>
-      </section>
+      <transition name="fade">
+        <section class="section">
+          <h1 class="title">{{ getProject.name }}</h1>
+          <div class="main__section__person">
+            <div v-html="getProject.description"></div>
+            <p class="main__section__person__block">
+              <span class="main__section__person__block__label">Creado:</span><br />
+              <span class="main__section__person__block__content">{{
+                new Date(getProject.createdAt).toLocaleDateString()
+              }}</span>
+            </p>
+            <p
+              v-if="getProject.createdAt !== getProject.updatedAt"
+              class="main__section__person__block"
+            >
+              <span class="main__section__person__block__label">Actualizado:</span
+              ><br />
+              <span class="main__section__person__block__content">{{
+                new Date(getProject.updatedAt).toLocaleDateString()
+              }}</span>
+            </p>
+            <p class="main__section__person__block">
+              <span class="main__section__person__block__content"
+                ><i
+                  :class="getProject.isActive ? 'fas' : 'far'"
+                  class="fa-circle"
+                ></i>
+                {{ getProject.isActive ? "Activo" : "Inactivo" }}</span
+              ><br />
+              <span class="main__section__person__block__content">
+                <i class="fas" :class="getProject.isLock ? 'fa-lock' : 'fa-lock-open'"></i> {{ getProject.isLock ? "Oculto" : "Público" }}
+              </span>
+            </p>
+            <p class="main__section__person__block"></p>
+            <form class="main__section__person__block">
+              <button @click="removeProject" class="btn-outline-s-dark">
+                Eliminar
+              </button>
+            </form>
+          </div>
+        </section>
+      </transition>
     </main>
   </div>
 </template>

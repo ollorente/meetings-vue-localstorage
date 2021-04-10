@@ -2,11 +2,13 @@
   <div class="content">
     <TheNavbar :path="path" :options="options" />
     <main>
-      <section class="section">
-        <h1 class="title">{{ getTask.name }}</h1>
-        <User v-for='person in people' :key='person.id' :person='person' />
-        <infinite-loading @infinite="infiniteHandler"></infinite-loading>
-      </section>
+      <transition name="fade">
+        <section class="section">
+          <h1 class="title">{{ getTask.name }}</h1>
+          <User v-for='person in people' :key='person.id' :person='person' />
+          <infinite-loading @infinite="infiniteHandler"></infinite-loading>
+        </section>
+      </transition>
     </main>
   </div>
 </template>

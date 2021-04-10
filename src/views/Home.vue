@@ -2,10 +2,12 @@
   <div class="content">
     <MainNavbar :path="path" :options="options" />
     <main>
-      <section class="section">
-        <h1 class="title">Home</h1>
-        <p><router-link :to="{ name: 'Tasks' }" class="link">Tareas</router-link></p>
-      </section>
+      <transition name="fade">
+        <section class="section">
+          <h1 class="title">Home</h1>
+          <p><router-link :to="{ name: 'Tasks' }" class="link">Tareas</router-link></p>
+        </section>
+      </transition>
     </main>
   </div>
 </template>

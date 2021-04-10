@@ -2,56 +2,58 @@
   <div class="content">
     <TheNavbar :path="path" :options="options" />
     <main>
-      <section class="section">
-        <h1 class="title">{{ getProject.name }}</h1>
-        
-        <form @submit.prevent="newMeeting">
-          <div>
-            <input
-              type="text"
-              v-model="meeting.name"
-              placeholder="Nombre de proyecto"
-              autofocus
-              required
-            />
-          </div>
-          <ckeditor
-            :editor="editor"
-            v-model="meeting.description"
-            :config="editorConfig"
-          ></ckeditor>
-          <div>
-            <input
-              type="datetime-local"
-              v-model="meeting.dateInt"
-              value="today"
-              min="today"
-              required
-            >
-          </div>
-          <div>
-            <input
-              type="datetime-local"
-              v-model="meeting.dateEnd"
-              value="today"
-              min="today"
-              required
-            >
-          </div>
-          <div>
-            <select multiple v-model="meeting.collaborators">
-              <option
-                v-for="person in getAllProjectPeople"
-                :key="person.id"
-                :value="person.id"
+      <transition name="fade">
+        <section class="section">
+          <Alert :msg="alert.msg" v-if="alert.error" />
+          <h1 class="title">{{ getProject.name }}</h1>          
+          <form @submit.prevent="newMeeting">
+            <div>
+              <input
+                type="text"
+                v-model="meeting.name"
+                placeholder="Nombre de proyecto"
+                autofocus
+                required
+              />
+            </div>
+            <ckeditor
+              :editor="editor"
+              v-model="meeting.description"
+              :config="editorConfig"
+            ></ckeditor>
+            <div>
+              <input
+                type="datetime-local"
+                v-model="meeting.dateInt"
+                value="today"
+                min="today"
+                required
               >
-                {{ person.name }} - {{ person.email }}
-              </option>
-            </select>
-          </div>
-          <button type="submit" class="btn-p-light">Agregar</button>
-        </form>
-      </section>
+            </div>
+            <div>
+              <input
+                type="datetime-local"
+                v-model="meeting.dateEnd"
+                value="today"
+                min="today"
+                required
+              >
+            </div>
+            <div>
+              <select multiple v-model="meeting.collaborators">
+                <option
+                  v-for="person in getAllProjectPeople"
+                  :key="person.id"
+                  :value="person.id"
+                >
+                  {{ person.name }} - {{ person.email }}
+                </option>
+              </select>
+            </div>
+            <button type="submit" class="btn-p-light">Agregar</button>
+          </form>
+        </section>
+      </transition>
     </main>
   </div>
 </template>
@@ -66,8 +68,8 @@ import Alert from '@/components/gadgets/Alert'
 export default {
   name: 'NewProjectMeeting',
   components: {
-    TheNavbar,
-    Alert
+    Alert,
+    TheNavbar
   },
   data () {
     return {

@@ -182,6 +182,17 @@ const actions = {
       // eslint-disable-next-line no-useless-return
       if (error) return
     }
+  },
+
+  async deleteMeetings ({ commit }, id) {
+    try {
+      console.log('Meeting ID->', id)
+
+      commit('SET_MEETINGS', true)
+    } catch (error) {
+      // eslint-disable-next-line no-useless-return
+      if (error) return
+    }
   }
 }
 

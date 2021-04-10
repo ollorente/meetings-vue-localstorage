@@ -79,7 +79,7 @@ const routes = [
     }
   },
   {
-    path: '/proyecto/:project/tareas', // TODO -> Hacer lógica de la vista
+    path: '/proyecto/:project/tareas',
     name: 'ProjectTasks',
     component: () => import('../views/project/ProjectTasks.vue'),
     meta: {
@@ -119,7 +119,7 @@ const routes = [
     }
   },
   {
-    path: '/reunion/:meeting/tareas', // TODO -> Hacer lógica de la vista
+    path: '/reunion/:meeting/tareas',
     name: 'MeetingTasks',
     component: () => import('../views/meeting/MeetingTasks.vue'),
     meta: {
@@ -127,7 +127,7 @@ const routes = [
     }
   },
   {
-    path: '/reunion/:meeting/tarea/nueva', // TODO -> Hacer lógica de la vista
+    path: '/reunion/:meeting/tarea/nueva',
     name: 'NewMeetingTask',
     component: () => import('../views/meeting/NewMeetingTask.vue'),
     meta: {
@@ -143,7 +143,7 @@ const routes = [
     }
   },
   {
-    path: '/tareas', // TODO -> Hacer lógica de la vista
+    path: '/tareas',
     name: 'Tasks',
     component: () => import('../views/task/Tasks.vue'),
     meta: {
@@ -151,7 +151,7 @@ const routes = [
     }
   },
   {
-    path: '/tarea/:task', // TODO -> Hacer lógica de la vista
+    path: '/tarea/:task',
     name: 'Task',
     component: () => import('../views/task/Task.vue'),
     meta: {
@@ -223,7 +223,7 @@ const routes = [
     }
   },
   {
-    path: '/usuario/:person/tareas', // TODO -> Hacer lógica de la vista
+    path: '/usuario/:person/tareas',
     name: 'PersonTasks',
     component: () => import('../views/person/PersonTasks.vue'),
     meta: {

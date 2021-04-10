@@ -4,10 +4,12 @@
     <main>
       <TheSecondNavbar />
 
-      <section class="section">
-        <Project v-for='project in projects' :key='project.id' :project='project' />
-        <infinite-loading @infinite="infiniteHandler"></infinite-loading>
-      </section>
+      <transition name="fade">
+        <section class="section">
+          <Project v-for='project in projects' :key='project.id' :project='project' />
+          <infinite-loading @infinite="infiniteHandler"></infinite-loading>
+        </section>
+      </transition>
     </main>
   </div>
 </template>

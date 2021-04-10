@@ -4,10 +4,12 @@
     <main>
       <TheSecondNavbar />
 
-      <section class="section">
-        <Task v-for='task in tasks' :key='task.id' :task='task' />
-        <infinite-loading @infinite="infiniteHandler"></infinite-loading>
-      </section>
+      <transition name="fade">
+        <section class="section">
+          <Task v-for='task in tasks' :key='task.id' :task='task' />
+          <infinite-loading @infinite="infiniteHandler"></infinite-loading>
+        </section>{{ $data }}
+      </transition>
     </main>
   </div>
 </template>

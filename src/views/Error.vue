@@ -4,11 +4,13 @@
       <span class="navbar__brand" @click="goToBack"><i :class="path.icon"></i> {{ path.title }}</span>
     </div>
     <main>
-      <section class="section error">
-        <i class="fas fa-exclamation-triangle"></i>
-        <h1 class="title"><span class="title--first">404</span><br /><span class="title--second">!Página no encontrada!</span></h1>
-        <router-link :to="{ name: 'Home' }">Volver al Home</router-link>
-      </section>
+      <transition name="fade">
+        <section class="section error">
+          <i class="fas fa-exclamation-triangle"></i>
+          <h1 class="title"><span class="title--first">404</span><br /><span class="title--second">!Página no encontrada!</span></h1>
+          <router-link :to="{ name: 'Home' }">Volver al Home</router-link>
+        </section>
+      </transition>
     </main>
   </div>
 </template>

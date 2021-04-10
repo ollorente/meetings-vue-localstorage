@@ -24,6 +24,7 @@ const actions = {
         email: await data.email.trim(),
         photoURL: '',
         role: data.role ? await data.role.trim() : '',
+        phone: '',
         isActive: true,
         isLock: false,
         createdAt: date,
@@ -120,11 +121,27 @@ const actions = {
 
   async deletePerson ({ commit }, id) {
     try {
-      // ------- Eliminando usuario -------
-      delete db.people[id]
-      // ---X--- Eliminando usuario ---X---
+      // ------- Eliminando usuario de proyectos -------
+      console.log('ID->', id)
+      // const project = Object.values(db.peopleProjects[id])
+      // console.log('project->', project)
 
-      localStorage.setItem(dbName, JSON.stringify(db))
+      // for (let i = 0; i < project.length; i++) {
+      //   const person = await db.projectPeople[project[i]]
+
+      //   if (person) {
+      //     delete db.projectPeople[project[i]][id]
+      //   }
+      // }
+      // ---X--- Eliminando usuario de proyectos ---X---
+
+      // ------- Eliminando usuario y referencias -------
+      // delete db.people[id]
+      // delete db.peopleMeetings[id]
+      // delete db.peopleTasks[id]
+      // ---X--- Eliminando usuario y referencias ---X---
+
+      // localStorage.setItem(dbName, JSON.stringify(db))
 
       commit('SET_PERSON', true)
     } catch (error) {

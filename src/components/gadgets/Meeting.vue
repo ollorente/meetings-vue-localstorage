@@ -2,7 +2,7 @@
   <div class="main__section__card">
     <div class="main__section__card__date">
       <span class="main__section__card__month">{{
-        new Date(meeting.dateInt).getMonth() + 1
+        new Date(meeting.dateInt).toString().split(" ")[1]
       }}</span>
       <span class="main__section__card__day">{{
         new Date(meeting.dateInt).toString().split(" ")[2]
