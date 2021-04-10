@@ -1,26 +1,35 @@
 <template>
-  <router-link :to="{ name: 'Project', params: { project: projectId } }">{{ getProject.name }}</router-link>
+  <router-link :to="{ name: 'Project', params: { project: project.id } }">{{ project.name }}</router-link>
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { db } from '@/main'
 
 export default {
   name: 'LinkProject',
   props: {
     projectId: Number
   },
+  data () {
+    return {
+      project: ''
+    }
+  },
   created () {
-    this.fetchProject(this.$props.projectId)
+    this.getProject(this.$props.projectId)
   },
   methods: {
-    ...mapActions(['fetchProject'])
-  },
-  computed: {
-    ...mapGetters(['getProject'])
+    async getProject (id) {
+      try {
+        this.project = await db.projects[id]
+      } catch (error) {
+        // eslint-disable-next-line no-useless-return
+        if (error) return
+      }
+    }
   },
   watch: {
-    $route: ['fetchProject']
+    $route: ['getProject']
   }
 }
 </script>
