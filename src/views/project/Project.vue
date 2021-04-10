@@ -4,35 +4,40 @@
     <main>
       <transition name="fade">
         <section class="section">
-          <h1 class="title">{{ getProject.name }}</h1>
+          <h1 class="title">{{ project.name }}</h1>
           <div class="main__section__person">
-            <div v-html="getProject.description"></div>
+            <div v-html="project.description"></div>
+            <p class="main__section__person__block">
+              <span class="main__section__person__block__content">
+                <b>{{ project.collaborators.length }}</b> {{ project.collaborators.length === 1 ? 'Collaborador' : 'Collaboradores' }}
+              </span>
+            </p>
             <p class="main__section__person__block">
               <span class="main__section__person__block__label">Creado:</span><br />
               <span class="main__section__person__block__content">{{
-                new Date(getProject.createdAt).toLocaleDateString()
+                new Date(project.createdAt).toLocaleDateString()
               }}</span>
             </p>
             <p
-              v-if="getProject.createdAt !== getProject.updatedAt"
+              v-if="project.createdAt !== project.updatedAt"
               class="main__section__person__block"
             >
               <span class="main__section__person__block__label">Actualizado:</span
               ><br />
               <span class="main__section__person__block__content">{{
-                new Date(getProject.updatedAt).toLocaleDateString()
+                new Date(project.updatedAt).toLocaleDateString()
               }}</span>
             </p>
             <p class="main__section__person__block">
               <span class="main__section__person__block__content"
                 ><i
-                  :class="getProject.isActive ? 'fas' : 'far'"
+                  :class="project.isActive ? 'fas' : 'far'"
                   class="fa-circle"
                 ></i>
-                {{ getProject.isActive ? "Activo" : "Inactivo" }}</span
+                {{ project.isActive ? "Activo" : "Inactivo" }}</span
               ><br />
               <span class="main__section__person__block__content">
-                <i class="fas" :class="getProject.isLock ? 'fa-lock' : 'fa-lock-open'"></i> {{ getProject.isLock ? "Oculto" : "Público" }}
+                <i class="fas" :class="project.isLock ? 'fa-lock' : 'fa-lock-open'"></i> {{ project.isLock ? "Oculto" : "Público" }}
               </span>
             </p>
             <p class="main__section__person__block"></p>
@@ -49,7 +54,8 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions } from 'vuex'
+import { db } from '@/main'
 
 import TheNavbar from '@/components/TheNavbar'
 
@@ -96,14 +102,43 @@ export default {
             }
           ]
         }
-      ]
+      ],
+      project: {
+        id: '',
+        name: '',
+        description: '',
+        collaborators: [],
+        isActive: '',
+        isLock: '',
+        createdAt: '',
+        updatedAt: ''
+      }
     }
   },
   created () {
-    this.fetchProject(this.$route.params.project)
+    this.getProject()
   },
   methods: {
-    ...mapActions(['fetchProject', 'deleteProject']),
+    ...mapActions(['deleteProject']),
+    async getProject () {
+      try {
+        const data = await db.projects[this.$route.params.project]
+
+        this.project = {
+          id: await data.id,
+          name: await data.name,
+          description: await data.description,
+          collaborators: await data.collaborators,
+          isActive: await data.isActive,
+          isLock: await data.isLock,
+          createdAt: await data.createdAt,
+          updatedAt: await data.updatedAt
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-useless-return
+        if (error) return
+      }
+    },
     async removeProject () {
       if (window.confirm(`Está a punto de borrar un elemento`)) {
         await this.deleteProject(this.$route.params.project)
@@ -112,11 +147,8 @@ export default {
       }
     }
   },
-  computed: {
-    ...mapGetters(['getProject'])
-  },
   watch: {
-    $route: ['fetchProject']
+    $route: ['getProject']
   }
 }
 </script>
