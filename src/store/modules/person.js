@@ -151,7 +151,8 @@ const actions = {
             name: await person.name,
             email: await person.email,
             photoURL: await person.photoURL,
-            isActive: await person.isActive
+            isActive: await person.isActive,
+            isLock: await person.isLock
           }
         }
       }
@@ -170,7 +171,8 @@ const actions = {
             name: await person.name,
             email: await person.email,
             photoURL: await person.photoURL,
-            isActive: await person.isActive
+            isActive: await person.isActive,
+            isLock: await person.isLock
           }
         }
       }
@@ -192,7 +194,8 @@ const actions = {
             name: await person.name,
             email: await person.email,
             photoURL: await person.photoURL,
-            isActive: await person.isActive
+            isActive: await person.isActive,
+            isLock: await person.isLock
           }
         }
       }
