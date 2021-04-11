@@ -134,16 +134,12 @@ export default {
     this.fetchPerson(this.$route.params.person)
   },
   methods: {
-    ...mapActions(['fetchPerson', 'deletePerson', 'deletePeopleMeetings']),
+    ...mapActions(['fetchPerson', 'deletePerson']),
     async removePerson () {
       if (window.confirm(`Está a punto de borrar un elemento`)) {
-        console.log('PERSON->', this.$route.params.person)
-        // await this.deletePerson(this.$route.params.person)
-        // await this.deletePeopleMeetings(this.$route.params.person)
-        // await this.deletePeopleProjects(this.$route.params.person)
-        // await this.deletePeopleTasks(this.$route.params.person)
+        await this.deletePerson(this.$route.params.person)
 
-        // await this.$router.replace({ name: 'People' })
+        await this.$router.replace({ name: 'People' })
       }
     }
   },
