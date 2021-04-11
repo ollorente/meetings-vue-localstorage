@@ -24,7 +24,7 @@ export default {
   data () {
     return {
       path: {
-        title: 'Editar tarea',
+        title: 'Editar actividad',
         link: { name: 'Task', params: { task: this.$route.params.task } },
         icon: 'fas fa-arrow-left',
         status: false,

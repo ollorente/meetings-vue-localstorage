@@ -83,15 +83,15 @@ export default {
               status: false
             },
             {
-              title: 'Reuniones',
-              link: { name: 'ProjectMeetings' },
-              icon: 'fas fa-handshake',
+              title: 'Actividades',
+              link: { name: 'ProjectTasks' },
+              icon: 'fas fa-tasks',
               status: false
             },
             {
-              title: 'Tareas',
-              link: { name: 'ProjectTasks' },
-              icon: 'fas fa-tasks',
+              title: 'Encuentros',
+              link: { name: 'ProjectMeetings' },
+              icon: 'fas fa-handshake',
               status: false
             },
             {

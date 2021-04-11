@@ -30,7 +30,7 @@ export default {
   data () {
     return {
       path: {
-        title: 'Usuarios reunión',
+        title: 'Usuarios encuentro',
         link: { name: 'Meeting', params: { meeting: this.$route.params.meeting } },
         icon: 'fas fa-arrow-left',
         status: false,

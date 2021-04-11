@@ -74,7 +74,7 @@ export default {
   data () {
     return {
       path: {
-        title: 'Crear reunión',
+        title: 'Crear encuentro',
         link: {
           name: 'ProjectMeetings',
           params: { project: this.$route.params.project }

@@ -24,7 +24,7 @@ export default {
   data () {
     return {
       path: {
-        title: 'Editar reunión',
+        title: 'Editar encuentro',
         link: { name: 'Meeting', params: { meeting: this.$route.params.meeting } },
         icon: 'fas fa-arrow-left',
         status: false,

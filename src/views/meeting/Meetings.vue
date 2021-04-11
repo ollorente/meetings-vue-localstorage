@@ -33,7 +33,7 @@ export default {
   data () {
     return {
       path: {
-        title: 'Reuniones',
+        title: 'Encuentros',
         link: { name: 'Meetings' },
         icon: 'fas fa-handshake',
         status: true,

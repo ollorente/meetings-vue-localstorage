@@ -30,20 +30,20 @@ export default {
   data () {
     return {
       path: {
-        title: 'Reuniones proyecto',
+        title: 'Encuentros proyecto',
         link: {
           name: 'Project',
           params: { project: this.$route.params.project }
         },
         icon: 'fas fa-arrow-left',
         status: false,
-        search: false
+        search: true
       },
       options: [
         {
           menus: [
             {
-              title: 'Crear reunión',
+              title: 'Crear encuentro',
               link: { name: 'NewProjectMeeting' },
               icon: 'fas - fa-handshake',
               status: false

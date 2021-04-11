@@ -33,7 +33,7 @@ export default {
   data () {
     return {
       path: {
-        title: 'Tareas',
+        title: 'Actividades',
         link: { name: 'Tasks' },
         icon: 'fas fa-tasks',
         status: true,

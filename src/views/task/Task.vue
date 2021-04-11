@@ -102,7 +102,7 @@ export default {
   data () {
     return {
       path: {
-        title: 'Tarea',
+        title: 'Actividad',
         link: { name: 'Tasks' },
         icon: 'fas fa-arrow-left',
         status: false,

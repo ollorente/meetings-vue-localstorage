@@ -30,7 +30,7 @@ export default {
   data () {
     return {
       path: {
-        title: 'Tareas usuario',
+        title: 'Actividades usuario',
         link: { name: 'Person', params: { person: this.$route.params.person } },
         icon: 'fas fa-arrow-left',
         status: false,

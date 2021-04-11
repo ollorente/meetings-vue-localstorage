@@ -56,7 +56,7 @@ export default {
   data () {
     return {
       path: {
-        title: 'Crear tarea',
+        title: 'Crear actividad',
         link: {
           name: 'MeetingTasks',
           params: { meeting: this.$route.params.meeting }

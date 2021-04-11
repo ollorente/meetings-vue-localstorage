@@ -30,7 +30,7 @@ export default {
   data () {
     return {
       path: {
-        title: 'Tareas reunión',
+        title: 'Actividades encuentro',
         link: {
           name: 'Meeting',
           params: { meeting: this.$route.params.meeting }
@@ -43,7 +43,7 @@ export default {
         {
           menus: [
             {
-              title: 'Crear tarea',
+              title: 'Crear actividad',
               link: {
                 name: 'NewMeetingTask',
                 params: { meeting: this.$route.params.meeting }

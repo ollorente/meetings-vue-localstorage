@@ -30,11 +30,11 @@ export default {
   data () {
     return {
       path: {
-        title: 'Tareas proyecto',
+        title: 'Actividades proyecto',
         link: { name: 'Project', params: { project: this.$route.params.project } },
         icon: 'fas fa-arrow-left',
         status: false,
-        search: false
+        search: true
       },
       options: [
         {

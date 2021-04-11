@@ -82,7 +82,7 @@ export default {
   data () {
     return {
       path: {
-        title: 'Reunión',
+        title: 'Encuentro',
         link: { name: 'Meetings' },
         icon: 'fas fa-arrow-left',
         status: false,
@@ -98,7 +98,7 @@ export default {
               status: false
             },
             {
-              title: 'Tareas',
+              title: 'Actividades',
               link: { name: 'MeetingTasks' },
               icon: 'fas fa-tasks',
               status: false

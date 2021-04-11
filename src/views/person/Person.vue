@@ -108,21 +108,21 @@ export default {
               status: false
             },
             {
-              title: 'Proyectos',
-              link: { name: 'PersonProjects' },
-              icon: 'fas fa-user-tie',
+              title: 'Actividades',
+              link: { name: 'PersonTasks' },
+              icon: 'fas fa-tasks',
               status: false
             },
             {
-              title: 'Reuniones',
+              title: 'Encuentros',
               link: { name: 'PersonMeetings' },
               icon: 'fas fa-handshake',
               status: false
             },
             {
-              title: 'Tareas',
-              link: { name: 'PersonTasks' },
-              icon: 'fas fa-tasks',
+              title: 'Proyectos',
+              link: { name: 'PersonProjects' },
+              icon: 'fas fa-user-tie',
               status: false
             }
           ]
