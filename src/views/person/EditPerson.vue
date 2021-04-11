@@ -107,19 +107,30 @@ export default {
   methods: {
     ...mapActions(['getPerson', 'updatePerson']),
     async getPerson () {
-      const data = await db.people[this.$route.params.person]
+      try {
+        const data = await db.people[this.$route.params.person]
 
-      this.person = {
-        id: await data.id,
-        name: await data.name,
-        email: await data.email,
-        photoURL: await data.photoURL,
-        phone: await data.phone,
-        role: await data.role,
-        isLock: await data.isLock,
-        isActive: await data.isActive,
-        createdAt: await data.createdAt,
-        updatedAt: await data.updatedAt
+        if (data === undefined) {
+          this.$router.replace({
+            name: 'People'
+          })
+        } else {
+          this.person = {
+            id: await data.id,
+            name: await data.name,
+            email: await data.email,
+            photoURL: await data.photoURL,
+            phone: await data.phone,
+            role: await data.role,
+            isLock: await data.isLock,
+            isActive: await data.isActive,
+            createdAt: await data.createdAt,
+            updatedAt: await data.updatedAt
+          }
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-useless-return
+        if (error) return
       }
     },
     async putPerson () {
