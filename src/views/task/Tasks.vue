@@ -1,92 +1,79 @@
 <template>
-  <div class="tasks">
-    <h1 style="margin: 0">
-      {{ total }}
-      {{ total === 1 ? "Tarea del proyecto" : "Tareas del proyecto" }}
-    </h1>
-    <p>
-      <router-link :to="{ name: 'NewProjectTask' }" class="link"
-        >Agregar</router-link
-      >
-      |
-      <router-link
-        :to="{ name: 'Project', params: { project: $route.params.project } }"
-        class="link"
-        >Volver</router-link
-      >
-    </p>
-    <p v-for="(task, index) in tasks" :key="index" class="parrafo">
-      <span class="parrafo__info">
-        <span class="parrafo__info__number">{{ index + 1 }}</span>
-        <span class="parrafo__info__name"
-          ><router-link
-            :to="{ name: 'Task', params: { task: task.id } }"
-            class="link"
-            >{{ task.name }}</router-link
-          ></span
-        ></span
-      >
-      <span class="parrafo__status">{{
-        task.isActive ? "Activo" : "Inactivo"
-      }}</span>
-    </p>
+  <div class="content">
+    <TheNavbar :path="path" :options="options" />
+    <main>
+      <TheSecondNavbar />
+
+      <transition name="fade">
+        <section class="section">
+          <Task v-for='task in tasks' :key='task.id' :task='task' />
+          <infinite-loading @infinite="infiniteHandler"></infinite-loading>
+        </section>{{ $data }}
+      </transition>
+    </main>
   </div>
 </template>
 
 <script>
-import { db } from "@/main";
+import { mapActions, mapGetters } from 'vuex'
+import InfiniteLoading from 'vue-infinite-loading'
+
+import TheNavbar from '@/components/TheNavbar'
+import TheSecondNavbar from '@/components/TheSecondNavbar'
+import Task from '@/components/gadgets/Task'
 
 export default {
-  name: "MeetingTasks",
-  components: {},
-  data() {
-    return {
-      limit: parseInt(this.limit || 20),
-      page: parseInt(this.page) > 0 ? parseInt(this.page || 1) : 1,
-      total: 0,
-      tasks: [],
-    };
+  name: 'Tasks',
+  components: {
+    TheNavbar,
+    TheSecondNavbar,
+    Task,
+    InfiniteLoading
   },
-  created() {
-    this.getTasks();
-    this.getTotalTasks();
+  data () {
+    return {
+      path: {
+        title: 'Actividades',
+        link: { name: 'Tasks' },
+        icon: 'fas fa-tasks',
+        status: true,
+        search: true
+      },
+      options: [
+        {
+          menus: []
+        }
+      ],
+      tasks: [],
+      limit: 10,
+      page: 0
+    }
   },
   methods: {
-    async getTasks() {
-      const limit = this.limit;
-      const page = (this.page - 1) * this.limit || 0;
+    ...mapActions(['fetchTasks']),
+    async infiniteHandler ($state) {
+      this.page++
 
-      const data = Object.values(db.tasks)
-        .filter((e) => e.isLock === false)
-        .filter((e) => e.isActive === true)
-        .sort(function (a, b) {
-          if (a.name > b.name) {
-            return 1;
-          }
-          if (a.name < b.name) {
-            return -1;
-          }
-          return 0;
-        })
-        .splice(page, limit)
-        .map((e) => {
-          return {
-            id: e.id,
-            name: e.name,
-            isActive: e.isActive,
-          };
-        });
+      this.fetchTasks({
+        limit: this.limit,
+        page: this.page
+      })
 
-      this.tasks = data;
-    },
-    async getTotalTasks() {
-      this.total = Object.values(db.tasks)
-        .filter((e) => e.isLock === false)
-        .filter((e) => e.isActive === true).length;
-    },
+      let tasks = await this.getTasks
+
+      if (tasks.length) {
+        this.tasks = this.tasks.concat(tasks)
+        $state.loaded()
+      } else {
+        $state.complete()
+      }
+    }
+  },
+  computed: {
+    ...mapGetters(['getTasks'])
   },
   watch: {
-    $route: ["getTasks", "getTotalTasks"],
-  },
-};
+    $route: ['fetchTasks']
+  }
+}
 </script>

@@ -1,131 +1,121 @@
 <template>
-  <main class="main">
-    <Alert :msg="alert.msg" v-if="alert.error" />
-    <TheSectionNavbar
-      :titleApp="titleApp"
-      :icon="icon"
-      :link="link"
-      :options="options"
-    />
-    <div class="main__body">
-      <TheSecondNavbar />
-
-      <div class="main__body__content">
-        <div class="main__body__section">
-          <div class="main__body__section__nav">
-            <h1 class="main__body__section__nav--title">Agregar proyecto</h1>
-            <form @submit.prevent="newProject">
-              <div>
-                <input
-                  type="text"
-                  v-model="project.name"
-                  id="name"
-                  placeholder="Nombre de proyecto"
-                  autofocus
-                  required
-                />
-              </div>
-              <div>
-                <textarea
-                  v-model="project.description"
-                  id="description"
-                  rows="10"
-                  placeholder="Agregue una descripción"
-                ></textarea>
-              </div>
-              <div>
-                <select
-                  multiple
-                  v-model="project.collaborators"
-                  id="collaborators"
+  <div class="content">
+    <TheNavbar :path="path" :options="options" />
+    <main>
+      <transition name="fade">
+        <section class="section">
+          <Alert :msg="alert.msg" v-if="alert.error" />
+          <h1 class="title">Crear proyecto</h1>
+          <form @submit.prevent="newProject">
+            <div>
+              <input
+                type="text"
+                v-model="project.name"
+                placeholder="Nombre de proyecto"
+                autofocus
+                required
+              />
+            </div>
+            <ckeditor
+              :editor="editor"
+              v-model="project.description"
+              :config="editorConfig"
+            ></ckeditor>
+            <div>
+              <select multiple v-model="project.collaborators">
+                <option
+                  v-for="person in getAllPeople"
+                  :key="person.id"
+                  :value="person.id"
                 >
-                  <option
-                    v-for="person in getAllPeople"
-                    :key="person.id"
-                    :value="person.id"
-                  >
-                    {{ person.name }} - {{ person.email }}
-                  </option>
-                </select>
-              </div>
-              <button type="submit" class="btn-p-light">Agregar</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
+                  {{ person.name }} - {{ person.email }}
+                </option>
+              </select>
+            </div>
+            <button type="submit" class="btn-p-light">Agregar</button>
+          </form>
+        </section>
+      </transition>
+    </main>
+  </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters } from 'vuex'
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 
-import Alert from "@/components/Alert";
-import TheSectionNavbar from "@/components/TheSectionNavbar";
+import TheNavbar from '@/components/TheNavbar'
+import Alert from '@/components/gadgets/Alert'
 
 export default {
-  name: "NewProject",
+  name: 'NewProject',
   components: {
-    Alert,
-    TheSectionNavbar,
+    TheNavbar,
+    Alert
   },
-  data() {
+  data () {
     return {
-      project: {
-        name: "",
-        description: "",
-        collaborators: [],
+      path: {
+        title: 'Crear proyecto',
+        link: { name: 'Projects' },
+        icon: 'fas fa-arrow-left',
+        status: false,
+        search: false
       },
+      options: [
+        {
+          menus: []
+        }
+      ],
       alert: {
         error: false,
-        msg: null,
+        msg: null
       },
-      titleApp: "Agregar proyecto",
-      icon: "fas fa-arrow-left",
-      link: `/proyectos`,
-      options: [],
-    };
+      project: {
+        name: '',
+        description: '',
+        collaborators: []
+      },
+      editor: ClassicEditor,
+      editorConfig: {
+        // The configuration of the editor.
+      }
+    }
   },
-  created() {
-    this.fetchAllPeople();
+  created () {
+    this.fetchAllPeople()
   },
   methods: {
-    ...mapActions(["addProject", "fetchAllPeople"]),
-    async newProject() {
-      if (
-        this.project.name.trim() === "" ||
-        this.project.description.trim() === ""
-      ) {
-        this.alert.error = true;
-        this.alert.msg = `Ni el nombre ni la descripción pueden estar vacios.`;
+    ...mapActions(['addProject', 'fetchAllPeople']),
+    async newProject () {
+      try {
+        if (this.project.name.trim() === '') {
+          this.alert.error = true
+          this.alert.msg = `Los campos no pueden estar vacíos.`
 
-        setTimeout(() => {
-          this.alert.error = false;
-        }, 4000);
+          setTimeout(() => {
+            this.alert.error = false
+          }, 4000)
+        } else {
+          await this.addProject(this.project)
 
-        return;
-      } else {
-        const project = {
-          name: await this.project.name,
-          description: await this.project.description,
-          collaborators: await this.project.collaborators,
-        };
+          this.project.name = ''
+          this.project.description = ''
+          this.project.collaborators = []
 
-        await this.addProject(project);
-
-        this.project.name = "";
-        this.project.description = "";
-        this.project.collaborators = "";
-
-        await this.$router.replace({ name: "Projects" });
+          await this.$router.replace({ name: 'Projects' })
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-useless-return
+        if (error) return
       }
-    },
+    }
   },
   computed: {
-    ...mapGetters(["getAllPeople"]),
+    ...mapGetters(['getAllPeople'])
   },
   watch: {
-    $route: ["fetchAllPeople"],
-  },
-};
+    $route: ['fetchAllPeople']
+  }
+}
 </script>

@@ -1,29 +1,23 @@
 <template>
-  <div class="main__navbar">
-    <div class="main__navbar__logo"><i :class="icon"></i> {{ titleApp }}</div>
-    <div class="main__navbar__items">
-      <a href="#" class="main__navbar_items_link"
-        ><i class="fas fa-search"></i
-      ></a>
-      <span class="main__navbar_items_link" v-if="options" @click="isVisible"
-        ><i class="fas fa-ellipsis-v"></i
-      ></span>
-    </div>
+  <div class="navbar">
+    <span class="navbar__brand" v-if="path.status"><i :class="path.icon"></i> {{ path.title }}</span>
+    <router-link :to="path.link" class="navbar__brand" v-else><i :class="path.icon"></i> {{ path.title }}</router-link>
+    <ul class="navbar__nav">
+      <a href="#" class="navbar__items--link" v-if="path.search"><i class="fas fa-search"></i></a>
+      <span class="navbar__items--link" v-if="options.length" @click="isVisible"><i class="fas fa-ellipsis-v"></i></span>
+    </ul>
     <div class="options" v-if="show">
       <div class="options__card">
         <ul class="options__card__items">
           <li class="options__card__icon">
-            <span>Opciones</span>
-            <i class="fas fa-chevron-up" @click="isVisible"></i>
+            <span>Opciones</span> <i class="fas fa-chevron-up" @click="isVisible"></i>
           </li>
-          <li
-            v-for="(menu, index) in options[0].menus"
-            :key="index"
-            class="options__card__item"
-          >
-            <a :href="menu.link" class="options__card__link"
-              ><i :class="menu.icon"></i> {{ menu.title }}</a
-            >
+          <li v-for="(menu, index) in options[0].menus" :key="index" class="options__card__item">
+            <router-link :to="menu.link" class="options__card__link"><i :class="menu.icon"></i> {{ menu.title }}</router-link>
+          </li>
+          <hr class="options__card__item" v-if="options[0].menus.length > 0">
+          <li class="options__card__item">
+            <span class="options__card__link" @click="logout"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</span>
           </li>
         </ul>
       </div>
@@ -33,22 +27,20 @@
 
 <script>
 export default {
-  name: "TheNavbar",
-  props: {
-    icon: String,
-    titleApp: String,
-    link: String,
-    options: Array,
-  },
-  data() {
+  name: 'TheNavbar.',
+  props: ['path', 'options'],
+  data () {
     return {
-      show: false,
-    };
+      show: false
+    }
   },
   methods: {
-    async isVisible() {
-      this.show = !this.show;
+    async isVisible () {
+      this.show = !this.show
     },
-  },
-};
+    async logout () {
+      await this.$router.replace({ name: 'Home' })
+    }
+  }
+}
 </script>

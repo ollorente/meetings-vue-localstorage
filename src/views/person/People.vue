@@ -1,95 +1,86 @@
 <template>
-  <main class="main">
-    <TheNavbar
-      :titleApp="titleApp"
-      :icon="icon"
-      :link="link"
-      :options="options"
-    />
-    <div class="main__body">
+  <div class='content'>
+    <TheNavbar :path='path' :options='options' />
+    <main>
       <TheSecondNavbar />
 
-      <div class="main__body__content">
-        <div class="main__body__section">
-          <div class="main__body__section__nav">
-            <router-link
-              v-for="(person, index) in getPeople"
-              :key="index"
-              :to="{ name: 'Person', params: { person: person.id } }"
-              class="main__body__section__user"
-            >
-              <img
-                :src="
-                  person.photoURL
-                    ? person.photoURL
-                    : `https://res.cloudinary.com/dbszizqh4/image/upload/v1592198427/images_lvwix2.png`
-                "
-                :alt="person.name"
-                :title="person.email"
-                class="main__body__section__user__logo"
-              />
-              <div class="main__body__section__user__body">
-                <span class="main__body__section__user__title">{{
-                  person.name
-                }}</span>
-                <span class="main__body__section__user__content">{{
-                  person.email
-                }}</span>
-              </div>
-            </router-link>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
+      <transition name="bounce">
+        <section class='section'>
+          <User v-for='person in people' :key='person.id' :person='person' />
+          <infinite-loading @infinite="infiniteHandler"></infinite-loading>
+        </section>
+      </transition>
+    </main>
+  </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters } from 'vuex'
+import InfiniteLoading from 'vue-infinite-loading'
 
-import TheNavbar from "@/components/TheNavbar";
-import TheSecondNavbar from "@/components/TheSecondNavbar";
+import TheNavbar from '@/components/TheNavbar'
+import TheSecondNavbar from '@/components/TheSecondNavbar'
+import User from '@/components/gadgets/User'
 
 export default {
-  name: "People",
+  name: 'People',
   components: {
     TheNavbar,
     TheSecondNavbar,
+    User,
+    InfiniteLoading
   },
-  data() {
+  data () {
     return {
-      limit: parseInt(this.limit || 20),
-      page: parseInt(this.page) > 0 ? parseInt(this.page || 1) : 1,
-      titleApp: "Usuarios",
-      icon: "fas fa-users",
-      link: "",
+      path: {
+        title: 'Usuarios',
+        link: { name: 'Home' },
+        icon: 'fas fa-users',
+        status: true,
+        search: true
+      },
       options: [
         {
           menus: [
             {
-              title: "Agregar usuario",
-              link: "/usuario/nuevo",
-              icon: "fas fa-user-plus",
-            },
-          ],
-        },
+              title: 'Crear usuario',
+              link: { name: 'NewPerson' },
+              icon: 'fas fa-users',
+              status: false
+            }
+          ]
+        }
       ],
-    };
-  },
-  created() {
-    this.fetchPeople({ data: { limit: this.limit, page: this.page } });
-    this.fetchAllPeople();
+      people: [],
+      limit: 10,
+      page: 0
+    }
   },
   methods: {
-    ...mapActions(["fetchAllPeople", "fetchPeople"]),
+    ...mapActions(['fetchPeople']),
+    async infiniteHandler ($state) {
+      this.page++
+
+      this.fetchPeople({
+        limit: this.limit,
+        page: this.page
+      })
+
+      let people = await this.getPeople
+
+      if (people.length) {
+        this.people = this.people.concat(people)
+        $state.loaded()
+      } else {
+        $state.complete()
+      }
+    }
   },
   computed: {
-    ...mapGetters(["getAllPeople", "getPeople"]),
+    ...mapGetters(['getPeople'])
   },
   watch: {
-    $route: ["fetchAllPeople", "fetchPeople"],
-  },
-};
+    $route: ['fetchPeople']
+  }
+}
 </script>
-
-<style scoped></style>

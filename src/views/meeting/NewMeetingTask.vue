@@ -1,134 +1,142 @@
 <template>
-  <main class="main">
-    <TheSectionNavbar
-      :titleApp="titleApp"
-      :icon="icon"
-      :link="link"
-      :options="options"
-    />
-    <div class="main__body">
-      <div class="main__body__content">
-        <div class="main__body__section">
-          <div class="main__body__section__nav">
-            <h1 class="main__body__section__person__title">Nueva tarea</h1>
-            <h3 class="main__body__section__person__subtitle"></h3>
-            <form @submit.prevent="newTask">
-              <div>
-                <input
-                  type="text"
-                  v-model="task.name"
-                  id="name"
-                  placeholder="Nombre de tarea"
-                  autofocus
-                  required
-                />
-              </div>
-              <div>
-                <textarea
-                  v-model="task.description"
-                  id="description"
-                  rows="10"
-                  placeholder="Agregue una descripción"
-                ></textarea>
-              </div>
-              <div>
-                <select
-                  multiple
-                  v-model="task.collaborators"
-                  id="collaborators"
+  <div class="content">
+    <TheNavbar :path="path" :options="options" />
+    <main>
+      <transition name="fade">
+        <section class="section">
+          <Alert :msg="alert.msg" v-if="alert.error" />
+          <h1 class="title">{{ getMeeting.name }}</h1>          
+          <form @submit.prevent="newTask">
+            <div>
+              <input
+                type="text"
+                v-model="task.name"
+                placeholder="Nombre de proyecto"
+                autofocus
+                required
+              />
+            </div>
+            <ckeditor
+              :editor="editor"
+              v-model="task.description"
+              :config="editorConfig"
+            ></ckeditor>
+            <div>
+              <select multiple v-model="task.collaborators">
+                <option
+                  v-for="person in getAllMeetingPeople"
+                  :key="person.id"
+                  :value="person.id"
                 >
-                  <option
-                    v-for="person in getAllMeetingPeople"
-                    :key="person.id"
-                    :value="person.id"
-                  >
-                    {{ person.name }} - {{ person.email }}
-                  </option>
-                </select>
-              </div>
-              <button type="submit" class="btn-p-light">Agregar</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
+                  {{ person.name }} - {{ person.email }}
+                </option>
+              </select>
+            </div>
+            <button type="submit" class="btn-p-light">Agregar</button>
+          </form>
+        </section>
+      </transition>
+    </main>
+  </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters } from 'vuex'
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 
-import TheSectionNavbar from "@/components/TheSectionNavbar";
+import TheNavbar from '@/components/TheNavbar'
+import Alert from '@/components/gadgets/Alert'
 
 export default {
-  name: "NewMeetingTask",
+  name: 'NewMeetingTask',
   components: {
-    TheSectionNavbar,
+    Alert,
+    TheNavbar
   },
-  data() {
+  data () {
     return {
-      task: {
-        name: "",
-        description: "",
-        collaborators: [],
-        project: "",
+      path: {
+        title: 'Crear actividad',
+        link: {
+          name: 'MeetingTasks',
+          params: { meeting: this.$route.params.meeting }
+        },
+        icon: 'fas fa-arrow-left',
+        status: false,
+        search: false
       },
-      meeting: "",
+      options: [
+        {
+          menus: []
+        }
+      ],
       alert: {
-        error: true,
-        msg: null,
+        error: false,
+        msg: null
       },
-      titleApp: "Agregar tarea a reunión",
-      icon: "fas fa-arrow-left",
-      link: `/reunion/${this.$route.params.meeting}`,
-      options: [],
-    };
+      task: {
+        name: '',
+        description: '',
+        collaborators: [],
+        project: ''
+      },
+      editor: ClassicEditor,
+      editorConfig: {
+        // The configuration of the editor.
+      }
+    }
   },
-  mounted() {
-    this.meeting = this.getMeeting;
-    this.task.project = this.getMeeting.project;
+  mounted () {
+    this.task.project = this.getMeeting.project
   },
-  created() {
-    this.fetchMeeting(this.$route.params.meeting);
-    this.fetchAllMeetingPeople(this.$route.params.meeting);
+  created () {
+    this.fetchMeeting(this.$route.params.meeting)
+    this.fetchAllMeetingPeople(this.$route.params.meeting)
   },
   methods: {
-    ...mapActions(["addTask", "fetchMeeting", "fetchAllMeetingPeople"]),
-    async newTask() {
-      if (this.task.name.trim() === "" || this.task.description.trim() === "") {
-        this.alert.error = true;
-        this.alert.msg = `Ni el nombre ni la descripción pueden estar vacios.`;
+    ...mapActions(['addTask', 'fetchMeeting', 'fetchAllMeetingPeople']),
+    async newTask () {
+      if (
+        this.task.name.trim() === '' ||
+        this.task.description.trim() === '' ||
+        this.task.collaborators === ''
+      ) {
+        this.alert.error = true
+        this.alert.msg = `Los campos no pueden estar vacios.`
 
         setTimeout(() => {
-          this.alert.error = false;
-        }, 4000);
+          this.alert.error = false
+        }, 4000)
 
-        return;
+        // eslint-disable-next-line no-useless-return
+        return
       } else {
-        await this.addTask({
+        const task = {
           name: await this.task.name,
           description: await this.task.description,
           collaborators: await this.task.collaborators,
-          project: parseInt(await this.task.project),
-          meeting: parseInt(this.$route.params.meeting),
-        });
+          project: await this.task.project,
+          meeting: parseInt(this.$route.params.meeting)
+        }
 
-        this.task.name = "";
-        this.task.description = "";
-        this.task.collaborators = "";
+        await this.addTask(task)
+
+        this.task.name = ''
+        this.task.description = ''
+        this.task.collaborators = ''
 
         await this.$router.replace({
-          name: "MeetingTasks",
-          params: { meeting: this.$route.params.meeting },
-        });
+          name: 'MeetingTasks',
+          params: { meeting: this.$route.params.meeting }
+        })
       }
-    },
+    }
   },
   computed: {
-    ...mapGetters(["getMeeting", "getAllMeetingPeople"]),
+    ...mapGetters(['getMeeting', 'getAllMeetingPeople'])
   },
   watch: {
-    $route: ["fetchMeeting", "fetchAllMeetingPeople"],
-  },
-};
+    $route: ['fetchMeeting', 'fetchAllMeetingPeople']
+  }
+}
 </script>

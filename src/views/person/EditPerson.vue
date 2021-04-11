@@ -1,161 +1,169 @@
 <template>
-  <main class="main">
-    <Alert :msg="alert.msg" v-if="alert.error" />
-    <TheSectionNavbar
-      :titleApp="titleApp"
-      :icon="icon"
-      :link="link"
-      :options="options"
-    />
-    <div class="main__body">
-      <div class="main__body__content">
-        <div class="main__body__section">
-          <div class="main__body__section__nav">
-            <h1 class="main__body__section__nav--title">Editar usuario</h1>
-            <form @submit.prevent="putPerson">
-              <div>
-                <input
-                  type="text"
-                  v-model="person.name"
-                  id="name"
-                  placeholder="Nombre de usuario"
-                  autofocus
-                  required
-                />
-              </div>
-              <div>
-                <input
-                  type="email"
-                  v-model="person.email"
-                  id="email"
-                  placeholder="email@email.com"
-                  required
-                />
-              </div>
-              <div>
-                <input
-                  type="text"
-                  v-model="person.role"
-                  id="role"
-                  placeholder="Cargo"
-                />
-              </div>
-              <div>
-                <input
-                  type="text"
-                  v-model="person.photoURL"
-                  id="photoURL"
-                  placeholder="Imagen de avatar"
-                />
-              </div>
-              <div hidden>
-                <label for="isActive" class="form-label"
-                  ><input type="checkbox" v-model="person.isActive" />
-                  Estatus</label
-                >
-              </div>
-              <div>
-                <label for="isActive" class="form-label" @click="isActive"
-                  ><i
-                    :class="person.isActive ? 'fas' : 'far'"
-                    class="fa-circle"
-                  ></i>
-                  Activo</label
-                >
-              </div>
-              <button type="submit" class="btn-secondary">Actualizar</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-    <pre class="container" hidden>{{ $data }}</pre>
-  </main>
+  <div class="content">
+    <TheNavbar :path="path" :options="options" />
+    <main>
+      <transition name="fade">
+        <section class="section">
+          <Alert :msg="alert.msg" v-if="alert.error" />
+          <h1 class="title">{{ person.name }}</h1>
+          <form @submit.prevent="putPerson">
+            <div>
+              <input
+                type="text"
+                v-model="person.name"
+                id="name"
+                placeholder="Nombre de usuario"
+                autofocus
+                required
+              />
+            </div>
+            <div>
+              <input
+                type="email"
+                v-model="person.email"
+                id="email"
+                placeholder="email@email.com"
+                required
+              />
+            </div>
+            <div>
+              <input
+                type="text"
+                v-model="person.photoURL"
+                id="role"
+                placeholder="Imagen del usuario"
+              />
+            </div>
+            <div>
+              <input
+                type="text"
+                v-model="person.phone"
+                id="role"
+                placeholder="Teléfono"
+              />
+            </div>
+            <div>
+              <input
+                type="text"
+                v-model="person.role"
+                id="role"
+                placeholder="Cargo"
+              />
+            </div>
+            <button type="submit" class="btn-secondary">Editar</button>
+          </form>
+        </section>
+      </transition>
+    </main>
+  </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions } from 'vuex'
+import { db } from '@/main'
 
-import Alert from "@/components/Alert";
-import TheSectionNavbar from "@/components/TheSectionNavbar";
+import TheNavbar from '@/components/TheNavbar'
 
 export default {
-  name: "EditPerson",
+  name: 'EditPerson',
   components: {
-    Alert,
-    TheSectionNavbar,
+    TheNavbar
   },
-  data() {
+  data () {
     return {
-      person: "",
-      titleApp: "Editar usuario",
-      icon: "fas fa-arrow-left",
-      link: `/usuario/${this.$route.params.person}`,
+      path: {
+        title: 'Editar usuario',
+        link: { name: 'Person', params: { person: this.$route.params.person } },
+        icon: 'fas fa-arrow-left',
+        status: false,
+        search: false
+      },
+      options: [
+        {
+          menus: []
+        }
+      ],
       alert: {
         error: false,
-        msg: null,
+        msg: null
       },
-      options: [],
-    };
+      person: {
+        id: '',
+        name: '',
+        email: '',
+        photoURL: '',
+        phone: '',
+        role: '',
+        isLock: '',
+        isActive: '',
+        createdAt: '',
+        updatedAt: ''
+      }
+    }
   },
-  mounted() {
-    this.person = {
-      id: this.getPerson.id,
-      email: this.getPerson.email,
-      name: this.getPerson.name,
-      photoURL: this.getPerson.photoURL,
-      role: this.getPerson.role,
-      isActive: this.getPerson.isActive,
-      isLock: this.getPerson.isLock,
-      createdAt: this.getPerson.createdAt,
-      updatedAt: this.getPerson.updatedAt,
-    };
-  },
-  created() {
-    this.fetchPerson(this.$route.params.person);
+  created () {
+    this.getPerson()
   },
   methods: {
-    ...mapActions(["deletePerson", "fetchPerson", "updatePerson"]),
-    async putPerson() {
-      if (this.person.name.trim() === "" || this.person.email.trim() === "") {
-        this.alert.error = true;
-        this.alert.msg = `El Correo y/o Email no pueden ser vacios.`;
+    ...mapActions(['getPerson', 'updatePerson']),
+    async getPerson () {
+      try {
+        const data = await db.people[this.$route.params.person]
 
-        setTimeout(() => {
-          this.alert.error = false;
-        }, 4000);
-
-        return;
-      } else {
-        await this.updatePerson(this.person);
-
-        this.person.name = "";
-        this.person.email = "";
-        this.person.role = "";
-        this.person.photoURL = "";
-
-        await this.$router.replace({
-          name: "Person",
-          params: { person: this.$route.params.person },
-        });
+        if (data === undefined) {
+          this.$router.replace({
+            name: 'People'
+          })
+        } else {
+          this.person = {
+            id: await data.id,
+            name: await data.name,
+            email: await data.email,
+            photoURL: await data.photoURL,
+            phone: await data.phone,
+            role: await data.role,
+            isLock: await data.isLock,
+            isActive: await data.isActive,
+            createdAt: await data.createdAt,
+            updatedAt: await data.updatedAt
+          }
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-useless-return
+        if (error) return
       }
     },
-    async isActive() {
-      this.person.isActive = !this.person.isActive;
-    },
-    async removePerson() {
-      if (window.confirm(`Está a punto de borrar un elemento`)) {
-        await this.deletePerson(this.$route.params.person);
+    async putPerson () {
+      try {
+        if (this.person.name.trim() === '' || this.person.email.trim() === '') {
+          this.alert.error = true
+          this.alert.msg = `Los campos no pueden estar vacíos.`
 
-        await this.$router.replace({ name: "People" });
+          setTimeout(() => {
+            this.alert.error = false
+          }, 4000)
+        } else {
+          await this.updatePerson(this.person)
+
+          this.person.name = ''
+          this.person.email = ''
+          this.person.photoURL = ''
+          this.person.phone = ''
+          this.person.role = ''
+
+          await this.$router.replace({
+            name: 'Person',
+            params: { person: this.$route.params.person }
+          })
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-useless-return
+        if (error) return
       }
-    },
-  },
-  computed: {
-    ...mapGetters(["getPerson"]),
+    }
   },
   watch: {
-    $route: ["fetchPerson"],
-  },
-};
+    $route: ['getPerson']
+  }
+}
 </script>

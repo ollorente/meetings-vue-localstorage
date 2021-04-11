@@ -1,99 +1,154 @@
 <template>
-  <main class="main">
-    <TheSectionNavbar
-      :titleApp="titleApp"
-      :icon="icon"
-      :link="link"
-      :options="options"
-    />
-    <div class="main__body">
-      <div class="main__body__content">
-        <div class="main__body__section">
-          <div class="main__body__section__nav">
-            <h1 class="main__body__section__nav--title">
-              {{ getProject.name }}
-            </h1>
-            <div v-html="getProject.description"></div>
-            <p style="text-align: left; padding: 0 1rem">
-              <b>{{ getProject.isActive ? "Activo" : "Inactivo" }}</b
-              ><br />
-              <b>{{ getProject.isLock ? "Bloqueado" : "Público" }}</b
-              ><br />
-              <span
-                ><b>Creado: </b
-                ><span>{{
-                  new Date(getProject.createdAt).toLocaleDateString()
-                }}</span>
+  <div class="content">
+    <TheNavbar :path="path" :options="options" />
+    <main>
+      <transition name="fade">
+        <section class="section">
+          <h1 class="title">{{ project.name }}</h1>
+          <div class="main__section__person">
+            <div v-html="project.description"></div>
+            <p class="main__section__person__block">
+              <span class="main__section__person__block__content">
+                <b>{{ project.collaborators.length }}</b> {{ project.collaborators.length === 1 ? 'Colaborador' : 'Colaboradores' }}
               </span>
-              <span v-if="getProject.createdAt !== getProject.updatedAt"
-                ><br />
-                <b>Actualizado: </b
-                ><span>{{
-                  new Date(getProject.updatedAt).toLocaleDateString()
-                }}</span></span
-              >
             </p>
+            <p class="main__section__person__block">
+              <span class="main__section__person__block__label">Creado:</span><br />
+              <span class="main__section__person__block__content">{{
+                new Date(project.createdAt).toLocaleDateString()
+              }}</span>
+            </p>
+            <p
+              v-if="project.createdAt !== project.updatedAt"
+              class="main__section__person__block"
+            >
+              <span class="main__section__person__block__label">Actualizado:</span
+              ><br />
+              <span class="main__section__person__block__content">{{
+                new Date(project.updatedAt).toLocaleDateString()
+              }}</span>
+            </p>
+            <p class="main__section__person__block">
+              <span class="main__section__person__block__content"
+                ><i
+                  :class="project.isActive ? 'fas' : 'far'"
+                  class="fa-circle"
+                ></i>
+                {{ project.isActive ? "Activo" : "Inactivo" }}</span
+              ><br />
+              <span class="main__section__person__block__content">
+                <i class="fas" :class="project.isLock ? 'fa-lock' : 'fa-lock-open'"></i> {{ project.isLock ? "Oculto" : "Público" }}
+              </span>
+            </p>
+            <p class="main__section__person__block"></p>
+            <form class="main__section__person__block">
+              <button @click="removeProject" class="btn-outline-s-dark">
+                Eliminar
+              </button>
+            </form>
           </div>
-        </div>
-      </div>
-    </div>
-  </main>
+        </section>
+      </transition>
+    </main>
+  </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions } from 'vuex'
+import { db } from '@/main'
 
-import TheSectionNavbar from "@/components/TheSectionNavbar";
+import TheNavbar from '@/components/TheNavbar'
 
 export default {
-  name: "Project",
+  name: 'Project',
   components: {
-    TheSectionNavbar,
+    TheNavbar
   },
-  data() {
+  data () {
     return {
-      titleApp: "Proyecto",
-      icon: "fas fa-arrow-left",
-      link: `/proyectos`,
+      path: {
+        title: 'Proyecto',
+        link: { name: 'Projects' },
+        icon: 'fas fa-arrow-left',
+        status: false,
+        search: false
+      },
       options: [
         {
           menus: [
             {
-              title: "Editar",
-              link: `/proyecto/${this.$route.params.project}/editar`,
-              icon: "fas fa-user-edit",
+              title: 'Editar',
+              link: { name: 'EditProject' },
+              icon: 'fas fa-user-tie',
+              status: false
             },
             {
-              title: "Reuniones",
-              link: `/proyecto/${this.$route.params.project}/reuniones`,
-              icon: "fas fa-handshake",
+              title: 'Actividades',
+              link: { name: 'ProjectTasks' },
+              icon: 'fas fa-tasks',
+              status: false
             },
             {
-              title: "Tareas",
-              link: `/proyecto/${this.$route.params.project}/tareas`,
-              icon: "fas fa-tasks",
+              title: 'Encuentros',
+              link: { name: 'ProjectMeetings' },
+              icon: 'fas fa-handshake',
+              status: false
             },
             {
-              title: "Usuarios",
-              link: `/proyecto/${this.$route.params.project}/usuarios`,
-              icon: "fas fa-user-tie",
-            },
-          ],
-        },
+              title: 'Usuarios',
+              link: { name: 'ProjectPeople' },
+              icon: 'fas fa-users',
+              status: false
+            }
+          ]
+        }
       ],
-    };
+      project: {
+        id: '',
+        name: '',
+        description: '',
+        collaborators: [],
+        isActive: '',
+        isLock: '',
+        createdAt: '',
+        updatedAt: ''
+      }
+    }
   },
-  created() {
-    this.fetchProject(this.$route.params.project);
+  created () {
+    this.getProject()
   },
   methods: {
-    ...mapActions(["fetchProject"]),
-  },
-  computed: {
-    ...mapGetters(["getProject"]),
+    ...mapActions(['deleteProject']),
+    async getProject () {
+      try {
+        const data = await db.projects[this.$route.params.project]
+
+        this.project = {
+          id: await data.id,
+          name: await data.name,
+          description: await data.description,
+          collaborators: await data.collaborators,
+          isActive: await data.isActive,
+          isLock: await data.isLock,
+          createdAt: await data.createdAt,
+          updatedAt: await data.updatedAt
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-useless-return
+        if (error) return
+      }
+    },
+    async removeProject () {
+      if (window.confirm(`Está a punto de borrar un elemento`)) {
+        await this.deleteProject(this.$route.params.project)
+
+        await this.$router.replace({ name: 'Projects' })
+      }
+    }
   },
   watch: {
-    $route: ["fetchProject"],
-  },
-};
+    $route: ['getProject']
+  }
+}
 </script>

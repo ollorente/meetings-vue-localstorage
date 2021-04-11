@@ -1,19 +1,20 @@
-import Vue from "vue";
-import Vuex from "vuex";
-import meeting from "./modules/meeting";
-import meetingPeople from "./modules/meetingPeople";
-import meetingTasks from "./modules/meetingTasks";
-import person from "./modules/person";
-import personMeetings from "./modules/personMeetings";
-import personProjects from "./modules/personProjects";
-import personTasks from "./modules/personTasks";
-import project from "./modules/project";
-import projectMeetings from "./modules/projectMeetings";
-import projectPeople from "./modules/projectPeople";
-import projectTasks from "./modules/projectTasks";
-import task from "./modules/task";
+import Vue from 'vue'
+import Vuex from 'vuex'
+import meeting from './modules/meeting'
+import meetingPeople from './modules/meetingPeople'
+import meetingTasks from './modules/meetingTasks'
+import peopleMeetings from './modules/peopleMeetings'
+import peopleProjects from './modules/peopleProjects'
+import peopleTasks from './modules/peopleTasks'
+import person from './modules/person'
+import project from './modules/project'
+import projectMeetings from './modules/projectMeetings'
+import projectPeople from './modules/projectPeople'
+import projectTasks from './modules/projectTasks'
+import task from './modules/task'
+import taskPeople from './modules/taskPeople'
 
-Vue.use(Vuex);
+Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {},
@@ -23,14 +24,15 @@ export default new Vuex.Store({
     meeting,
     meetingPeople,
     meetingTasks,
+    peopleMeetings,
+    peopleProjects,
+    peopleTasks,
     person,
-    personMeetings,
-    personProjects,
-    personTasks,
     project,
-    projectPeople,
     projectMeetings,
+    projectPeople,
     projectTasks,
     task,
-  },
-});
+    taskPeople
+  }
+})

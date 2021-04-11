@@ -1,162 +1,159 @@
 <template>
-  <main class="main">
-    <TheSectionNavbar
-      :titleApp="titleApp"
-      :icon="icon"
-      :link="link"
-      :options="options"
-    />
-    <div class="main__body">
-      <div class="main__body__content">
-        <div class="main__body__section">
-          <div class="main__body__section__nav">
-            <h1 class="main__body__section__nav--title">
-              Editar<br />"{{ project.name }}"
-            </h1>
-            <form @submit.prevent="putProject">
-              <div>
-                <input
-                  type="text"
-                  v-model="project.name"
-                  id="name"
-                  placeholder="Nombre de proyecto"
-                  autofocus
-                  required
-                />
-              </div>
-              <div>
-                <textarea
-                  v-model="project.description"
-                  id="description"
-                  rows="10"
-                  placeholder="Agregue una descripción"
-                ></textarea>
-              </div>
-              <div>
-                <select
-                  multiple
-                  v-model="project.collaborators"
-                  id="collaborators"
+  <div class="content">
+    <TheNavbar :path="path" :options="options" />
+    <main>
+      <transition name="fade">
+        <section class="section">
+          <Alert :msg="alert.msg" v-if="alert.error" />
+          <h1 class="title">{{ project.name }}</h1>
+          <form @submit.prevent="putProject">
+            <div>
+              <input
+                type="text"
+                v-model="project.name"
+                id="name"
+                placeholder="Nombre de usuario"
+                autofocus
+                required
+              />
+            </div>
+            <ckeditor
+              :editor="editor"
+              v-model="project.description"
+              :config="editorConfig"
+            ></ckeditor>
+            <div>
+              <select multiple v-model="project.collaborators">
+                <option
+                  v-for="person in getAllPeople"
+                  :key="person.id"
+                  :value="person.id"
                 >
-                  <option
-                    v-for="person in getAllPeople"
-                    :key="person.id"
-                    :value="person.id"
-                  >
-                    {{ person.name }} - {{ person.email }}
-                  </option>
-                </select>
-              </div>
-              <div>
-                <label
-                  ><input type="checkbox" v-model="project.isActive" />
-                  Estatus</label
-                >
-              </div>
-              <button type="submit" class="btn-secondary">Editar</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
+                  {{ person.name }} - {{ person.email }}
+                </option>
+              </select>
+            </div>
+            <button type="submit" class="btn-secondary">Editar</button>
+          </form>
+        </section>
+      </transition>
+    </main>
+  </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters } from 'vuex'
+import { db } from '@/main'
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 
-import TheSectionNavbar from "@/components/TheSectionNavbar";
+import TheNavbar from '@/components/TheNavbar'
+import Alert from '@/components/gadgets/Alert'
 
 export default {
-  name: "EditProject",
+  name: 'EditProject',
   components: {
-    TheSectionNavbar,
+    TheNavbar,
+    Alert
   },
-  data() {
+  data () {
     return {
-      project: "",
+      path: {
+        title: 'Editar proyecto',
+        link: { name: 'Project', params: { project: this.$route.params.project } },
+        icon: 'fas fa-arrow-left',
+        status: false,
+        search: false
+      },
+      options: [
+        {
+          menus: []
+        }
+      ],
       alert: {
         error: false,
-        msg: null,
+        msg: null
       },
-      titleApp: "Editar proyecto",
-      icon: "fas fa-arrow-left",
-      link: `/proyecto/${this.$route.params.project}`,
-      options: [],
-    };
+      project: {
+        id: '',
+        name: '',
+        description: '',
+        collaborators: [],
+        isLock: '',
+        isActive: '',
+        createdAt: '',
+        updatedAt: ''
+      },
+      editor: ClassicEditor,
+      editorConfig: {
+        // The configuration of the editor.
+      }
+    }
   },
-  mounted() {
-    this.project = {
-      id: this.getProject.id,
-      name: this.getProject.name,
-      description: this.getProject.description,
-      collaborators: this.getProject.collaborators,
-      isActive: this.getProject.isActive,
-      isLock: this.getProject.isLock,
-      createdAt: this.getProject.createdAt,
-      updatedAt: this.getProject.updatedAt,
-    };
-  },
-  created() {
-    this.fetchAllPeople();
-    this.fetchProject(this.$route.params.project);
+  created () {
+    this.getProject()
+    this.fetchAllPeople()
   },
   methods: {
-    ...mapActions([
-      "fetchAllPeople",
-      "fetchProject",
-      "removeProject",
-      "updateProject",
-    ]),
-    async putProject() {
-      if (
-        this.project.name.trim() === "" ||
-        this.project.description.trim() === ""
-      ) {
-        this.alert.error = true;
-        this.alert.msg = `Ni el nombre ni la descripción pueden estar vacios.`;
+    ...mapActions(['updateProject', 'fetchAllPeople']),
+    async getProject () {
+      try {
+        const data = await db.projects[this.$route.params.project]
 
-        setTimeout(() => {
-          this.alert.error = false;
-        }, 4000);
-
-        return;
-      } else {
-        const project = {
-          id: await this.project.id,
-          name: await this.project.name,
-          description: await this.project.description,
-          collaborators: await this.project.collaborators,
-          isActive: await this.project.isActive,
-          isLock: await this.project.isLock,
-          createdAt: await this.project.createdAt,
-        };
-
-        await this.updateProject(project);
-
-        this.project.name = "";
-        this.project.description = "";
-        this.project.collaborators = "";
-
-        await this.$router.replace({
-          name: "Project",
-          params: { project: this.$route.params.project },
-        });
+        if (data === undefined) {
+          this.$router.replace({
+            name: 'Projects'
+          })
+        } else {
+          this.project = {
+            id: await data.id,
+            name: await data.name,
+            description: await data.description,
+            collaborators: await data.collaborators,
+            isLock: await data.isLock,
+            isActive: await data.isActive,
+            createdAt: await data.createdAt,
+            updatedAt: await data.updatedAt
+          }
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-useless-return
+        if (error) return
       }
     },
-    async deleteProject() {
-      if (window.confirm(`Está a punto de borrar un elemento`)) {
-        await this.removeProject(this.$route.params.project);
+    async putProject () {
+      try {
+        if (this.project.name.trim() === '' || this.project.collaborators.trim() === '') {
+          this.alert.error = true
+          this.alert.msg = `Los campos no pueden estar vacíos.`
 
-        await this.$router.replace({ name: "Projects" });
+          setTimeout(() => {
+            this.alert.error = false
+          }, 4000)
+        } else {
+          this.updateProject(this.project)
+
+          this.name = ''
+          this.description = ''
+          this.collaborators = ''
+          this.isLock = ''
+          this.isActive = ''
+
+          await this.$router.replace({
+            name: 'Project',
+            params: { project: this.$route.params.project }
+          })
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-useless-return
+        if (error) return
       }
-    },
+    }
   },
   computed: {
-    ...mapGetters(["getAllPeople", "getProject"]),
+    ...mapGetters(['getAllPeople'])
   },
   watch: {
-    $route: ["fetchAllPeople", "fetchProject"],
-  },
-};
+    $route: ['getProject', 'fetchAllPeople']
+  }
+}
 </script>

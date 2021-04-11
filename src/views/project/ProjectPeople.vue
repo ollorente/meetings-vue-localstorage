@@ -1,94 +1,80 @@
 <template>
-  <main class="main">
-    <TheSectionNavbar
-      :titleApp="titleApp"
-      :icon="icon"
-      :link="link"
-      :options="options"
-    />
-    <div class="main__body">
-      <div class="main__body__content">
-        <div class="main__body__section">
-          <div class="main__body__section__nav">
-            <h1 class="main__body__section__person__title">
-              {{ getProject.name }}
-            </h1>
-            <h3 class="main__body__section__person__subtitle"></h3>
-            <router-link
-              v-for="(person, index) in getProjectPeople"
-              :key="index"
-              :to="{ name: 'Person', params: { person: person.id } }"
-              class="main__body__section__user"
-            >
-              <img
-                :src="
-                  person.photoURL
-                    ? person.photoURL
-                    : `https://res.cloudinary.com/dbszizqh4/image/upload/v1592198427/images_lvwix2.png`
-                "
-                :alt="person.name"
-                :title="person.email"
-                class="main__body__section__user__logo"
-              />
-              <div class="main__body__section__user__body">
-                <span class="main__body__section__user__title">{{
-                  person.name
-                }}</span>
-                <span class="main__body__section__user__content">{{
-                  person.email
-                }}</span>
-              </div>
-            </router-link>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
+  <div class="content">
+    <TheNavbar :path="path" :options="options" />
+    <main>
+      <transition name="fade">
+        <section class="section">
+          <h1 class="title">{{ getProject.name }}</h1>
+          <User v-for='person in people' :key='person.id' :person='person' />
+          <infinite-loading @infinite="infiniteHandler"></infinite-loading>
+        </section>
+      </transition>
+    </main>
+  </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters } from 'vuex'
+import InfiniteLoading from 'vue-infinite-loading'
 
-import TheSectionNavbar from "@/components/TheSectionNavbar";
+import TheNavbar from '@/components/TheNavbar'
+import User from '@/components/gadgets/User'
 
 export default {
-  name: "ProjectPeople",
+  name: 'ProjectProjectPeople',
   components: {
-    TheSectionNavbar,
+    TheNavbar,
+    User,
+    InfiniteLoading
   },
-  data() {
+  data () {
     return {
-      limit: parseInt(this.limit || 20),
-      page: parseInt(this.page) > 0 ? parseInt(this.page || 1) : 1,
-      titleApp: "Usuarios del proyecto",
-      icon: "fas fa-arrow-left",
-      link: `/proyecto/${this.$route.params.project}/editar`,
-      options: [],
-    };
+      path: {
+        title: 'Usuarios proyecto',
+        link: { name: 'Project', params: { project: this.$route.params.project } },
+        icon: 'fas fa-arrow-left',
+        status: false,
+        search: true
+      },
+      options: [
+        {
+          menus: []
+        }
+      ],
+      people: [],
+      limit: 10,
+      page: 0
+    }
   },
-  created() {
-    this.fetchProject(this.$route.params.project);
-    this.fetchProjectPeople({
-      id: this.$route.params.project,
-      limit: this.limit,
-      page: this.page,
-    });
-    this.fetchAllProjectPeople();
+  created () {
+    this.fetchProject(this.$route.params.project)
   },
   methods: {
-    ...mapActions([
-      "fetchProjectPeople",
-      "fetchAllProjectPeople",
-      "fetchProject",
-    ]),
+    ...mapActions(['fetchProjectPeople', 'fetchProject']),
+    async infiniteHandler ($state) {
+      this.page++
+
+      this.fetchProjectPeople({
+        id: this.$route.params.project,
+        limit: this.limit,
+        page: this.page
+      })
+
+      let people = await this.getProjectPeople
+
+      if (people.length) {
+        this.people = this.people.concat(people)
+        $state.loaded()
+      } else {
+        $state.complete()
+      }
+    }
   },
   computed: {
-    ...mapGetters(["getProjectPeople", "getAllProjectPeople", "getProject"]),
+    ...mapGetters(['getProjectPeople', 'getProject'])
   },
   watch: {
-    $route: ["fetchProjectPeople", "fetchAllProjectPeople", "fetchProject"],
-  },
-};
+    $route: ['fetchProjectPeople', 'fetchProject']
+  }
+}
 </script>
-
-<style scoped></style>
