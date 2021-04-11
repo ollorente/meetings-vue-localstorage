@@ -268,9 +268,9 @@ const actions = {
       // ---X--- Editando usuarios en tarea ---X---
 
       // ------- Editando tarea en proyecto -------
-      const project = await db.projectTasks[task.project]
+      const tasksProject = await db.projectTasks[task.project]
 
-      if (!project) {
+      if (!tasksProject) {
         db.projectTasks[task.project] = {}
       }
 
