@@ -16,11 +16,9 @@
                 required
               />
             </div>
-            <ckeditor
-              :editor="editor"
-              v-model="meeting.description"
-              :config="editorConfig"
-            ></ckeditor>
+            <div>
+              <textarea v-model="meeting.description" rows="10"></textarea>
+            </div>
             <div>
               <input
                 type="datetime-local"
@@ -61,7 +59,6 @@
 <script>
 import { mapActions } from 'vuex'
 import { db } from '@/main'
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 
 import TheNavbar from '@/components/TheNavbar'
 import Alert from '@/components/gadgets/Alert'
@@ -102,11 +99,7 @@ export default {
         isLock: '',
         createdAt: ''
       },
-      people: [],
-      editor: ClassicEditor,
-      editorConfig: {
-        // The configuration of the editor.
-      }
+      people: []
     }
   },
   created () {
@@ -149,7 +142,31 @@ export default {
         if (error) return
       }
     },
-    async putMeeting () {}
+    async putMeeting () {
+      if (
+        this.meeting.name.trim() === '' ||
+        this.meeting.description.trim() === '' ||
+        this.meeting.collaborators === ''
+      ) {
+        this.alert.error = true
+        this.alert.msg = `Los campos no pueden estar vacios.`
+
+        setTimeout(() => {
+          this.alert.error = false
+        }, 4000)
+      } else {
+        await this.updateMeeting(this.meeting)
+
+        this.meeting.name = ''
+        this.meeting.description = ''
+        this.meeting.collaborators = ''
+
+        await this.$router.replace({
+          name: 'Meeting',
+          params: { meeting: this.$route.params.meeting }
+        })
+      }
+    }
   },
   watch: {
     $route: ['getMeeting']
