@@ -17,11 +17,9 @@
                 required
               />
             </div>
-            <ckeditor
-              :editor="editor"
-              v-model="project.description"
-              :config="editorConfig"
-            ></ckeditor>
+            <div>
+              <textarea v-model="project.description" rows="10"></textarea>
+            </div>
             <div>
               <select multiple v-model="project.collaborators">
                 <option
@@ -44,7 +42,6 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import { db } from '@/main'
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 
 import TheNavbar from '@/components/TheNavbar'
 import Alert from '@/components/gadgets/Alert'
@@ -82,10 +79,6 @@ export default {
         isActive: '',
         createdAt: '',
         updatedAt: ''
-      },
-      editor: ClassicEditor,
-      editorConfig: {
-        // The configuration of the editor.
       }
     }
   },
@@ -120,7 +113,11 @@ export default {
     },
     async putProject () {
       try {
-        if (this.project.name.trim() === '' || this.project.collaborators.trim() === '') {
+        if (
+          this.project.name.trim() === '' ||
+          this.project.description.trim() === '' ||
+          this.project.collaborators === ''
+        ) {
           this.alert.error = true
           this.alert.msg = `Los campos no pueden estar vacíos.`
 
@@ -128,7 +125,7 @@ export default {
             this.alert.error = false
           }, 4000)
         } else {
-          this.updateProject(this.project)
+          await this.updateProject(this.project)
 
           this.name = ''
           this.description = ''
