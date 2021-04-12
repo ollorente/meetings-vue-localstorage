@@ -35,10 +35,9 @@
                 >
                   <span class="main__section__link__text__content">
                     <span class="text-title">{{ meeting.name }}</span>
-                    <span class="text-content"
-                      >{{ new Date(meeting.dateInt).toString().split(" ")[4] }} -
-                      {{ new Date(meeting.dateEnd).toString().split(" ")[4] }}</span
-                    >
+                    <span class="text-content">
+                      {{ meeting.dateInt }} - {{ meeting.dateEnd }}
+                    </span>
                   </span>
                 </router-link>
               </div>
@@ -134,7 +133,12 @@ export default {
           ]
         }
       ],
-      meeting: '',
+      meeting: {
+        id: '',
+        name: '',
+        dateEnd: '',
+        dateInt: ''
+      },
       project: '',
       task: {
         id: '',
@@ -185,7 +189,14 @@ export default {
     },
     async getMeeting (id) {
       try {
-        this.meeting = await db.meetings[id]
+        const data = await db.meetings[id]
+
+        this.meeting = {
+          id: await data.id,
+          name: await data.name,
+          dateInt: new Date(await data.dateInt - (1000 * 60 * 60 * 5)).toISOString().substr(11, 5),
+          dateEnd: new Date(await data.dateEnd - (1000 * 60 * 60 * 5)).toISOString().substr(11, 5)
+        }
       } catch (error) {
         // eslint-disable-next-line no-useless-return
         if (error) return
