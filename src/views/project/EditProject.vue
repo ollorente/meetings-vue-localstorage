@@ -100,9 +100,7 @@ export default {
         const data = await db.projects[this.$route.params.project]
 
         if (data === undefined) {
-          this.$router.replace({
-            name: 'Projects'
-          })
+          await this.$router.replace({ name: 'Error' })
         } else {
           this.project = {
             id: await data.id,
