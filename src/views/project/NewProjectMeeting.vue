@@ -16,11 +16,9 @@
                 required
               />
             </div>
-            <ckeditor
-              :editor="editor"
-              v-model="meeting.description"
-              :config="editorConfig"
-            ></ckeditor>
+            <div>
+              <textarea v-model="meeting.description" rows="10"></textarea>
+            </div>
             <div>
               <input
                 type="datetime-local"
@@ -60,7 +58,6 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 
 import TheNavbar from '@/components/TheNavbar'
 import Alert from '@/components/gadgets/Alert'
@@ -98,10 +95,6 @@ export default {
         collaborators: [],
         dateInt: '',
         dateEnd: ''
-      },
-      editor: ClassicEditor,
-      editorConfig: {
-        // The configuration of the editor.
       },
       today: new Date().toLocaleString()
     }
