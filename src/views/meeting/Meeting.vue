@@ -53,12 +53,14 @@
                 {{ meeting.isLock ? "Oculta" : "Pública" }}</span
               >
             </p>
-            <p class="main__section__person__block"></p>
-            <form class="main__section__person__block">
+            <div class="main__section__person__block--flex">
               <button @click="removeMeeting" class="btn-outline-s-dark">
-                Eliminar
+                <i class="fas fa-trash"></i>
               </button>
-            </form>
+              <button @click="editMeeting" class="btn-secondary">
+                <i class="fas fa-edit"></i>
+              </button>
+            </div>
           </div>
         </section>
       </transition>
@@ -164,6 +166,12 @@ export default {
         // eslint-disable-next-line no-useless-return
         if (error) return
       }
+    },
+    async editMeeting () {
+      await this.$router.replace({
+        name: 'EditMeeting',
+        params: { meeting: this.$route.params.meeting }
+      })
     },
     async removeMeeting () {
       if (window.confirm(`Está a punto de borrar un elemento`)) {
