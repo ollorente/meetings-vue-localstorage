@@ -194,9 +194,9 @@ const actions = {
         project: parseInt(await data.project),
         dateInt: Date.parse(await data.dateInt),
         dateEnd: Date.parse(await data.dateEnd),
-        isActive: await data.name.isActive,
-        isLock: await data.name.isLock,
-        createdAt: await data.name.createdAt,
+        isActive: await data.isActive,
+        isLock: await data.isLock,
+        createdAt: await data.createdAt,
         updatedAt: Date.now()
       }
 
