@@ -10,7 +10,34 @@
     </div>
     <router-link
       :to="{ name: 'Meeting', params: { meeting: meeting.id } }"
+      class="main__section__card__body done"
+      v-if="meeting.dateEnd < Date.now()"
+    >
+      <span class="main__section__link__text__content">
+        <span class="text-title">{{ meeting.name }}</span>
+        <span class="text-content"
+          >{{ new Date(meeting.dateInt).toString().split(" ")[4].slice(0, 5) }} -
+          {{ new Date(meeting.dateEnd).toString().split(" ")[4].slice(0, 5) }}</span
+        >
+      </span>
+    </router-link>
+    <router-link
+      :to="{ name: 'Meeting', params: { meeting: meeting.id } }"
+      class="main__section__card__body active"
+      v-else-if="meeting.dateInt >= Date.now() && meeting.dateEnd <= Date.now()"
+    >
+      <span class="main__section__link__text__content">
+        <span class="text-title">{{ meeting.name }}</span>
+        <span class="text-content"
+          >{{ new Date(meeting.dateInt).toString().split(" ")[4].slice(0, 5) }} -
+          {{ new Date(meeting.dateEnd).toString().split(" ")[4].slice(0, 5) }}</span
+        >
+      </span>
+    </router-link>
+    <router-link
+      :to="{ name: 'Meeting', params: { meeting: meeting.id } }"
       class="main__section__card__body"
+      v-else
     >
       <span class="main__section__link__text__content">
         <span class="text-title">{{ meeting.name }}</span>
