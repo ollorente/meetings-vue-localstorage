@@ -55,7 +55,7 @@ const routes = [
     }
   },
   {
-    path: '/proyecto/:project/editar', // TODO -> Hacer lógica de la vista
+    path: '/proyecto/:project/editar', // TODO -> Hacer llame a KcEditor
     name: 'EditProject',
     component: () => import('../views/project/EditProject.vue'),
     meta: {
@@ -111,7 +111,7 @@ const routes = [
     }
   },
   {
-    path: '/reunion/:meeting/editar', // TODO -> Hacer lógica de la vista
+    path: '/reunion/:meeting/editar', // TODO -> Hacer  llame a KcEditor
     name: 'EditMeeting',
     component: () => import('../views/meeting/EditMeeting.vue'),
     meta: {
@@ -159,7 +159,7 @@ const routes = [
     }
   },
   {
-    path: '/tarea/:task/editar', // TODO -> Hacer lógica de la vista
+    path: '/tarea/:task/editar', // TODO -> Hacer llame a KcEditor
     name: 'EditTask',
     component: () => import('../views/task/EditTask.vue'),
     meta: {
@@ -199,7 +199,7 @@ const routes = [
     }
   },
   {
-    path: '/usuario/:person/editar', // TODO -> Hacer lógica de la vista
+    path: '/usuario/:person/editar',
     name: 'EditPerson',
     component: () => import('../views/person/EditPerson.vue'),
     meta: {
