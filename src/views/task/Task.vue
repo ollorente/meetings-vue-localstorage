@@ -82,11 +82,11 @@
               <button @click="editTask" class="btn-secondary">
                 <i class="fas fa-edit"></i>
               </button>
-              <button @click="checkTask" class="btn-p-light" v-if="task.isLock">
-                <i class="fas fa-times"></i>
-              </button>
-              <button @click="checkTask" class="btn-p-dark" v-else>
+              <button @click="checkTask" class="btn-p-dark" v-if="task.isLock">
                 <i class="fas fa-check"></i>
+              </button>
+              <button @click="checkTask" class="btn-outline-gray" v-else>
+                <i class="fas fa-times"></i>
               </button>
             </div>
           </div>
@@ -159,21 +159,25 @@ export default {
       try {
         const data = await db.tasks[this.$route.params.task]
 
-        this.task = {
-          id: await data.id,
-          name: await data.name,
-          description: await data.description,
-          collaborators: await data.collaborators,
-          meeting: await data.meeting,
-          project: await data.project,
-          isActive: await data.isActive,
-          isLock: await data.isLock,
-          createdAt: await data.createdAt,
-          updatedAt: await data.updatedAt
-        }
+        if (data === undefined) {
+          await this.$router.replace({ name: 'Error' })
+        } else {
+          this.task = {
+            id: await data.id,
+            name: await data.name,
+            description: await data.description,
+            collaborators: await data.collaborators,
+            meeting: await data.meeting,
+            project: await data.project,
+            isActive: await data.isActive,
+            isLock: await data.isLock,
+            createdAt: await data.createdAt,
+            updatedAt: await data.updatedAt
+          }
 
-        await this.getMeeting(this.task.meeting)
-        await this.getProject(this.task.project)
+          await this.getMeeting(this.task.meeting)
+          await this.getProject(this.task.project)
+        }
       } catch (error) {
         // eslint-disable-next-line no-useless-return
         if (error) return
