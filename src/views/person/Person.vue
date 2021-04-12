@@ -66,12 +66,14 @@
                 {{ getPerson.isLock ? "Oculto" : "Público" }}</span
               >
             </p>
-            <p class="main__section__person__block"></p>
-            <form class="main__section__person__block">
+            <div class="main__section__person__block--flex">
               <button @click="removePerson" class="btn-outline-s-dark">
-                Eliminar
+                <i class="fas fa-trash"></i>
               </button>
-            </form>
+              <button @click="editPerson" class="btn-secondary">
+                <i class="fas fa-edit"></i>
+              </button>
+            </div>
           </div>
         </section>
       </transition>
@@ -135,6 +137,12 @@ export default {
   },
   methods: {
     ...mapActions(['fetchPerson', 'deletePerson']),
+    async editPerson () {
+      await this.$router.replace({
+        name: 'EditPerson',
+        params: { person: this.$route.params.person }
+      })
+    },
     async removePerson () {
       if (window.confirm(`Está a punto de borrar un elemento`)) {
         await this.deletePerson(this.$route.params.person)
