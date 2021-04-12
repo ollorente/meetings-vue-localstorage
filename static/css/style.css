@@ -335,6 +335,12 @@ body .btn-s-dark {
   border: 0;
 }
 
+body .btn-gray {
+  background: var(--gray);
+  color: var(--dark);
+  border: 0;
+}
+
 body .btn-outline-primary {
   background: transparent;
   color: var(--primary);
@@ -369,6 +375,12 @@ body .btn-outline-s-dark {
   background: transparent;
   color: var(--s-dark);
   border: solid 2px var(--s-dark);
+}
+
+body .btn-outline-gray {
+  background: transparent;
+  color: var(--gray);
+  border: solid 2px var(--gray);
 }
 
 body .text-primary {
