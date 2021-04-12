@@ -126,15 +126,19 @@ export default {
       try {
         const data = await db.projects[this.$route.params.project]
 
-        this.project = {
-          id: await data.id,
-          name: await data.name,
-          description: await data.description,
-          collaborators: await data.collaborators,
-          isActive: await data.isActive,
-          isLock: await data.isLock,
-          createdAt: await data.createdAt,
-          updatedAt: await data.updatedAt
+        if (data === undefined) {
+          await this.$router.replace({ name: 'Error' })
+        } else {
+          this.project = {
+            id: await data.id,
+            name: await data.name,
+            description: await data.description,
+            collaborators: await data.collaborators,
+            isActive: await data.isActive,
+            isLock: await data.isLock,
+            createdAt: await data.createdAt,
+            updatedAt: await data.updatedAt
+          }
         }
       } catch (error) {
         // eslint-disable-next-line no-useless-return
