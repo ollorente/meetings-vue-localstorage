@@ -22,12 +22,8 @@
             <div class="main__section__person__block">
               <div class="main__section__card">
                 <div class="main__section__card__date">
-                  <span class="main__section__card__month">{{
-                    new Date(meeting.dateInt).toString().split(" ")[1]
-                  }}</span>
-                  <span class="main__section__card__day">{{
-                    new Date(meeting.dateInt).toString().split(" ")[2]
-                  }}</span>
+                  <span class="main__section__card__month">{{ meeting.month }}</span>
+                  <span class="main__section__card__day">{{ meeting.day }}</span>
                 </div>
                 <router-link
                   :to="{ name: 'Meeting', params: { meeting: meeting.id } }"
@@ -35,10 +31,9 @@
                 >
                   <span class="main__section__link__text__content">
                     <span class="text-title">{{ meeting.name }}</span>
-                    <span class="text-content"
-                      >{{ new Date(meeting.dateInt).toString().split(" ")[4] }} -
-                      {{ new Date(meeting.dateEnd).toString().split(" ")[4] }}</span
-                    >
+                    <span class="text-content">
+                      {{ meeting.dateInt }} - {{ meeting.dateEnd }}
+                    </span>
                   </span>
                 </router-link>
               </div>
@@ -72,15 +67,23 @@
               ><br />
               <span class="main__section__person__block__content">
                 <i class="fas" :class="task.isLock ? 'fa-lock' : 'fa-lock-open'"></i>
-                {{ task.isLock ? "Oculta" : "Pública" }}</span
+                {{ task.isLock ? "Cerrada" : "Abierta" }}</span
               >
             </p>
-            <p class="main__section__person__block"></p>
-            <form class="main__section__person__block">
+            <div class="main__section__person__block--flex">
               <button @click="removeTask" class="btn-outline-s-dark">
-                Eliminar
+                <i class="fas fa-trash"></i>
               </button>
-            </form>
+              <button @click="editTask" class="btn-secondary">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button @click="checkTask" class="btn-p-dark" v-if="task.isLock">
+                <i class="fas fa-check"></i>
+              </button>
+              <button @click="checkTask" class="btn-outline-gray" v-else>
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
           </div>
         </section>
       </transition>
@@ -126,7 +129,14 @@ export default {
           ]
         }
       ],
-      meeting: '',
+      meeting: {
+        id: '',
+        name: '',
+        month: '',
+        day: '',
+        dateEnd: '',
+        dateInt: ''
+      },
       project: '',
       task: {
         id: '',
@@ -146,26 +156,30 @@ export default {
     this.getTask()
   },
   methods: {
-    ...mapActions(['deleteTask']),
+    ...mapActions(['deleteTask', 'updateTask']),
     async getTask () {
       try {
         const data = await db.tasks[this.$route.params.task]
 
-        this.task = {
-          id: await data.id,
-          name: await data.name,
-          description: await data.description,
-          collaborators: await data.collaborators,
-          meeting: await data.meeting,
-          project: await data.project,
-          isActive: await data.isActive,
-          isLock: await data.isLock,
-          createdAt: await data.createdAt,
-          updatedAt: await data.updatedAt
-        }
+        if (data === undefined) {
+          await this.$router.replace({ name: 'Error' })
+        } else {
+          this.task = {
+            id: await data.id,
+            name: await data.name,
+            description: await data.description,
+            collaborators: await data.collaborators,
+            meeting: await data.meeting,
+            project: await data.project,
+            isActive: await data.isActive,
+            isLock: await data.isLock,
+            createdAt: await data.createdAt,
+            updatedAt: await data.updatedAt
+          }
 
-        await this.getMeeting(this.task.meeting)
-        await this.getProject(this.task.project)
+          await this.getMeeting(this.task.meeting)
+          await this.getProject(this.task.project)
+        }
       } catch (error) {
         // eslint-disable-next-line no-useless-return
         if (error) return
@@ -173,7 +187,16 @@ export default {
     },
     async getMeeting (id) {
       try {
-        this.meeting = await db.meetings[id]
+        const data = await db.meetings[id]
+
+        this.meeting = {
+          id: await data.id,
+          name: await data.name,
+          month: new Date(await data.dateInt).toString().split(' ')[1],
+          day: new Date(await data.dateInt).toString().split(' ')[2],
+          dateInt: new Date(await data.dateInt - (1000 * 60 * 60 * 5)).toISOString().substr(11, 5),
+          dateEnd: new Date(await data.dateEnd - (1000 * 60 * 60 * 5)).toISOString().substr(11, 5)
+        }
       } catch (error) {
         // eslint-disable-next-line no-useless-return
         if (error) return
@@ -186,6 +209,17 @@ export default {
         // eslint-disable-next-line no-useless-return
         if (error) return
       }
+    },
+    async editTask () {
+      await this.$router.replace({
+        name: 'EditTask',
+        params: { task: this.$route.params.task }
+      })
+    },
+    async checkTask () {
+      this.task.isLock = !this.task.isLock
+
+      await this.updateTask(this.task)
     },
     async removeTask () {
       if (window.confirm(`Está a punto de borrar un elemento`)) {

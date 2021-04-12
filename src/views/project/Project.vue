@@ -40,12 +40,14 @@
                 <i class="fas" :class="project.isLock ? 'fa-lock' : 'fa-lock-open'"></i> {{ project.isLock ? "Oculto" : "Público" }}
               </span>
             </p>
-            <p class="main__section__person__block"></p>
-            <form class="main__section__person__block">
+            <div class="main__section__person__block--flex">
               <button @click="removeProject" class="btn-outline-s-dark">
-                Eliminar
+                <i class="fas fa-trash"></i>
               </button>
-            </form>
+              <button @click="editProject" class="btn-secondary">
+                <i class="fas fa-edit"></i>
+              </button>
+            </div>
           </div>
         </section>
       </transition>
@@ -124,20 +126,30 @@ export default {
       try {
         const data = await db.projects[this.$route.params.project]
 
-        this.project = {
-          id: await data.id,
-          name: await data.name,
-          description: await data.description,
-          collaborators: await data.collaborators,
-          isActive: await data.isActive,
-          isLock: await data.isLock,
-          createdAt: await data.createdAt,
-          updatedAt: await data.updatedAt
+        if (data === undefined) {
+          await this.$router.replace({ name: 'Error' })
+        } else {
+          this.project = {
+            id: await data.id,
+            name: await data.name,
+            description: await data.description,
+            collaborators: await data.collaborators,
+            isActive: await data.isActive,
+            isLock: await data.isLock,
+            createdAt: await data.createdAt,
+            updatedAt: await data.updatedAt
+          }
         }
       } catch (error) {
         // eslint-disable-next-line no-useless-return
         if (error) return
       }
+    },
+    async editProject () {
+      await this.$router.replace({
+        name: 'EditProject',
+        params: { project: this.$route.params.project }
+      })
     },
     async removeProject () {
       if (window.confirm(`Está a punto de borrar un elemento`)) {

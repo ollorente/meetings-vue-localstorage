@@ -111,9 +111,7 @@ export default {
         const data = await db.people[this.$route.params.person]
 
         if (data === undefined) {
-          this.$router.replace({
-            name: 'People'
-          })
+          await this.$router.replace({ name: 'Error' })
         } else {
           this.person = {
             id: await data.id,

@@ -156,6 +156,84 @@ const actions = {
     }
   },
 
+  async updateProject ({ commit }, data) {
+    try {
+      const project = {
+        id: await data.id,
+        name: await data.name.trim(),
+        description: await data.description.trim(),
+        collaborators: await data.collaborators,
+        isActive: await data.isActive,
+        isLock: await data.isLock,
+        createdAt: await data.createdAt,
+        updatedAt: Date.now()
+      }
+
+      const projectId = await project.id
+
+      db.projects[projectId] = project
+
+      // ------- Borrando usuarios del proyecto -------
+      delete db.projectPeople[projectId]
+      // ---X--- Borrando usuarios del proyecto ---X---
+
+      // ------- Borrando proyecto del usuarios -------
+      const people = Object.values(db.people)
+
+      for (let i = 0; i < people.length; i++) {
+        delete db.peopleProjects[people[i].id][projectId]
+      }
+      // ---X--- Borrando proyecto del usuarios ---X---
+
+      // ------- Actualizando usuarios por proyecto -------
+      const peopleProject = await db.projectPeople[projectId]
+
+      if (!peopleProject) {
+        db.projectPeople[project.id] = {}
+      }
+
+      const collaborators = await project.collaborators
+
+      for (let i = 0; i < collaborators.length; i++) {
+        const person = await db.people[collaborators[i]]
+
+        if (person) {
+          db.projectPeople[projectId][person.id] = {
+            id: await person.id,
+            name: await person.name,
+            email: await person.email,
+            photoURL: await person.photoURL,
+            isActive: await person.isActive,
+            isLock: await person.isLock
+          }
+
+          // ------- Actualizando proyecto al usuario -------
+          const projectPeople = await db.peopleProjects[person.id]
+
+          if (!projectPeople) {
+            db.peopleProjects[person.id] = {}
+          }
+
+          db.peopleProjects[person.id][projectId] = {
+            id: await project.id,
+            name: await await project.name,
+            isActive: await project.isActive,
+            isLock: await project.isLock
+          }
+          // ---X--- Actualizando proyecto al usuario ---X---
+        }
+      }
+      // ---X--- Actualizando usuarios por proyecto ---X---
+
+      localStorage.setItem(dbName, JSON.stringify(db))
+
+      commit('SET_PROJECT', project)
+    } catch (error) {
+      // eslint-disable-next-line no-useless-return
+      if (error) return
+    }
+  },
+
   async deleteProject ({ commit }, id) {
     try {
       const project = await db.projects[id]

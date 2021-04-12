@@ -6,19 +6,40 @@
         <section class="section">
           <div class="main__section__person">
             <h1 class="title">{{ meeting.name }}</h1>
-            <p>{{ new Date(meeting.dateInt).toString().split(" ")[0] }} {{ new Date(meeting.dateInt).toString().split(" ")[1] }} {{ new Date(meeting.dateInt).toString().split(" ")[2] }} &bull; {{ new Date(meeting.dateInt).toString().split(" ")[4] }} -  {{ new Date(meeting.dateEnd).toString().split(" ")[4] }}</p>
+            <p>
+              {{ new Date(meeting.dateInt).toString().split(" ")[0] }}
+              {{ new Date(meeting.dateInt).toString().split(" ")[1] }}
+              {{ new Date(meeting.dateInt).toString().split(" ")[2] }} &bull;
+              {{
+                new Date(meeting.dateInt - 1000 * 60 * 60 * 5)
+                  .toISOString()
+                  .substr(11, 5)
+              }}
+              -
+              {{
+                new Date(meeting.dateEnd - 1000 * 60 * 60 * 5)
+                  .toISOString()
+                  .substr(11, 5)
+              }}
+            </p>
             <div v-html="meeting.description"></div>
             <p class="main__section__person__block">
               <span class="main__section__person__block__content">
-                <b>{{ meeting.collaborators.length }}</b> {{ meeting.collaborators.length === 1 ? 'Invitado' : 'Invitados' }}
+                <b>{{ meeting.collaborators.length }}</b>
+                {{
+                  meeting.collaborators.length === 1 ? "Invitado" : "Invitados"
+                }}
               </span>
             </p>
             <p class="main__section__person__block">
-              <span class="main__section__person__block__label"
-                >Proyecto:</span
+              <span class="main__section__person__block__label">Proyecto:</span
               ><br />
               <span class="main__section__person__block__content">
-                <router-link :to="{ name: 'Project', params: { project: project.id } }" class="text-p-light text-500">{{ project.name }}</router-link>
+                <router-link
+                  :to="{ name: 'Project', params: { project: project.id } }"
+                  class="text-p-light text-500"
+                  >{{ project.name }}</router-link
+                >
               </span>
             </p>
             <p class="main__section__person__block">
@@ -49,16 +70,21 @@
                 {{ meeting.isActive ? "Activa" : "Cancelada" }}</span
               ><br />
               <span class="main__section__person__block__content">
-                <i class="fas" :class="meeting.isLock ? 'fa-lock' : 'fa-lock-open'"></i>
+                <i
+                  class="fas"
+                  :class="meeting.isLock ? 'fa-lock' : 'fa-lock-open'"
+                ></i>
                 {{ meeting.isLock ? "Oculta" : "Pública" }}</span
               >
             </p>
-            <p class="main__section__person__block"></p>
-            <form class="main__section__person__block">
+            <div class="main__section__person__block--flex">
               <button @click="removeMeeting" class="btn-outline-s-dark">
-                Eliminar
+                <i class="fas fa-trash"></i>
               </button>
-            </form>
+              <button @click="editMeeting" class="btn-secondary">
+                <i class="fas fa-edit"></i>
+              </button>
+            </div>
           </div>
         </section>
       </transition>
@@ -137,21 +163,25 @@ export default {
       try {
         const data = await db.meetings[this.$route.params.meeting]
 
-        this.meeting = {
-          id: await data.id,
-          name: await data.name,
-          description: await data.description,
-          collaborators: await data.collaborators,
-          project: await data.project,
-          dateInt: await data.dateInt,
-          dateEnd: await data.dateEnd,
-          isActive: await data.isActive,
-          isLock: await data.isLock,
-          createdAt: await data.createdAt,
-          updatedAt: await data.updatedAt
-        }
+        if (data === undefined) {
+          await this.$router.replace({ name: 'Error' })
+        } else {
+          this.meeting = {
+            id: await data.id,
+            name: await data.name,
+            description: await data.description,
+            collaborators: await data.collaborators,
+            project: await data.project,
+            dateInt: await data.dateInt,
+            dateEnd: await data.dateEnd,
+            isActive: await data.isActive,
+            isLock: await data.isLock,
+            createdAt: await data.createdAt,
+            updatedAt: await data.updatedAt
+          }
 
-        await this.getProject(this.meeting.project)
+          await this.getProject(this.meeting.project)
+        }
       } catch (error) {
         // eslint-disable-next-line no-useless-return
         if (error) return
@@ -164,6 +194,12 @@ export default {
         // eslint-disable-next-line no-useless-return
         if (error) return
       }
+    },
+    async editMeeting () {
+      await this.$router.replace({
+        name: 'EditMeeting',
+        params: { meeting: this.$route.params.meeting }
+      })
     },
     async removeMeeting () {
       if (window.confirm(`Está a punto de borrar un elemento`)) {

@@ -193,6 +193,84 @@ const actions = {
     }
   },
 
+  async updateTask ({ commit }, data) {
+    try {
+      const task = {
+        id: await data.id,
+        name: await data.name.trim(),
+        description: await data.description.trim(),
+        collaborators: await data.collaborators,
+        project: await data.project,
+        meeting: await data.meeting,
+        isActive: await data.isActive,
+        isLock: await data.isLock,
+        createdAt: await data.createdAt,
+        updatedAt: Date.now()
+      }
+
+      db.tasks[task.id] = task
+
+      // ------- Actualizando tarea en reunión -------
+      const tasksMeeting = await db.meetingTasks[task.meeting]
+
+      if (!tasksMeeting) {
+        db.meetingTasks[task.meeting] = {}
+      }
+
+      db.meetingTasks[task.meeting][task.id] = {
+        id: task.id,
+        name: task.name,
+        project: task.project,
+        isActive: task.isActive,
+        isLock: task.isLock
+      }
+      // ---X--- Actualizando tarea en reunión ---X---
+
+      // ------- Editando usuarios en tarea -------
+      const collaborators = task.collaborators
+
+      for (let i = 0; i < collaborators.length; i++) {
+        const personTask = await db.peopleTasks[collaborators[i]]
+
+        if (!personTask) {
+          db.peopleTasks[collaborators[i]] = {}
+        }
+
+        db.peopleTasks[collaborators[i]][task.id] = {
+          id: task.id,
+          name: task.name,
+          project: task.project,
+          isActive: task.isActive,
+          isLock: task.isLock
+        }
+      }
+      // ---X--- Editando usuarios en tarea ---X---
+
+      // ------- Editando tarea en proyecto -------
+      const tasksProject = await db.projectTasks[task.project]
+
+      if (!tasksProject) {
+        db.projectTasks[task.project] = {}
+      }
+
+      db.projectTasks[task.project][task.id] = {
+        id: task.id,
+        name: task.name,
+        project: task.project,
+        isActive: task.isActive,
+        isLock: task.isLock
+      }
+      // ---X--- Editando tarea en proyecto ---X---
+
+      localStorage.setItem(dbName, JSON.stringify(db))
+
+      commit('SET_TASK', task)
+    } catch (error) {
+      // eslint-disable-next-line no-useless-return
+      if (error) return
+    }
+  },
+
   async deleteTask ({ commit }, id) {
     try {
       // ------- Eliminando tarea de reuniones -------

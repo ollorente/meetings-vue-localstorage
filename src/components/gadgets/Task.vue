@@ -11,8 +11,8 @@
       </div>
     </span>
     <span class="main__section__task__icon">
-      <i :class="taskItem.isActive ? 'fas' : 'far'" class="fa-circle"></i>
-      <i class="fas" :class="taskItem.isLock ? 'fa-lock' : 'fa-lock-open'"></i>
+      <i :class="taskItem.isActive ? 'fas' : 'far text-gray'" class="fa-circle"></i>
+      <i class="fas" :class="taskItem.isLock ? 'fa-lock text-gray' : 'fa-lock-open'"></i>
     </span>
   </router-link>
 </template>

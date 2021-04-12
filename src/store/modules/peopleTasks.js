@@ -19,7 +19,6 @@ const actions = {
       const page = (data.page - 1) * data.limit || 0
 
       const tasks = Object.values(db.peopleTasks[data.id])
-        .filter((e) => e.isLock === false)
         .filter((e) => e.isActive === true)
         .sort(function (a, b) {
           if (a.id > b.id) {
@@ -51,7 +50,6 @@ const actions = {
   async fetchAllPersonTasks ({ commit }, id) {
     try {
       const tasks = Object.values(db.peopleTasks[id])
-        .filter((e) => e.isLock === false)
         .filter((e) => e.isActive === true)
         .sort(function (a, b) {
           if (a.id > b.id) {

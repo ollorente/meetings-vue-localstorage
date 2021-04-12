@@ -16,11 +16,9 @@
                 required
               />
             </div>
-            <ckeditor
-              :editor="editor"
-              v-model="task.description"
-              :config="editorConfig"
-            ></ckeditor>
+            <div>
+              <textarea v-model="task.description" rows="10"></textarea>
+            </div>
             <div>
               <select multiple v-model="task.collaborators">
                 <option
@@ -42,7 +40,6 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 
 import TheNavbar from '@/components/TheNavbar'
 import Alert from '@/components/gadgets/Alert'
@@ -79,10 +76,6 @@ export default {
         description: '',
         collaborators: [],
         project: ''
-      },
-      editor: ClassicEditor,
-      editorConfig: {
-        // The configuration of the editor.
       }
     }
   },
