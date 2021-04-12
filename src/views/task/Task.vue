@@ -72,15 +72,23 @@
               ><br />
               <span class="main__section__person__block__content">
                 <i class="fas" :class="task.isLock ? 'fa-lock' : 'fa-lock-open'"></i>
-                {{ task.isLock ? "Oculta" : "Pública" }}</span
+                {{ task.isLock ? "Cerrada" : "Abierta" }}</span
               >
             </p>
-            <p class="main__section__person__block"></p>
-            <form class="main__section__person__block">
+            <div class="main__section__person__block--flex">
               <button @click="removeTask" class="btn-outline-s-dark">
-                Eliminar
+                <i class="fas fa-trash"></i>
               </button>
-            </form>
+              <button @click="editTask" class="btn-secondary">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button @click="checkTask" class="btn-p-light" v-if="task.isLock">
+                <i class="fas fa-times"></i>
+              </button>
+              <button @click="checkTask" class="btn-p-dark" v-else>
+                <i class="fas fa-check"></i>
+              </button>
+            </div>
           </div>
         </section>
       </transition>
@@ -146,7 +154,7 @@ export default {
     this.getTask()
   },
   methods: {
-    ...mapActions(['deleteTask']),
+    ...mapActions(['deleteTask', 'updateTask']),
     async getTask () {
       try {
         const data = await db.tasks[this.$route.params.task]
@@ -186,6 +194,17 @@ export default {
         // eslint-disable-next-line no-useless-return
         if (error) return
       }
+    },
+    async editTask () {
+      await this.$router.replace({
+        name: 'EditTask',
+        params: { task: this.$route.params.task }
+      })
+    },
+    async checkTask () {
+      this.task.isLock = !this.task.isLock
+
+      await this.updateTask(this.task)
     },
     async removeTask () {
       if (window.confirm(`Está a punto de borrar un elemento`)) {
