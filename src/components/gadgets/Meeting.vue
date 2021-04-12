@@ -16,8 +16,17 @@
       <span class="main__section__link__text__content">
         <span class="text-title">{{ meeting.name }}</span>
         <span class="text-content"
-          >{{ new Date(meeting.dateInt).toString().split(" ")[4].slice(0, 5) }} -
-          {{ new Date(meeting.dateEnd).toString().split(" ")[4].slice(0, 5) }}</span
+          >{{
+            new Date(meeting.dateInt - 1000 * 60 * 60 * 5)
+              .toISOString()
+              .substr(11, 5)
+          }}
+          -
+          {{
+            new Date(meeting.dateEnd - 1000 * 60 * 60 * 5)
+              .toISOString()
+              .substr(11, 5)
+          }}</span
         >
       </span>
     </router-link>
@@ -29,8 +38,17 @@
       <span class="main__section__link__text__content">
         <span class="text-title">{{ meeting.name }}</span>
         <span class="text-content"
-          >{{ new Date(meeting.dateInt).toString().split(" ")[4].slice(0, 5) }} -
-          {{ new Date(meeting.dateEnd).toString().split(" ")[4].slice(0, 5) }}</span
+          >{{
+            new Date(meeting.dateInt - 1000 * 60 * 60 * 5)
+              .toISOString()
+              .substr(11, 5)
+          }}
+          -
+          {{
+            new Date(meeting.dateEnd - 1000 * 60 * 60 * 5)
+              .toISOString()
+              .substr(11, 5)
+          }}</span
         >
       </span>
     </router-link>
@@ -42,8 +60,17 @@
       <span class="main__section__link__text__content">
         <span class="text-title">{{ meeting.name }}</span>
         <span class="text-content"
-          >{{ new Date(meeting.dateInt).toString().split(" ")[4].slice(0, 5) }} -
-          {{ new Date(meeting.dateEnd).toString().split(" ")[4].slice(0, 5) }}</span
+          >{{
+            new Date(meeting.dateInt - 1000 * 60 * 60 * 5)
+              .toISOString()
+              .substr(11, 5)
+          }}
+          -
+          {{
+            new Date(meeting.dateEnd - 1000 * 60 * 60 * 5)
+              .toISOString()
+              .substr(11, 5)
+          }}</span
         >
       </span>
     </router-link>
