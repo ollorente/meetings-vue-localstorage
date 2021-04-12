@@ -230,39 +230,18 @@ const actions = {
       const collaborators = task.collaborators
 
       for (let i = 0; i < collaborators.length; i++) {
-        const person = await db.people[collaborators[i]]
+        const personTask = await db.peopleTasks[collaborators[i]]
 
-        if (person) {
-          const personTask = await db.taskPeople[task.id]
+        if (!personTask) {
+          db.peopleTasks[collaborators[i]] = {}
+        }
 
-          if (!personTask) {
-            db.taskPeople[task.id] = {}
-          }
-
-          db.taskPeople[task.id][person.id] = {
-            id: person.id,
-            name: person.name,
-            email: person.email,
-            photoURL: person.photoURL,
-            isActive: person.isActive,
-            isLock: person.isLock
-          }
-
-          // ------- Editando tarea en usuario -------
-          const taskpPerson = await db.peopleTasks[person.id]
-
-          if (!taskpPerson) {
-            db.peopleTasks[person.id] = {}
-          }
-
-          db.peopleTasks[person.id][task.id] = {
-            id: task.id,
-            name: task.name,
-            project: task.project,
-            isActive: task.isActive,
-            isLock: task.isLock
-          }
-          // ---X--- Editando tarea en usuarios ---X---
+        db.peopleTasks[collaborators[i]][task.id] = {
+          id: task.id,
+          name: task.name,
+          project: task.project,
+          isActive: task.isActive,
+          isLock: task.isLock
         }
       }
       // ---X--- Editando usuarios en tarea ---X---
