@@ -22,12 +22,8 @@
             <div class="main__section__person__block">
               <div class="main__section__card">
                 <div class="main__section__card__date">
-                  <span class="main__section__card__month">{{
-                    new Date(meeting.dateInt).toString().split(" ")[1]
-                  }}</span>
-                  <span class="main__section__card__day">{{
-                    new Date(meeting.dateInt).toString().split(" ")[2]
-                  }}</span>
+                  <span class="main__section__card__month">{{ meeting.month }}</span>
+                  <span class="main__section__card__day">{{ meeting.day }}</span>
                 </div>
                 <router-link
                   :to="{ name: 'Meeting', params: { meeting: meeting.id } }"
@@ -136,6 +132,8 @@ export default {
       meeting: {
         id: '',
         name: '',
+        month: '',
+        day: '',
         dateEnd: '',
         dateInt: ''
       },
@@ -194,6 +192,8 @@ export default {
         this.meeting = {
           id: await data.id,
           name: await data.name,
+          month: new Date(await data.dateInt).toString().split(' ')[1],
+          day: new Date(await data.dateInt).toString().split(' ')[2],
           dateInt: new Date(await data.dateInt - (1000 * 60 * 60 * 5)).toISOString().substr(11, 5),
           dateEnd: new Date(await data.dateEnd - (1000 * 60 * 60 * 5)).toISOString().substr(11, 5)
         }
