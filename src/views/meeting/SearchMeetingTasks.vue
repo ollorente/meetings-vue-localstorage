@@ -4,14 +4,8 @@
     <main>
       <transition name="fade">
         <section class="section">
-          <h1 class="title">{{ getProject.name }}</h1>
-          <div class="navbar__search">
-            <form @submit.prevent="search">
-              <input type="text" class="navbar__search--input mb-3" placeholder="Buscar...">
-            </form>
-          </div>
+          <h1 class="title">{{ getMeeting.name }}</h1>
           <Task v-for='task in tasks' :key='task.id' :task='task' />
-          <infinite-loading @infinite="infiniteHandler"></infinite-loading>
         </section>
       </transition>
     </main>
@@ -20,30 +14,40 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import InfiniteLoading from 'vue-infinite-loading'
 
 import TheNavbar from '@/components/TheNavbar'
 import Task from '@/components/gadgets/Task'
 
 export default {
-  name: 'ProjectTasks',
+  name: 'SearchMeetingTasks',
   components: {
     TheNavbar,
-    Task,
-    InfiniteLoading
+    Task
   },
   data () {
     return {
       path: {
-        title: 'Actividades proyecto',
-        link: { name: 'Project', params: { project: this.$route.params.project } },
+        title: 'Actividades encuentro',
+        link: {
+          name: 'Meeting',
+          params: { meeting: this.$route.params.meeting }
+        },
         icon: 'fas fa-arrow-left',
         status: false,
-        search: false
+        search: true
       },
       options: [
         {
-          menus: []
+          menus: [
+            {
+              title: 'Crear actividad',
+              link: {
+                name: 'NewMeetingTask',
+                params: { meeting: this.$route.params.meeting }
+              },
+              icon: 'fas fa-tasks'
+            }
+          ]
         }
       ],
       tasks: [],
@@ -52,20 +56,20 @@ export default {
     }
   },
   created () {
-    this.fetchProject(this.$route.params.project)
+    this.fetchMeeting(this.$route.params.meeting)
   },
   methods: {
-    ...mapActions(['fetchProjectTasks', 'fetchProject']),
+    ...mapActions(['fetchMeetingTasks', 'fetchMeeting']),
     async infiniteHandler ($state) {
       this.page++
 
-      this.fetchProjectTasks({
-        id: this.$route.params.project,
+      this.fetchMeetingTasks({
+        id: this.$route.params.meeting,
         limit: this.limit,
         page: this.page
       })
 
-      let tasks = await this.getProjectTasks
+      let tasks = await this.getMeetingTasks
 
       if (tasks.length) {
         this.tasks = this.tasks.concat(tasks)
@@ -76,10 +80,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getProjectTasks', 'getProject'])
+    ...mapGetters(['getMeetingTasks', 'getMeeting'])
   },
   watch: {
-    $route: ['fetchProjectTasks', 'fetchProject']
+    $route: ['fetchMeetingTasks', 'fetchMeeting']
   }
 }
 </script>

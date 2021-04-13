@@ -11,7 +11,6 @@
             </form>
           </div>
           <User v-for='person in people' :key='person.id' :person='person' />
-          <infinite-loading @infinite="infiniteHandler"></infinite-loading>
         </section>
       </transition>
     </main>
@@ -20,17 +19,15 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import InfiniteLoading from 'vue-infinite-loading'
 
 import TheNavbar from '@/components/TheNavbar'
 import User from '@/components/gadgets/User'
 
 export default {
-  name: 'ProjectProjectPeople',
+  name: 'SearchProjectPeople',
   components: {
     TheNavbar,
-    User,
-    InfiniteLoading
+    User
   },
   data () {
     return {

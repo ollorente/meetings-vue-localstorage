@@ -10,8 +10,7 @@
               <input type="text" class="navbar__search--input mb-3" placeholder="Buscar...">
             </form>
           </div>
-          <User v-for='person in people' :key='person.id' :person='person' />
-          <infinite-loading @infinite="infiniteHandler"></infinite-loading>
+          <Meeting v-for='meeting in meetings' :key='meeting.id' :meeting='meeting' />
         </section>
       </transition>
     </main>
@@ -20,33 +19,41 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import InfiniteLoading from 'vue-infinite-loading'
 
 import TheNavbar from '@/components/TheNavbar'
-import User from '@/components/gadgets/User'
+import Meeting from '@/components/gadgets/Meeting'
 
 export default {
-  name: 'ProjectProjectPeople',
+  name: 'SearchProjectMeetings',
   components: {
     TheNavbar,
-    User,
-    InfiniteLoading
+    Meeting
   },
   data () {
     return {
       path: {
-        title: 'Usuarios proyecto',
-        link: { name: 'Project', params: { project: this.$route.params.project } },
+        title: 'Encuentros proyecto',
+        link: {
+          name: 'Project',
+          params: { project: this.$route.params.project }
+        },
         icon: 'fas fa-arrow-left',
         status: false,
         search: false
       },
       options: [
         {
-          menus: []
+          menus: [
+            {
+              title: 'Crear encuentro',
+              link: { name: 'NewProjectMeeting' },
+              icon: 'fas - fa-handshake',
+              status: false
+            }
+          ]
         }
       ],
-      people: [],
+      meetings: [],
       limit: 10,
       page: 0
     }
@@ -55,20 +62,20 @@ export default {
     this.fetchProject(this.$route.params.project)
   },
   methods: {
-    ...mapActions(['fetchProjectPeople', 'fetchProject']),
+    ...mapActions(['fetchProjectMeetings', 'fetchProject']),
     async infiniteHandler ($state) {
       this.page++
 
-      this.fetchProjectPeople({
+      this.fetchProjectMeetings({
         id: this.$route.params.project,
         limit: this.limit,
         page: this.page
       })
 
-      let people = await this.getProjectPeople
+      let meetings = await this.getProjectMeetings
 
-      if (people.length) {
-        this.people = this.people.concat(people)
+      if (meetings.length) {
+        this.meetings = this.meetings.concat(meetings)
         $state.loaded()
       } else {
         $state.complete()
@@ -76,10 +83,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getProjectPeople', 'getProject'])
+    ...mapGetters(['getProjectMeetings', 'getProject'])
   },
   watch: {
-    $route: ['fetchProjectPeople', 'fetchProject']
+    $route: ['fetchProjectMeetings', 'fetchProject']
   }
 }
 </script>

@@ -37,7 +37,8 @@ export default {
         link: { name: 'Home' },
         icon: 'fas fa-users',
         status: true,
-        search: true
+        search: true,
+        linkSearch: { name: 'SearchPeople' }
       },
       options: [
         {

@@ -6,6 +6,11 @@
 
       <transition name="fade">
         <section class="section">
+          <div class="navbar__search">
+            <form @submit.prevent="search">
+              <input type="text" class="navbar__search--input mb-3" placeholder="Buscar...">
+            </form>
+          </div>
           <Project v-for='project in projects' :key='project.id' :project='project' />
           <infinite-loading @infinite="infiniteHandler"></infinite-loading>
         </section>
@@ -37,7 +42,7 @@ export default {
         link: { name: 'Projects' },
         icon: 'fas fa-user-tie',
         status: true,
-        search: true
+        search: false
       },
       options: [
         {

@@ -4,14 +4,13 @@
     <main>
       <transition name="fade">
         <section class="section">
-          <h1 class="title">{{ getProject.name }}</h1>
+          <h1 class="title">{{ getTask.name }}</h1>
           <div class="navbar__search">
             <form @submit.prevent="search">
               <input type="text" class="navbar__search--input mb-3" placeholder="Buscar...">
             </form>
           </div>
           <User v-for='person in people' :key='person.id' :person='person' />
-          <infinite-loading @infinite="infiniteHandler"></infinite-loading>
         </section>
       </transition>
     </main>
@@ -20,23 +19,21 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import InfiniteLoading from 'vue-infinite-loading'
 
 import TheNavbar from '@/components/TheNavbar'
 import User from '@/components/gadgets/User'
 
 export default {
-  name: 'ProjectProjectPeople',
+  name: 'SearchTaskPeople',
   components: {
     TheNavbar,
-    User,
-    InfiniteLoading
+    User
   },
   data () {
     return {
       path: {
-        title: 'Usuarios proyecto',
-        link: { name: 'Project', params: { project: this.$route.params.project } },
+        title: 'Usuarios actividad',
+        link: { name: 'Task', params: { task: this.$route.params.task } },
         icon: 'fas fa-arrow-left',
         status: false,
         search: false
@@ -52,20 +49,20 @@ export default {
     }
   },
   created () {
-    this.fetchProject(this.$route.params.project)
+    this.fetchTask(this.$route.params.task)
   },
   methods: {
-    ...mapActions(['fetchProjectPeople', 'fetchProject']),
+    ...mapActions(['fetchTaskPeople', 'fetchTask']),
     async infiniteHandler ($state) {
       this.page++
 
-      this.fetchProjectPeople({
-        id: this.$route.params.project,
+      this.fetchTaskPeople({
+        id: this.$route.params.task,
         limit: this.limit,
         page: this.page
       })
 
-      let people = await this.getProjectPeople
+      let people = await this.getTaskPeople
 
       if (people.length) {
         this.people = this.people.concat(people)
@@ -76,10 +73,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getProjectPeople', 'getProject'])
+    ...mapGetters(['getTaskPeople', 'getTask'])
   },
   watch: {
-    $route: ['fetchProjectPeople', 'fetchProject']
+    $route: ['fetchTaskPeople', 'fetchTask']
   }
 }
 </script>

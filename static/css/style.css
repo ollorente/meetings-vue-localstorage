@@ -222,6 +222,42 @@ body .navbar .options .options__card .options__card__items .options__card__item 
   color: var(--primary);
 }
 
+body .navbar .navbar__fondo {
+  position: absolute;
+  width: 100%;
+  height: calc(100vh - 4rem);
+  top: 4rem;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: transparent;
+  z-index: 1300;
+}
+
+body .navbar .navbar__fondo .navbar__search {
+  position: absolute;
+  top: -3rem;
+  left: 1rem;
+  right: 1rem;
+  width: calc(100% - 4rem);
+  padding: 1rem;
+  background: var(--light);
+  -webkit-box-shadow: 0.5rem 0.5rem 0.5rem rgba(0, 0, 0, 0.25);
+          box-shadow: 0.5rem 0.5rem 0.5rem rgba(0, 0, 0, 0.25);
+  border-radius: 0.5rem;
+  z-index: 1400;
+}
+
+body .navbar .navbar__fondo .navbar__search .navbar__search--input {
+  width: calc(100% - 2rem);
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border: solid 1px var(--p-light);
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  background: var(--light);
+}
+
 body .alert {
   position: absolute;
   width: 80%;

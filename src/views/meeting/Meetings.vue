@@ -37,7 +37,8 @@ export default {
         link: { name: 'Meetings' },
         icon: 'fas fa-handshake',
         status: true,
-        search: true
+        search: true,
+        linkSearch: { name: 'SearchMeetings' }
       },
       options: [
         {

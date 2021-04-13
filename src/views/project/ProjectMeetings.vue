@@ -5,6 +5,11 @@
       <transition name="fade">
         <section class="section">
           <h1 class="title">{{ getProject.name }}</h1>
+          <div class="navbar__search">
+            <form @submit.prevent="search">
+              <input type="text" class="navbar__search--input mb-3" placeholder="Buscar...">
+            </form>
+          </div>
           <Meeting v-for='meeting in meetings' :key='meeting.id' :meeting='meeting' />
           <infinite-loading @infinite="infiniteHandler"></infinite-loading>
         </section>
@@ -37,7 +42,7 @@ export default {
         },
         icon: 'fas fa-arrow-left',
         status: false,
-        search: true
+        search: false
       },
       options: [
         {

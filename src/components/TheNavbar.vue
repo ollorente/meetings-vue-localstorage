@@ -3,7 +3,7 @@
     <span class="navbar__brand" v-if="path.status"><i :class="path.icon"></i> {{ path.title }}</span>
     <router-link :to="path.link" class="navbar__brand" v-else><i :class="path.icon"></i> {{ path.title }}</router-link>
     <ul class="navbar__nav">
-      <a href="#" class="navbar__items--link" v-if="path.search"><i class="fas fa-search"></i></a>
+      <router-link :to="path.linkSearch" class="navbar__items--link" v-if="path.search"><i class="fas fa-search"></i></router-link>
       <span class="navbar__items--link" v-if="options.length" @click="isVisible"><i class="fas fa-ellipsis-v"></i></span>
     </ul>
     <div class="options" v-if="show">
@@ -31,7 +31,9 @@ export default {
   props: ['path', 'options'],
   data () {
     return {
-      show: false
+      show: false,
+      isSearch: false,
+      q: ''
     }
   },
   methods: {

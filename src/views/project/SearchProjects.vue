@@ -4,14 +4,12 @@
     <main>
       <transition name="fade">
         <section class="section">
-          <h1 class="title">{{ getProject.name }}</h1>
           <div class="navbar__search">
             <form @submit.prevent="search">
               <input type="text" class="navbar__search--input mb-3" placeholder="Buscar...">
             </form>
           </div>
-          <User v-for='person in people' :key='person.id' :person='person' />
-          <infinite-loading @infinite="infiniteHandler"></infinite-loading>
+          <Project v-for='project in projects' :key='project.id' :project='project' />
         </section>
       </transition>
     </main>
@@ -20,55 +18,56 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import InfiniteLoading from 'vue-infinite-loading'
 
 import TheNavbar from '@/components/TheNavbar'
-import User from '@/components/gadgets/User'
+import Project from '@/components/gadgets/Project'
 
 export default {
-  name: 'ProjectProjectPeople',
+  name: 'SearchProjects',
   components: {
     TheNavbar,
-    User,
-    InfiniteLoading
+    Project
   },
   data () {
     return {
       path: {
-        title: 'Usuarios proyecto',
-        link: { name: 'Project', params: { project: this.$route.params.project } },
-        icon: 'fas fa-arrow-left',
-        status: false,
+        title: 'Proyectos',
+        link: { name: 'Projects' },
+        icon: 'fas fa-user-tie',
+        status: true,
         search: false
       },
       options: [
         {
-          menus: []
+          menus: [
+            {
+              title: 'Crear proyecto',
+              link: { name: 'NewProject' },
+              icon: 'fas fa-user-tie',
+              status: false
+            }
+          ]
         }
       ],
-      people: [],
+      projects: [],
       limit: 10,
       page: 0
     }
   },
-  created () {
-    this.fetchProject(this.$route.params.project)
-  },
   methods: {
-    ...mapActions(['fetchProjectPeople', 'fetchProject']),
+    ...mapActions(['fetchProjects']),
     async infiniteHandler ($state) {
       this.page++
 
-      this.fetchProjectPeople({
-        id: this.$route.params.project,
+      this.fetchProjects({
         limit: this.limit,
         page: this.page
       })
 
-      let people = await this.getProjectPeople
+      let projects = await this.getProjects
 
-      if (people.length) {
-        this.people = this.people.concat(people)
+      if (projects.length) {
+        this.projects = this.projects.concat(projects)
         $state.loaded()
       } else {
         $state.complete()
@@ -76,10 +75,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getProjectPeople', 'getProject'])
+    ...mapGetters(['getProjects'])
   },
   watch: {
-    $route: ['fetchProjectPeople', 'fetchProject']
+    $route: ['fetchProjects']
   }
 }
 </script>
