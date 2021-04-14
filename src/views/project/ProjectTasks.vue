@@ -5,11 +5,6 @@
       <transition name="fade">
         <section class="section">
           <h1 class="title">{{ getProject.name }}</h1>
-          <div class="navbar__search">
-            <form @submit.prevent="search">
-              <input type="text" class="navbar__search--input mb-3" placeholder="Buscar...">
-            </form>
-          </div>
           <Task v-for='task in tasks' :key='task.id' :task='task' />
           <infinite-loading @infinite="infiniteHandler"></infinite-loading>
         </section>
@@ -39,7 +34,8 @@ export default {
         link: { name: 'Project', params: { project: this.$route.params.project } },
         icon: 'fas fa-arrow-left',
         status: false,
-        search: false
+        search: true,
+        linkSearch: { name: 'SearchProjectTasks', params: { project: this.$route.params.project } }
       },
       options: [
         {
