@@ -17,7 +17,7 @@
             </form>
           </div>
           <User v-for="person in people" :key="person.id" :person="person" />
-          <div class="card" v-if="show">No hay resultados</div>
+          <div class="my-3" v-if="show">No hay resultados</div>
         </section>
       </transition>
     </main>
@@ -57,10 +57,10 @@ export default {
           ]
         }
       ],
+      show: true,
       people: [],
       limit: 10,
       page: 0,
-      show: true,
       q: ''
     }
   },
@@ -88,12 +88,13 @@ export default {
               }
               return 0
             })
+            .splice(this.page, this.limit)
         }
 
-        if (people === '') {
-          this.show = !this.show
+        if (this.people.length === 0) {
+          this.show = true
         } else {
-          this.show = !this.show
+          this.show = false
         }
       }
     }
