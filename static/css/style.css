@@ -57,17 +57,24 @@ body .navbar {
 }
 
 body .navbar .navbar__brand {
+  height: 2rem;
   margin: 0;
   padding: 0;
   font-size: 1.5rem;
   color: var(--light);
   cursor: pointer;
+  text-overflow: ellipsis;
+  z-index: 0;
 }
 
 body .navbar .navbar__nav {
+  min-width: 4rem;
   list-style: none;
   margin: 0;
   padding: 0;
+  text-align: right;
+  background: var(--primary);
+  z-index: 0;
 }
 
 body .navbar .navbar__nav .navbar__items--link {
@@ -828,10 +835,22 @@ body main .section .main__section__task .main__section__task__text .main__sectio
 }
 
 body main .section .main__section__task .main__section__task__icon {
-  width: 2rem;
+  min-width: 1.5rem;
   margin-left: 0.5rem;
   font-size: 0.8rem;
   color: var(--primary);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  text-align: right;
+}
+
+body main .section .main__section__task .main__section__task__icon i {
+  padding: 0 0 0.5rem 0.5rem;
 }
 
 body main .section .main__section__task.lock {
@@ -839,7 +858,7 @@ body main .section .main__section__task.lock {
 }
 
 body main .section .main__section__task.lock .main__section__task__text i {
-  color: var(--s-dark);
+  color: var(--gray);
 }
 
 body main .section .main__section__task.lock .main__section__task__text .main__section__task__body .main__section__task__title {
@@ -847,7 +866,7 @@ body main .section .main__section__task.lock .main__section__task__text .main__s
 }
 
 body main .section .main__section__task.lock .main__section__task__icon {
-  color: var(--p-light);
+  color: var(--s-dark);
 }
 
 body main .section .main__section__person .main__section__person__avatar {

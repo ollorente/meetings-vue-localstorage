@@ -49,17 +49,24 @@ body {
     z-index: 1000;
 
     .navbar__brand {
+      height: 2rem;
       margin: 0;
       padding: 0;
       font-size: 1.5rem;
       color: var(--light);
       cursor: pointer;
+      text-overflow: ellipsis;
+      z-index: 0;
     }
 
     .navbar__nav {
+      min-width: 4rem;
       list-style: none;
       margin: 0;
       padding: 0;
+      text-align: right;
+      background: var(--primary);
+      z-index: 0;
 
       .navbar__items--link {
         padding: 0.5rem;
@@ -732,10 +739,17 @@ body {
         }
 
         .main__section__task__icon {
-          width: 2rem;
+          min-width: 1.5rem;
           margin-left: 0.5rem;
           font-size: 0.8rem;
           color: var(--primary);
+          display: flex;
+          flex-direction: column;
+          text-align: right;
+
+          i {
+            padding: 0 0 0.5rem 0.5rem;
+          }
         }
       }
 
@@ -744,7 +758,7 @@ body {
 
         .main__section__task__text {
           i {
-            color: var(--s-dark);
+            color: var(--gray);
           }
 
           .main__section__task__body {
@@ -755,7 +769,7 @@ body {
         }
 
         .main__section__task__icon {
-          color: var(--p-light);
+          color: var(--s-dark);
         }
       }
 
