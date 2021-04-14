@@ -791,10 +791,6 @@ body main .section .main__section__user .main__section__user__body .main__sectio
   font-weight: 300;
 }
 
-body main .section .main__section__item {
-  margin-bottom: 1rem;
-}
-
 body main .section .main__section__item .main__section__link {
   width: 100%;
   display: -webkit-box;
