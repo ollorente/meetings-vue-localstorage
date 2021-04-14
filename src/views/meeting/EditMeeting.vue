@@ -48,7 +48,7 @@
                 </option>
               </select>
             </div>
-            <button type="submit" class="btn-p-light">Agregar</button>
+            <button type="submit" class="btn-secondary">Editar</button>
           </form>
         </section>
       </transition>
