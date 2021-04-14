@@ -252,7 +252,7 @@ body .navbar .navbar__fondo .navbar__search .navbar__search--input {
   width: calc(100% - 2rem);
   padding: 0.5rem 1rem;
   font-size: 1rem;
-  border: solid 1px var(--p-light);
+  border: solid 2px var(--secondary) !important;
   border-radius: 0.5rem;
   margin-bottom: 1rem;
   background: var(--light);
@@ -832,6 +832,22 @@ body main .section .main__section__task .main__section__task__icon {
   margin-left: 0.5rem;
   font-size: 0.8rem;
   color: var(--primary);
+}
+
+body main .section .main__section__task.lock {
+  color: var(--gray);
+}
+
+body main .section .main__section__task.lock .main__section__task__text i {
+  color: var(--s-dark);
+}
+
+body main .section .main__section__task.lock .main__section__task__text .main__section__task__body .main__section__task__title {
+  font-weight: 500;
+}
+
+body main .section .main__section__task.lock .main__section__task__icon {
+  color: var(--p-light);
 }
 
 body main .section .main__section__person .main__section__person__avatar {

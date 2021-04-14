@@ -219,7 +219,7 @@ body {
           width: calc(100% - 2rem);
           padding: 0.5rem 1rem;
           font-size: 1rem;
-          border: solid 1px var(--p-light);
+          border: solid 2px var(--secondary) !important;
           border-radius: 0.5rem;
           margin-bottom: 1rem;
           background: var(--light);
@@ -736,6 +736,26 @@ body {
           margin-left: 0.5rem;
           font-size: 0.8rem;
           color: var(--primary);
+        }
+      }
+
+      .main__section__task.lock {
+        color: var(--gray);
+
+        .main__section__task__text {
+          i {
+            color: var(--s-dark);
+          }
+
+          .main__section__task__body {
+            .main__section__task__title {
+              font-weight: 500;
+            }
+          }
+        }
+
+        .main__section__task__icon {
+          color: var(--p-light);
         }
       }
 
