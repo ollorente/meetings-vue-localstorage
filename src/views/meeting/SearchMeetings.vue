@@ -52,16 +52,45 @@ export default {
           menus: []
         }
       ],
+      show: true,
       meetings: [],
       limit: 10,
       page: 0,
-      show: true,
       q: ''
     }
   },
   methods: {
     async search () {
-      this.meetings = await db.meetings
+      const meetings = Object.values(db.meetings)
+      const texto = this.q.toLowerCase()
+
+      this.meetings = []
+
+      for (let meeting of meetings) {
+        let data = meeting.name.toLowerCase()
+
+        if (data.indexOf(texto) !== -1) {
+          this.meetings = this.meetings
+            .concat(meeting)
+            .filter((e) => e.isActive === true)
+            .sort(function (a, b) {
+              if (a.name > b.name) {
+                return 1
+              }
+              if (a.name < b.name) {
+                return -1
+              }
+              return 0
+            })
+            .splice(this.page, this.limit)
+        }
+
+        if (this.meetings.length === 0) {
+          this.show = true
+        } else {
+          this.show = false
+        }
+      }
     }
   }
 }
