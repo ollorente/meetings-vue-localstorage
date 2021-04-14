@@ -7,10 +7,18 @@
           <h1 class="title">{{ getProject.name }}</h1>
           <div class="navbar__search">
             <form @submit.prevent="search">
-              <input type="text" class="navbar__search--input mb-3" placeholder="Buscar...">
+              <input
+                type="text"
+                class="navbar__search--input mb-3"
+                placeholder="Buscar..."
+                v-model="q"
+                @keyup="search"
+                autofocus
+              />
             </form>
           </div>
           <Meeting v-for='meeting in meetings' :key='meeting.id' :meeting='meeting' />
+          <div class="my-3" v-if="show">No hay resultados</div>
         </section>
       </transition>
     </main>
@@ -19,6 +27,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import { db } from '@/main'
 
 import TheNavbar from '@/components/TheNavbar'
 import Meeting from '@/components/gadgets/Meeting'
@@ -32,9 +41,9 @@ export default {
   data () {
     return {
       path: {
-        title: 'Encuentros proyecto',
+        title: 'Buscar encuentro proyecto',
         link: {
-          name: 'Project',
+          name: 'ProjectMeetings',
           params: { project: this.$route.params.project }
         },
         icon: 'fas fa-arrow-left',
@@ -43,50 +52,59 @@ export default {
       },
       options: [
         {
-          menus: [
-            {
-              title: 'Crear encuentro',
-              link: { name: 'NewProjectMeeting' },
-              icon: 'fas - fa-handshake',
-              status: false
-            }
-          ]
+          menus: []
         }
       ],
+      show: true,
       meetings: [],
       limit: 10,
-      page: 0
+      page: 0,
+      q: ''
     }
   },
   created () {
     this.fetchProject(this.$route.params.project)
   },
   methods: {
-    ...mapActions(['fetchProjectMeetings', 'fetchProject']),
-    async infiniteHandler ($state) {
-      this.page++
+    ...mapActions(['fetchProject']),
+    async search () {
+      const meetings = Object.values(db.projectMeetings[this.$route.params.project])
+      const texto = this.q.toLowerCase()
 
-      this.fetchProjectMeetings({
-        id: this.$route.params.project,
-        limit: this.limit,
-        page: this.page
-      })
+      this.meetings = []
 
-      let meetings = await this.getProjectMeetings
+      for (let meeting of meetings) {
+        let data = meeting.name.toLowerCase()
 
-      if (meetings.length) {
-        this.meetings = this.meetings.concat(meetings)
-        $state.loaded()
-      } else {
-        $state.complete()
+        if (data.indexOf(texto) !== -1) {
+          this.meetings = this.meetings
+            .concat(meeting)
+            .filter((e) => e.isActive === true)
+            .sort(function (a, b) {
+              if (a.name > b.name) {
+                return 1
+              }
+              if (a.name < b.name) {
+                return -1
+              }
+              return 0
+            })
+            .splice(this.page, this.limit)
+        }
+
+        if (this.meetings.length === 0) {
+          this.show = true
+        } else {
+          this.show = false
+        }
       }
     }
   },
   computed: {
-    ...mapGetters(['getProjectMeetings', 'getProject'])
+    ...mapGetters(['getProject'])
   },
   watch: {
-    $route: ['fetchProjectMeetings', 'fetchProject']
+    $route: ['fetchProject']
   }
 }
 </script>
