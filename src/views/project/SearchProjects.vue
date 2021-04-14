@@ -25,7 +25,6 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
 import { db } from '@/main'
 
 import TheNavbar from '@/components/TheNavbar'
@@ -66,7 +65,6 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['fetchProjects']),
     async search () {
       const projects = Object.values(db.projects)
       const texto = this.q.toLowerCase()
@@ -99,12 +97,6 @@ export default {
         }
       }
     }
-  },
-  computed: {
-    ...mapGetters(['getProjects'])
-  },
-  watch: {
-    $route: ['fetchProjects']
   }
 }
 </script>
