@@ -7,10 +7,18 @@
           <h1 class="title">{{ getPerson.name }}</h1>
           <div class="navbar__search">
             <form @submit.prevent="search">
-              <input type="text" class="navbar__search--input mb-3" placeholder="Buscar...">
+              <input
+                type="text"
+                class="navbar__search--input mb-3"
+                placeholder="Buscar..."
+                v-model="q"
+                @keyup="search"
+                autofocus
+              />
             </form>
           </div>
           <Task v-for='task in tasks' :key='task.id' :task='task' />
+          <div class="my-3" v-if="show">No hay resultados</div>
         </section>
       </transition>
     </main>
@@ -19,6 +27,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import { db } from '@/main'
 
 import TheNavbar from '@/components/TheNavbar'
 import Task from '@/components/gadgets/Task'
@@ -43,40 +52,56 @@ export default {
           menus: []
         }
       ],
+      show: true,
       tasks: [],
       limit: 10,
-      page: 0
+      page: 0,
+      q: ''
     }
   },
   created () {
     this.fetchPerson(this.$route.params.person)
   },
   methods: {
-    ...mapActions(['fetchPersonTasks', 'fetchPerson']),
-    async infiniteHandler ($state) {
-      this.page++
+    ...mapActions(['fetchPerson']),
+    async search () {
+      const tasks = Object.values(db.peopleTasks[this.$route.params.person])
+      const texto = this.q.toLowerCase()
 
-      this.fetchPersonTasks({
-        id: this.$route.params.person,
-        limit: this.limit,
-        page: this.page
-      })
+      this.tasks = []
 
-      let tasks = await this.getPersonTasks
+      for (let task of tasks) {
+        let data = task.name.toLowerCase()
 
-      if (tasks.length) {
-        this.tasks = this.tasks.concat(tasks)
-        $state.loaded()
-      } else {
-        $state.complete()
+        if (data.indexOf(texto) !== -1) {
+          this.tasks = this.tasks
+            .concat(task)
+            .filter((e) => e.isActive === true)
+            .sort(function (a, b) {
+              if (a.name > b.name) {
+                return 1
+              }
+              if (a.name < b.name) {
+                return -1
+              }
+              return 0
+            })
+            .splice(this.page, this.limit)
+        }
+
+        if (this.tasks.length === 0) {
+          this.show = true
+        } else {
+          this.show = false
+        }
       }
     }
   },
   computed: {
-    ...mapGetters(['getPersonTasks', 'getPerson'])
+    ...mapGetters(['getPerson'])
   },
   watch: {
-    $route: ['fetchPersonTasks', 'fetchPerson']
+    $route: ['fetchPerson']
   }
 }
 </script>

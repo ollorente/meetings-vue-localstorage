@@ -7,10 +7,18 @@
           <h1 class="title">{{ getPerson.name }}</h1>
           <div class="navbar__search">
             <form @submit.prevent="search">
-              <input type="text" class="navbar__search--input mb-3" placeholder="Buscar...">
+              <input
+                type="text"
+                class="navbar__search--input mb-3"
+                placeholder="Buscar..."
+                v-model="q"
+                @keyup="search"
+                autofocus
+              />
             </form>
           </div>
           <Project v-for='project in projects' :key='project.id' :project='project' />
+          <div class="my-3" v-if="show">No hay resultados</div>
         </section>
       </transition>
     </main>
@@ -19,6 +27,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import { db } from '@/main'
 
 import TheNavbar from '@/components/TheNavbar'
 import Project from '@/components/gadgets/Project'
@@ -43,40 +52,56 @@ export default {
           menus: []
         }
       ],
+      show: true,
       projects: [],
       limit: 10,
-      page: 0
+      page: 0,
+      q: ''
     }
   },
   created () {
     this.fetchPerson(this.$route.params.person)
   },
   methods: {
-    ...mapActions(['fetchPeopleProjects', 'fetchPerson']),
-    async infiniteHandler ($state) {
-      this.page++
+    ...mapActions(['fetchPerson']),
+    async search () {
+      const projects = Object.values(db.peopleProjects[this.$route.params.person])
+      const texto = this.q.toLowerCase()
 
-      this.fetchPeopleProjects({
-        id: this.$route.params.person,
-        limit: this.limit,
-        page: this.page
-      })
+      this.projects = []
 
-      let projects = await this.getPeopleProjects
+      for (let project of projects) {
+        let data = project.name.toLowerCase()
 
-      if (projects.length) {
-        this.projects = this.projects.concat(projects)
-        $state.loaded()
-      } else {
-        $state.complete()
+        if (data.indexOf(texto) !== -1) {
+          this.projects = this.projects
+            .concat(project)
+            .filter((e) => e.isActive === true)
+            .sort(function (a, b) {
+              if (a.name > b.name) {
+                return 1
+              }
+              if (a.name < b.name) {
+                return -1
+              }
+              return 0
+            })
+            .splice(this.page, this.limit)
+        }
+
+        if (this.projects.length === 0) {
+          this.show = true
+        } else {
+          this.show = false
+        }
       }
     }
   },
   computed: {
-    ...mapGetters(['getPeopleProjects', 'getPerson'])
+    ...mapGetters(['getPerson'])
   },
   watch: {
-    $route: ['fetchPeopleProjects', 'fetchPerson']
+    $route: ['fetchPerson']
   }
 }
 </script>
