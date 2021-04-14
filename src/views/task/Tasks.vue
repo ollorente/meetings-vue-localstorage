@@ -6,14 +6,9 @@
 
       <transition name="fade">
         <section class="section">
-          <div class="navbar__search">
-            <form @submit.prevent="search">
-              <input type="text" class="navbar__search--input mb-3" placeholder="Buscar...">
-            </form>
-          </div>
           <Task v-for='task in tasks' :key='task.id' :task='task' />
           <infinite-loading @infinite="infiniteHandler"></infinite-loading>
-        </section>{{ $data }}
+        </section>
       </transition>
     </main>
   </div>
@@ -42,7 +37,8 @@ export default {
         link: { name: 'Tasks' },
         icon: 'fas fa-tasks',
         status: true,
-        search: false
+        search: true,
+        linkSearch: { name: 'SearchTasks' }
       },
       options: [
         {
