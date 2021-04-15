@@ -212,27 +212,53 @@ const actions = {
 
   async deletePerson ({ commit }, id) {
     try {
-      // ------- Eliminando usuario de proyectos -------
-      console.log('ID->', id)
-      // const project = Object.values(db.peopleProjects[id])
-      // console.log('project->', project)
+      const personId = id
 
-      // for (let i = 0; i < project.length; i++) {
-      //   const person = await db.projectPeople[project[i]]
+      // ------- Eliminando usuario en proyectos -------
+      const projects = Object.values(db.projects)
 
-      //   if (person) {
-      //     delete db.projectPeople[project[i]][id]
-      //   }
-      // }
-      // ---X--- Eliminando usuario de proyectos ---X---
+      for (let i = 0; i < projects.length; i++) {
+        const projectId = await projects[i].id
+        const project = await db.projectPeople[projectId]
 
-      // ------- Eliminando usuario y referencias -------
-      // delete db.people[id]
-      // delete db.peopleMeetings[id]
-      // delete db.peopleTasks[id]
-      // ---X--- Eliminando usuario y referencias ---X---
+        if (project) {
+          delete db.projectPeople[projectId][personId]
+        }
+      }
+      // ---X--- Eliminando usuario en proyectos ---X---
 
-      // localStorage.setItem(dbName, JSON.stringify(db))
+      // ------- Eliminando usuario en reuniones -------
+      const meetings = Object.values(db.meetings)
+
+      for (let i = 0; i < meetings.length; i++) {
+        const meetingId = await meetings[i].id
+        const meeting = await db.meetingPeople[meetingId][personId]
+
+        if (meeting) {
+          delete db.meetingPeople[meetingId][personId]
+        }
+      }
+      // ---X--- Eliminando usuario en reuniones ---X---
+
+      // ------- Eliminando usuario en tareas -------
+      const tasks = Object.values(db.tasks)
+
+      for (let i = 0; i < tasks.length; i++) {
+        const taskId = await tasks[i].id
+        const task = await db.taskPeople[taskId][personId]
+
+        if (task) {
+          delete db.taskPeople[taskId][personId]
+        }
+      }
+      // ---X--- Eliminando usuario en tareas ---X---
+
+      delete db.people[personId]
+      delete db.peopleMeetings[personId]
+      delete db.peopleProjects[personId]
+      delete db.peopleTasks[personId]
+
+      localStorage.setItem(dbName, JSON.stringify(db))
 
       commit('SET_PERSON', true)
     } catch (error) {
