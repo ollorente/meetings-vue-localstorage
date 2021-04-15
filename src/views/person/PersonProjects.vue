@@ -34,7 +34,8 @@ export default {
         link: { name: 'Person', params: { person: this.$route.params.person } },
         icon: 'fas fa-arrow-left',
         status: false,
-        search: true
+        search: true,
+        linkSearch: { name: 'SearchPersonProjects', params: { person: this.$route.params.person } }
       },
       options: [
         {

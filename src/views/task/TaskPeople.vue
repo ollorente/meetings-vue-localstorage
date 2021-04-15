@@ -34,7 +34,8 @@ export default {
         link: { name: 'Task', params: { task: this.$route.params.task } },
         icon: 'fas fa-arrow-left',
         status: false,
-        search: true
+        search: true,
+        linkSearch: { name: 'SearchTaskPeople', params: { task: this.$route.params.task } }
       },
       options: [
         {

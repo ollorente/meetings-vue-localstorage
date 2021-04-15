@@ -34,7 +34,8 @@ export default {
         link: { name: 'Project', params: { project: this.$route.params.project } },
         icon: 'fas fa-arrow-left',
         status: false,
-        search: true
+        search: true,
+        linkSearch: { name: 'SearchProjectTasks', params: { project: this.$route.params.project } }
       },
       options: [
         {

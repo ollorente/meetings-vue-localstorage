@@ -2,6 +2,7 @@
   <router-link
     :to="{ name: 'Task', params: { task: taskItem.id } }"
     class="main__section__task"
+    :class="taskItem.isLock ? 'lock' : ''"
   >
     <span class="main__section__task__text">
       <i class="fas fa-clipboard-check"></i>

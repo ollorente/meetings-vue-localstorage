@@ -37,7 +37,8 @@ export default {
         link: { name: 'Projects' },
         icon: 'fas fa-user-tie',
         status: true,
-        search: true
+        search: true,
+        linkSearch: { name: 'SearchProjects' }
       },
       options: [
         {

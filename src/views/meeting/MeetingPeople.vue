@@ -34,7 +34,8 @@ export default {
         link: { name: 'Meeting', params: { meeting: this.$route.params.meeting } },
         icon: 'fas fa-arrow-left',
         status: false,
-        search: true
+        search: true,
+        linkSearch: { name: 'SearchMeetingPeople', params: { meeting: this.$route.params.meeting } }
       },
       options: [
         {

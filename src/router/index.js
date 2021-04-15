@@ -39,6 +39,14 @@ const routes = [
     }
   },
   {
+    path: '/proyecto/buscar', // TODO -> Hacer lógica de la vista
+    name: 'SearchProjects',
+    component: () => import('../views/project/SearchProjects.vue'),
+    meta: {
+      title: `Buscar proyecto ${BASE_URL_TITLE}`
+    }
+  },
+  {
     path: '/proyecto/nuevo',
     name: 'NewProject',
     component: () => import('../views/project/NewProject.vue'),
@@ -63,27 +71,43 @@ const routes = [
     }
   },
   {
-    path: '/proyecto/:project/reuniones',
+    path: '/proyecto/:project/encuentros',
     name: 'ProjectMeetings',
     component: () => import('../views/project/ProjectMeetings.vue'),
     meta: {
-      title: `Reuniones proyecto ${BASE_URL_TITLE}`
+      title: `Encuentros proyecto ${BASE_URL_TITLE}`
     }
   },
   {
-    path: '/proyecto/:project/reunion/nueva',
+    path: '/proyecto/:project/encuentro/buscar', // TODO -> Hacer lógica de la vista
+    name: 'SearchProjectMeetings',
+    component: () => import('../views/project/SearchProjectMeetings.vue'),
+    meta: {
+      title: `Buscar encuentro proyecto ${BASE_URL_TITLE}`
+    }
+  },
+  {
+    path: '/proyecto/:project/encuentro/nueva',
     name: 'NewProjectMeeting',
     component: () => import('../views/project/NewProjectMeeting.vue'),
     meta: {
-      title: `Agregar reunión ${BASE_URL_TITLE}`
+      title: `Agregar encuentro ${BASE_URL_TITLE}`
     }
   },
   {
-    path: '/proyecto/:project/tareas',
+    path: '/proyecto/:project/actividades',
     name: 'ProjectTasks',
     component: () => import('../views/project/ProjectTasks.vue'),
     meta: {
-      title: `Tareas proyecto ${BASE_URL_TITLE}`
+      title: `Actividades proyecto ${BASE_URL_TITLE}`
+    }
+  },
+  {
+    path: '/proyecto/:project/actividad/buscar', // TODO -> Hacer lógica de la vista
+    name: 'SearchProjectTasks',
+    component: () => import('../views/project/SearchProjectTasks.vue'),
+    meta: {
+      title: `Buscar actividad proyecto ${BASE_URL_TITLE}`
     }
   },
   {
@@ -95,83 +119,131 @@ const routes = [
     }
   },
   {
-    path: '/reuniones',
+    path: '/proyecto/:project/usuario/buscar', // TODO -> Hacer lógica de la vista
+    name: 'SearchProjectPeople',
+    component: () => import('../views/project/SearchProjectPeople.vue'),
+    meta: {
+      title: `Buscar usuario proyecto ${BASE_URL_TITLE}`
+    }
+  },
+  {
+    path: '/encuentros',
     name: 'Meetings',
     component: () => import('../views/meeting/Meetings.vue'),
     meta: {
-      title: `Reuniones ${BASE_URL_TITLE}`
+      title: `Encuentros ${BASE_URL_TITLE}`
     }
   },
   {
-    path: '/reunion/:meeting', // TODO -> Hacer que eliminar funcione
+    path: '/encuentro/buscar', // TODO -> Hacer lógica de la vista
+    name: 'SearchMeetings',
+    component: () => import('../views/meeting/SearchMeetings.vue'),
+    meta: {
+      title: `Buscar encuentro ${BASE_URL_TITLE}`
+    }
+  },
+  {
+    path: '/encuentro/:meeting', // TODO -> Hacer que eliminar funcione
     name: 'Meeting',
     component: () => import('../views/meeting/Meeting.vue'),
     meta: {
-      title: `Reunión ${BASE_URL_TITLE}`
+      title: `Encuentro ${BASE_URL_TITLE}`
     }
   },
   {
-    path: '/reunion/:meeting/editar', // TODO -> Hacer que llame a KcEditor
+    path: '/encuentro/:meeting/editar', // TODO -> Hacer que llame a KcEditor
     name: 'EditMeeting',
     component: () => import('../views/meeting/EditMeeting.vue'),
     meta: {
-      title: `Editar reunión ${BASE_URL_TITLE}`
+      title: `Editar encuentro ${BASE_URL_TITLE}`
     }
   },
   {
-    path: '/reunion/:meeting/tareas',
+    path: '/encuentro/:meeting/actividades',
     name: 'MeetingTasks',
     component: () => import('../views/meeting/MeetingTasks.vue'),
     meta: {
-      title: `Tareas reunión ${BASE_URL_TITLE}`
+      title: `Actividades encuentro ${BASE_URL_TITLE}`
     }
   },
   {
-    path: '/reunion/:meeting/tarea/nueva',
+    path: '/encuentro/:meeting/actividad/buscar', // TODO -> Hacer lógica de la vista
+    name: 'SearchMeetingTasks',
+    component: () => import('../views/meeting/SearchMeetingTasks.vue'),
+    meta: {
+      title: `Buscar actividad encuentro ${BASE_URL_TITLE}`
+    }
+  },
+  {
+    path: '/encuentro/:meeting/actividad/nueva',
     name: 'NewMeetingTask',
     component: () => import('../views/meeting/NewMeetingTask.vue'),
     meta: {
-      title: `Agregar tarea ${BASE_URL_TITLE}`
+      title: `Agregar actividad ${BASE_URL_TITLE}`
     }
   },
   {
-    path: '/reunion/:meeting/usuarios',
+    path: '/encuentro/:meeting/usuarios',
     name: 'MeetingPeople',
     component: () => import('../views/meeting/MeetingPeople.vue'),
     meta: {
-      title: `Usuarios reunión ${BASE_URL_TITLE}`
+      title: `Usuarios encuentro ${BASE_URL_TITLE}`
     }
   },
   {
-    path: '/tareas',
+    path: '/encuentro/:meeting/usuario/buscar', // TODO -> Hacer lógica de la vista
+    name: 'SearchMeetingPeople',
+    component: () => import('../views/meeting/SearchMeetingPeople.vue'),
+    meta: {
+      title: `Buscar usuario encuentro ${BASE_URL_TITLE}`
+    }
+  },
+  {
+    path: '/actividades',
     name: 'Tasks',
     component: () => import('../views/task/Tasks.vue'),
     meta: {
-      title: `Tareas ${BASE_URL_TITLE}`
+      title: `Actividades ${BASE_URL_TITLE}`
     }
   },
   {
-    path: '/tarea/:task', // TODO -> Hacer que eliminar funcione
+    path: '/actividad/buscar', // TODO -> Hacer lógica de la vista
+    name: 'SearchTasks',
+    component: () => import('../views/task/SearchTasks.vue'),
+    meta: {
+      title: `Buscar actividad ${BASE_URL_TITLE}`
+    }
+  },
+  {
+    path: '/actividad/:task', // TODO -> Hacer que eliminar funcione
     name: 'Task',
     component: () => import('../views/task/Task.vue'),
     meta: {
-      title: `Tarea ${BASE_URL_TITLE}`
+      title: `Actividad ${BASE_URL_TITLE}`
     }
   },
   {
-    path: '/tarea/:task/editar', // TODO -> Hacer que llame a KcEditor
+    path: '/actividad/:task/editar', // TODO -> Hacer que llame a KcEditor
     name: 'EditTask',
     component: () => import('../views/task/EditTask.vue'),
     meta: {
-      title: `Editar tarea ${BASE_URL_TITLE}`
+      title: `Editar actividad ${BASE_URL_TITLE}`
     }
   },
   {
-    path: '/tarea/:task/usuarios',
+    path: '/actividad/:task/usuarios',
     name: 'TaskPeople',
     component: () => import('../views/task/TaskPeople.vue'),
     meta: {
-      title: `Usuarios tarea ${BASE_URL_TITLE}`
+      title: `Usuarios actividad ${BASE_URL_TITLE}`
+    }
+  },
+  {
+    path: '/actividad/:task/usuario/buscar', // TODO -> Hacer lógica de la vista
+    name: 'SearchTaskPeople',
+    component: () => import('../views/task/SearchTaskPeople.vue'),
+    meta: {
+      title: `Buscar usuario actividad ${BASE_URL_TITLE}`
     }
   },
   {
@@ -180,6 +252,14 @@ const routes = [
     component: () => import('../views/person/People.vue'),
     meta: {
       title: `Usuarios ${BASE_URL_TITLE}`
+    }
+  },
+  {
+    path: '/usuario/buscar', // TODO -> Hacer lógica de la vista
+    name: 'SearchPeople',
+    component: () => import('../views/person/SearchPeople.vue'),
+    meta: {
+      title: `Buscar usuario ${BASE_URL_TITLE}`
     }
   },
   {
@@ -203,7 +283,7 @@ const routes = [
     name: 'EditPerson',
     component: () => import('../views/person/EditPerson.vue'),
     meta: {
-      title: `Editar Usuario ${BASE_URL_TITLE}`
+      title: `Editar usuario ${BASE_URL_TITLE}`
     }
   },
   {
@@ -211,23 +291,47 @@ const routes = [
     name: 'PersonProjects',
     component: () => import('../views/person/PersonProjects.vue'),
     meta: {
-      title: `Proyectos del usuario ${BASE_URL_TITLE}`
+      title: `Proyectos usuario ${BASE_URL_TITLE}`
     }
   },
   {
-    path: '/usuario/:person/reuniones',
+    path: '/usuario/:person/proyecto/buscar', // TODO -> Hacer lógica de la vista
+    name: 'SearchPersonProjects',
+    component: () => import('../views/person/SearchPersonProjects.vue'),
+    meta: {
+      title: `Buscar proyecto usuario ${BASE_URL_TITLE}`
+    }
+  },
+  {
+    path: '/usuario/:person/encuentros',
     name: 'PersonMeetings',
     component: () => import('../views/person/PersonMeetings.vue'),
     meta: {
-      title: `Reuniones del usuario ${BASE_URL_TITLE}`
+      title: `Encuentros usuario ${BASE_URL_TITLE}`
     }
   },
   {
-    path: '/usuario/:person/tareas',
+    path: '/usuario/:person/encuentro/buscar', // TODO -> Hacer lógica de la vista
+    name: 'SearchPersonMeetings',
+    component: () => import('../views/person/SearchPersonMeetings.vue'),
+    meta: {
+      title: `Buscar encuentro usuario ${BASE_URL_TITLE}`
+    }
+  },
+  {
+    path: '/usuario/:person/actividades',
     name: 'PersonTasks',
     component: () => import('../views/person/PersonTasks.vue'),
     meta: {
-      title: `Tareas del usuario ${BASE_URL_TITLE}`
+      title: `Actividades usuario ${BASE_URL_TITLE}`
+    }
+  },
+  {
+    path: '/usuario/:person/actividad/buscar', // TODO -> Hacer lógica de la vista
+    name: 'SearchPersonTasks',
+    component: () => import('../views/person/SearchPersonTasks.vue'),
+    meta: {
+      title: `Buscar actividad usuario ${BASE_URL_TITLE}`
     }
   },
   {

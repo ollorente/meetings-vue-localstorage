@@ -246,6 +246,47 @@ const actions = {
       }
       // ---X--- Editando usuarios en tarea ---X---
 
+      // ------- Agregando usuarios a tarea -------
+      delete db.taskPeople[task.id]
+
+      for (let i = 0; i < collaborators.length; i++) {
+        const person = await db.people[collaborators[i]]
+
+        if (person) {
+          const personTask = await db.taskPeople[task.id]
+
+          if (!personTask) {
+            db.taskPeople[task.id] = {}
+          }
+
+          db.taskPeople[task.id][person.id] = {
+            id: person.id,
+            name: person.name,
+            email: person.email,
+            photoURL: person.photoURL,
+            isActive: person.isActive,
+            isLock: person.isLock
+          }
+
+          // ------- Agregando tarea a usuario -------
+          const taskpPerson = await db.peopleTasks[person.id]
+
+          if (!taskpPerson) {
+            db.peopleTasks[person.id] = {}
+          }
+
+          db.peopleTasks[person.id][task.id] = {
+            id: task.id,
+            name: task.name,
+            project: task.project,
+            isActive: task.isActive,
+            isLock: task.isLock
+          }
+          // ---X--- Agregando tarea a usuarios ---X---
+        }
+      }
+      // ---X--- Agregando usuarios a tarea ---X---
+
       // ------- Editando tarea en proyecto -------
       const tasksProject = await db.projectTasks[task.project]
 

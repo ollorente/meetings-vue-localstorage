@@ -37,7 +37,11 @@ export default {
         },
         icon: 'fas fa-arrow-left',
         status: false,
-        search: true
+        search: true,
+        linkSearch: {
+          name: 'SearchProjectMeetings',
+          params: { project: this.$route.params.project }
+        }
       },
       options: [
         {

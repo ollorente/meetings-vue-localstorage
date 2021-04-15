@@ -37,7 +37,11 @@ export default {
         },
         icon: 'fas fa-arrow-left',
         status: false,
-        search: true
+        search: true,
+        linkSearch: {
+          name: 'SearchMeetingTasks',
+          params: { meeting: this.$route.params.meeting }
+        }
       },
       options: [
         {

@@ -8,7 +8,7 @@
         <section class="section">
           <Task v-for='task in tasks' :key='task.id' :task='task' />
           <infinite-loading @infinite="infiniteHandler"></infinite-loading>
-        </section>{{ $data }}
+        </section>
       </transition>
     </main>
   </div>
@@ -37,11 +37,13 @@ export default {
         link: { name: 'Tasks' },
         icon: 'fas fa-tasks',
         status: true,
-        search: true
+        search: true,
+        linkSearch: { name: 'SearchTasks' }
       },
       options: [
         {
-          menus: []
+          menus: [],
+          database: `tasks`
         }
       ],
       tasks: [],
