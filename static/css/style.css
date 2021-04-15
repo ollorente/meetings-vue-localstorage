@@ -1046,7 +1046,7 @@ body main .section .main__section__task.lock .main__section__task__text .main__s
 }
 
 body main .section .main__section__task.lock .main__section__task__icon {
-  color: var(--s-dark);
+  color: var(--gray);
 }
 
 body main .section .main__section__person .main__section__person__avatar {
