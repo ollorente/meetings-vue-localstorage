@@ -219,6 +219,18 @@ const actions = {
 
       for (let i = 0; i < projects.length; i++) {
         const projectId = await projects[i].id
+
+        // ------- Eliminando usuario de los colaboradores del proyecto -------
+        const collaboratorsProject = await db.projects[projectId].collaborators
+
+        for (let e = 0; e < collaboratorsProject.length; e++) {
+          console.log('COLLABORATORS->', collaboratorsProject[e])
+          if (collaboratorsProject[e] === id) {
+            await db.projects[projectId].collaborators.splice(id, 1)
+          }
+        }
+        // ---X--- Eliminando usuario de los colaboradores del proyecto ---X---
+
         const project = await db.projectPeople[projectId]
 
         if (project) {

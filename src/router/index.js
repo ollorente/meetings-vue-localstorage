@@ -39,7 +39,7 @@ const routes = [
     }
   },
   {
-    path: '/proyecto/buscar', // TODO -> Hacer lógica de la vista
+    path: '/proyecto/buscar',
     name: 'SearchProjects',
     component: () => import('../views/project/SearchProjects.vue'),
     meta: {
@@ -63,7 +63,7 @@ const routes = [
     }
   },
   {
-    path: '/proyecto/:project/editar', // TODO -> Hacer que llame a KcEditor
+    path: '/proyecto/:project/editar',
     name: 'EditProject',
     component: () => import('../views/project/EditProject.vue'),
     meta: {
@@ -79,7 +79,7 @@ const routes = [
     }
   },
   {
-    path: '/proyecto/:project/encuentro/buscar', // TODO -> Hacer lógica de la vista
+    path: '/proyecto/:project/encuentro/buscar',
     name: 'SearchProjectMeetings',
     component: () => import('../views/project/SearchProjectMeetings.vue'),
     meta: {
@@ -103,7 +103,7 @@ const routes = [
     }
   },
   {
-    path: '/proyecto/:project/actividad/buscar', // TODO -> Hacer lógica de la vista
+    path: '/proyecto/:project/actividad/buscar',
     name: 'SearchProjectTasks',
     component: () => import('../views/project/SearchProjectTasks.vue'),
     meta: {
@@ -119,7 +119,7 @@ const routes = [
     }
   },
   {
-    path: '/proyecto/:project/usuario/buscar', // TODO -> Hacer lógica de la vista
+    path: '/proyecto/:project/usuario/buscar',
     name: 'SearchProjectPeople',
     component: () => import('../views/project/SearchProjectPeople.vue'),
     meta: {
@@ -135,7 +135,7 @@ const routes = [
     }
   },
   {
-    path: '/encuentro/buscar', // TODO -> Hacer lógica de la vista
+    path: '/encuentro/buscar',
     name: 'SearchMeetings',
     component: () => import('../views/meeting/SearchMeetings.vue'),
     meta: {
@@ -167,7 +167,7 @@ const routes = [
     }
   },
   {
-    path: '/encuentro/:meeting/actividad/buscar', // TODO -> Hacer lógica de la vista
+    path: '/encuentro/:meeting/actividad/buscar',
     name: 'SearchMeetingTasks',
     component: () => import('../views/meeting/SearchMeetingTasks.vue'),
     meta: {
@@ -191,7 +191,7 @@ const routes = [
     }
   },
   {
-    path: '/encuentro/:meeting/usuario/buscar', // TODO -> Hacer lógica de la vista
+    path: '/encuentro/:meeting/usuario/buscar',
     name: 'SearchMeetingPeople',
     component: () => import('../views/meeting/SearchMeetingPeople.vue'),
     meta: {
@@ -207,7 +207,7 @@ const routes = [
     }
   },
   {
-    path: '/actividad/buscar', // TODO -> Hacer lógica de la vista
+    path: '/actividad/buscar',
     name: 'SearchTasks',
     component: () => import('../views/task/SearchTasks.vue'),
     meta: {
@@ -239,7 +239,7 @@ const routes = [
     }
   },
   {
-    path: '/actividad/:task/usuario/buscar', // TODO -> Hacer lógica de la vista
+    path: '/actividad/:task/usuario/buscar',
     name: 'SearchTaskPeople',
     component: () => import('../views/task/SearchTaskPeople.vue'),
     meta: {
@@ -255,7 +255,7 @@ const routes = [
     }
   },
   {
-    path: '/usuario/buscar', // TODO -> Hacer lógica de la vista
+    path: '/usuario/buscar',
     name: 'SearchPeople',
     component: () => import('../views/person/SearchPeople.vue'),
     meta: {
@@ -295,7 +295,7 @@ const routes = [
     }
   },
   {
-    path: '/usuario/:person/proyecto/buscar', // TODO -> Hacer lógica de la vista
+    path: '/usuario/:person/proyecto/buscar',
     name: 'SearchPersonProjects',
     component: () => import('../views/person/SearchPersonProjects.vue'),
     meta: {
@@ -311,7 +311,7 @@ const routes = [
     }
   },
   {
-    path: '/usuario/:person/encuentro/buscar', // TODO -> Hacer lógica de la vista
+    path: '/usuario/:person/encuentro/buscar',
     name: 'SearchPersonMeetings',
     component: () => import('../views/person/SearchPersonMeetings.vue'),
     meta: {
@@ -327,7 +327,7 @@ const routes = [
     }
   },
   {
-    path: '/usuario/:person/actividad/buscar', // TODO -> Hacer lógica de la vista
+    path: '/usuario/:person/actividad/buscar',
     name: 'SearchPersonTasks',
     component: () => import('../views/person/SearchPersonTasks.vue'),
     meta: {
