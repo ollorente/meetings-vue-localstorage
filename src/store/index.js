@@ -13,11 +13,14 @@ import projectPeople from './modules/projectPeople'
 import projectTasks from './modules/projectTasks'
 import task from './modules/task'
 import taskPeople from './modules/taskPeople'
+import user from './modules/user'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  state: {},
+  state: {
+    token: null
+  },
   mutations: {},
   actions: {},
   modules: {
@@ -33,6 +36,7 @@ export default new Vuex.Store({
     projectPeople,
     projectTasks,
     task,
-    taskPeople
+    taskPeople,
+    user
   }
 })
