@@ -17,7 +17,7 @@
           </li>
           <hr class="options__card__item" v-if="options[0].menus.length > 0">
           <li class="options__card__item">
-            <span class="options__card__link" @click="logout"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</span>
+            <span class="options__card__link" @click="logOut"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</span>
           </li>
         </ul>
       </div>
@@ -26,6 +26,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   name: 'TheNavbar.',
   props: ['path', 'options'],
@@ -37,10 +39,12 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['logout']),
     async isVisible () {
       this.show = !this.show
     },
-    async logout () {
+    async logOut () {
+      this.logout()
       await this.$router.replace({ name: 'Home' })
     }
   }

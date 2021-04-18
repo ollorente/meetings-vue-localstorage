@@ -9,20 +9,20 @@
           <form @submit.prevent="login">
             <div>
               <input
-                type="text"
-                v-model="person.name"
-                id="name"
-                placeholder="Nombre de usuario"
+                type="email"
+                v-model="user.email"
+                id="email"
+                placeholder="email@email.com"
                 autofocus
                 required
               />
             </div>
             <div>
               <input
-                type="email"
-                v-model="person.email"
-                id="email"
-                placeholder="email@email.com"
+                type="password"
+                v-model="user.password"
+                id="password"
+                placeholder="********"
                 required
               />
             </div>
@@ -76,16 +76,32 @@ export default {
         error: false,
         msg: null
       },
-      person: {
-        name: '',
-        emali: ''
+      user: {
+        password: '',
+        email: ''
       }
     }
   },
   methods: {
-    ...mapActions(['addPerson']),
+    ...mapActions(['auth']),
     async login () {
-      try {} catch (error) {
+      try {
+        if (
+          this.user.email.trim() === '' ||
+          this.user.password.trim() === ''
+        ) {
+          this.alert.error = true
+          this.alert.msg = `Los campos no pueden estar vacíos.`
+
+          setTimeout(() => {
+            this.alert.error = false
+          }, 4000)
+        } else {
+          await this.auth(this.user)
+
+          await this.$router.replace({ name: 'Tasks' })
+        }
+      } catch (error) {
         // eslint-disable-next-line no-useless-return
         if (error) return
       }

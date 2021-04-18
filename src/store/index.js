@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import { DB } from '@/main'
 import meeting from './modules/meeting'
 import meetingPeople from './modules/meetingPeople'
 import meetingTasks from './modules/meetingTasks'
@@ -21,8 +22,47 @@ export default new Vuex.Store({
   state: {
     token: null
   },
-  mutations: {},
-  actions: {},
+  getters: {},
+  mutations: {
+    SET_TOKEN: (state, payload) => (state.token = payload)
+  },
+  actions: {
+    async auth ({ commit }, payload) {
+      try {
+        const res = await fetch(`${DB}/users/auth`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        })
+
+        const user = await res.json()
+
+        localStorage.setItem('token', user.jwt)
+        localStorage.setItem('currentUser', JSON.stringify(user.data))
+
+        commit('SET_TOKEN', user.data.token)
+      } catch (error) {
+        // eslint-disable-next-line no-useless-return
+        if (error) return
+      }
+    },
+
+    async fetchToken ({ commit }) {
+      if (localStorage.getItem('token')) {
+        commit('SET_TOKEN', localStorage.getItem('token'))
+      } else {
+        commit('SET_TOKEN', null)
+      }
+    },
+
+    async logout ({ commit }) {
+      commit('SET_TOKEN', null)
+      localStorage.removeItem('token')
+      localStorage.removeItem('currentUser')
+    }
+  },
   modules: {
     meeting,
     meetingPeople,
