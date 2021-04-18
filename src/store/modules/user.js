@@ -1,6 +1,4 @@
-import {
-  DB
-} from '@/main'
+import { DB } from '@/main'
 
 const state = {
   user: '',
@@ -13,16 +11,14 @@ const getters = {
 }
 
 const actions = {
-  async addUser ({
-    commit
-  }, data) {
+  async addUser ({ commit }, payload) {
     try {
       const res = await fetch(`${DB}/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(payload)
       })
 
       const user = await res.json()
@@ -34,20 +30,26 @@ const actions = {
     }
   },
 
-  async fetchUser ({
-    commit
-  }) {
-    const user = ''
+  async fetchUser ({ commit }) {
+    try {
+      const user = ''
 
-    commit('SET_USER', user)
+      commit('SET_USER', user)
+    } catch (error) {
+      // eslint-disable-next-line no-useless-return
+      if (error) return
+    }
   },
 
-  async fetchUsers ({
-    commit
-  }) {
-    const users = ''
+  async fetchUsers ({ commit }) {
+    try {
+      const users = ''
 
-    commit('SET_USERS', users)
+      commit('SET_USERS', users)
+    } catch (error) {
+      // eslint-disable-next-line no-useless-return
+      if (error) return
+    }
   }
 }
 

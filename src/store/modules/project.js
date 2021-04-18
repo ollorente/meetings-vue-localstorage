@@ -3,6 +3,8 @@ import {
   dbName
 } from '@/main'
 
+const token = 'Bearer ' + localStorage.getItem('token')
+
 const state = {
   project: '',
   projects: []
@@ -15,64 +17,18 @@ const getters = {
 }
 
 const actions = {
-  async addProject ({ commit }, data) {
+  async addProject ({ commit }, payload) {
     try {
-      const date = Date.now()
+      const res = await fetch(`${db}/projects`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        },
+        body: JSON.stringify(payload)
+      })
 
-      const project = {
-        id: date,
-        name: await data.name.trim(),
-        description: await data.description.trim(),
-        collaborators: await data.collaborators,
-        isActive: true,
-        isLock: false,
-        createdAt: date,
-        updatedAt: date
-      }
-
-      db.projects[project.id] = project
-
-      // ------- Creando usuarios por proyecto -------
-      const peopleProject = await db.projectPeople[project.id]
-
-      if (!peopleProject) {
-        db.projectPeople[project.id] = {}
-      }
-
-      const collaborators = await project.collaborators
-
-      for (let i = 0; i < collaborators.length; i++) {
-        const person = await db.people[collaborators[i]]
-
-        if (person) {
-          db.projectPeople[project.id][person.id] = {
-            id: await person.id,
-            name: await person.name,
-            email: await person.email,
-            photoURL: await person.photoURL,
-            isActive: await person.isActive,
-            isLock: await person.isLock
-          }
-
-          // ------- agreegando proyecto al usuario -------
-          const projectPeople = await db.peopleProjects[person.id]
-
-          if (!projectPeople) {
-            db.peopleProjects[person.id] = {}
-          }
-
-          db.peopleProjects[person.id][project.id] = {
-            id: project.id,
-            name: await project.name,
-            isActive: project.isActive,
-            isLock: project.isLock
-          }
-          // ---X--- agreegando proyecto al usuario ---X---
-        }
-      }
-      // ---X--- Creando usuarios por proyecto ---X---
-
-      localStorage.setItem(dbName, JSON.stringify(db))
+      const project = await res.json()
 
       commit('SET_PROJECT', project)
     } catch (error) {
@@ -83,9 +39,16 @@ const actions = {
 
   async fetchProject ({ commit }, id) {
     try {
-      const project = await db.projects[id]
+      const res = await fetch(`${db}/projects/${id}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      })
 
-      commit('SET_PROJECT', project)
+      const project = await res.json()
+
+      commit('SET_PROJECT', project.data)
     } catch (error) {
       // eslint-disable-next-line no-useless-return
       if (error) return
@@ -95,31 +58,18 @@ const actions = {
   async fetchProjects ({ commit }, data) {
     try {
       const limit = data.limit ? data.limit : 20
-      const page = (data.page - 1) * data.limit || 0
+      const page = (data.page - 1) * data.limit || 1
 
-      const projects = Object.values(db.projects)
-        .filter((e) => e.isLock === false)
-        .filter((e) => e.isActive === true)
-        .sort(function (a, b) {
-          if (a.name > b.name) {
-            return 1
-          }
-          if (a.name < b.name) {
-            return -1
-          }
-          return 0
-        })
-        .splice(page, limit)
-        .map((e) => {
-          return {
-            id: e.id,
-            name: e.name,
-            isActive: e.isActive,
-            isLock: e.isLock
-          }
-        })
+      const res = await fetch(`${db}/projects?limit=${limit}&page=${page}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      })
 
-      commit('SET_PROJECTS', projects)
+      const projects = await res.json()
+
+      commit('SET_PROJECTS', projects.data)
     } catch (error) {
       // eslint-disable-next-line no-useless-return
       if (error) return
@@ -128,28 +78,16 @@ const actions = {
 
   async fetchAllProjects ({ commit }) {
     try {
-      const projects = Object.values(db.projects)
-        .filter((e) => e.isLock === false)
-        .filter((e) => e.isActive === true)
-        .sort(function (a, b) {
-          if (a.name > b.name) {
-            return 1
-          }
-          if (a.name < b.name) {
-            return -1
-          }
-          return 0
-        })
-        .map((e) => {
-          return {
-            id: e.id,
-            name: e.name,
-            isActive: e.isActive,
-            isLock: e.isLock
-          }
-        })
+      const res = await fetch(`${db}/projects/all`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      })
 
-      commit('SET_PROJECTS', projects)
+      const projects = await res.json()
+
+      commit('SET_PROJECTS', projects.data)
     } catch (error) {
       // eslint-disable-next-line no-useless-return
       if (error) return

@@ -1,6 +1,6 @@
-import {
-  db, dbName
-} from '@/main'
+import { db } from '@/main'
+
+const token = 'Bearer ' + localStorage.getItem('token')
 
 const state = {
   person: '',
@@ -14,26 +14,18 @@ const getters = {
 }
 
 const actions = {
-  async addPerson ({ commit }, data) {
+  async addPerson ({ commit }, payload) {
     try {
-      const date = Date.now()
+      const res = await fetch(`${db}/people`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        },
+        body: JSON.stringify(payload)
+      })
 
-      const person = {
-        id: date,
-        name: await data.name.trim(),
-        email: await data.email.trim(),
-        photoURL: '',
-        role: data.role ? await data.role.trim() : '',
-        phone: '',
-        isActive: true,
-        isLock: false,
-        createdAt: date,
-        updatedAt: date
-      }
-
-      db.people[person.id] = person
-
-      localStorage.setItem(dbName, JSON.stringify(db))
+      const person = await res.json()
 
       commit('SET_PERSON', person)
     } catch (error) {
@@ -44,9 +36,16 @@ const actions = {
 
   async fetchPerson ({ commit }, id) {
     try {
-      const person = await db.people[id]
+      const res = await fetch(`${db}/people/${id}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      })
 
-      commit('SET_PERSON', person)
+      const person = await res.json()
+
+      commit('SET_PERSON', person.data)
     } catch (error) {
       // eslint-disable-next-line no-useless-return
       if (error) return
@@ -56,32 +55,18 @@ const actions = {
   async fetchPeople ({ commit }, data) {
     try {
       const limit = data.limit ? data.limit : 20
-      const page = (data.page - 1) * data.limit || 0
+      const page = (data.page - 1) * data.limit || 1
 
-      const people = Object.values(db.people)
-        .filter((e) => e.isLock === false)
-        .filter((e) => e.isActive === true)
-        .sort(function (a, b) {
-          if (a.name > b.name) {
-            return 1
-          }
-          if (a.name < b.name) {
-            return -1
-          }
-          return 0
-        })
-        .splice(page, limit)
-        .map((e) => {
-          return {
-            id: e.id,
-            name: e.name,
-            email: e.email,
-            photoURL: e.photoURL,
-            isActive: e.isActive
-          }
-        })
+      const res = await fetch(`${db}/people?limit=${limit}&page=${page}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      })
 
-      commit('SET_PEOPLE', people)
+      const people = await res.json()
+
+      commit('SET_PEOPLE', people.data)
     } catch (error) {
       // eslint-disable-next-line no-useless-return
       if (error) return
@@ -90,118 +75,35 @@ const actions = {
 
   async fetchAllPeople ({ commit }) {
     try {
-      const people = Object.values(db.people)
-        .filter((e) => e.isLock === false)
-        .filter((e) => e.isActive === true)
-        .sort(function (a, b) {
-          if (a.name > b.name) {
-            return 1
-          }
-          if (a.name < b.name) {
-            return -1
-          }
-          return 0
-        })
-        .map((e) => {
-          return {
-            id: e.id,
-            name: e.name,
-            email: e.email,
-            photoURL: e.photoURL,
-            isActive: e.isActive
-          }
-        })
+      const res = await fetch(`${db}/people/all`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      })
 
-      commit('SET_PEOPLE', people)
+      const people = await res.json()
+
+      commit('SET_PEOPLE', people.data)
     } catch (error) {
       // eslint-disable-next-line no-useless-return
       if (error) return
     }
   },
 
-  async updatePerson ({ commit }, data) {
+  async updatePerson ({ commit }, payload) {
     try {
-      const person = {
-        id: await data.id,
-        name: await data.name.trim(),
-        email: await data.email.trim(),
-        photoURL: data.photoURL ? await data.photoURL.trim() : '',
-        role: data.role ? await data.role.trim() : '',
-        phone: data.phone ? await data.phone.trim() : '',
-        isActive: await data.isActive,
-        isLock: await data.isLock,
-        createdAt: await data.createdAt,
-        updatedAt: Date.now()
-      }
+      const res = await fetch(`${db}/people/${payload._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        },
+        body: JSON.stringify(payload)
+      })
 
-      const personId = person.id
-
-      db.people[personId] = person
-
-      // ------- Actualizando usuario en proyectos -------
-      const projects = Object.values(db.projects)
-
-      for (let i = 0; i < projects.length; i++) {
-        const projectId = await projects[i].id
-        const project = await db.projectPeople[projectId][personId]
-
-        if (project) {
-          db.projectPeople[projectId][personId] = {
-            id: await person.d,
-            name: await person.name,
-            email: await person.email,
-            photoURL: await person.photoURL,
-            isActive: await person.isActive,
-            isLock: await person.isLock
-          }
-        }
-      }
-      // ---X--- Actualizando usuario en proyectos ---X---
-
-      // ------- Actualizando usuario en reuniones -------
-      const meetings = Object.values(db.meetings)
-
-      for (let i = 0; i < meetings.length; i++) {
-        const meetingId = await meetings[i].id
-        const meeting = await db.meetingPeople[meetingId][personId]
-
-        if (meeting) {
-          db.meetingPeople[meetingId][personId] = {
-            id: await person.d,
-            name: await person.name,
-            email: await person.email,
-            photoURL: await person.photoURL,
-            isActive: await person.isActive,
-            isLock: await person.isLock
-          }
-        }
-      }
-      // ---X--- Actualizando usuario en reuniones ---X---
-
-      // ------- Actualizando usuario en tareas -------
-      const tasks = Object.values(db.tasks)
-      console.log('tasks->', tasks)
-
-      for (let i = 0; i < tasks.length; i++) {
-        const taskId = await tasks[i].id
-        console.log('taskId->', taskId)
-        const task = await db.taskPeople[taskId][personId]
-        console.log('task->', task)
-
-        if (task) {
-          db.taskPeople[taskId][personId] = {
-            id: await person.d,
-            name: await person.name,
-            email: await person.email,
-            photoURL: await person.photoURL,
-            isActive: await person.isActive,
-            isLock: await person.isLock
-          }
-        }
-      }
-      // ---X--- Actualizando usuario en tareas ---X---
-
-      localStorage.setItem(dbName, JSON.stringify(db))
+      const person = await res.json()
+      console.log('person->', person)
 
       commit('SET_PERSON', person)
     } catch (error) {
@@ -212,67 +114,17 @@ const actions = {
 
   async deletePerson ({ commit }, id) {
     try {
-      const personId = id
-
-      // ------- Eliminando usuario en proyectos -------
-      const projects = Object.values(db.projects)
-
-      for (let i = 0; i < projects.length; i++) {
-        const projectId = await projects[i].id
-
-        // ------- Eliminando usuario de los colaboradores del proyecto -------
-        const collaboratorsProject = await db.projects[projectId].collaborators
-
-        for (let e = 0; e < collaboratorsProject.length; e++) {
-          console.log('COLLABORATORS->', collaboratorsProject[e])
-          if (collaboratorsProject[e] === id) {
-            await db.projects[projectId].collaborators.splice(id, 1)
-          }
+      const res = await fetch(`${db}/people/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
         }
-        // ---X--- Eliminando usuario de los colaboradores del proyecto ---X---
+      })
 
-        const project = await db.projectPeople[projectId]
+      const person = await res.json()
 
-        if (project) {
-          delete db.projectPeople[projectId][personId]
-        }
-      }
-      // ---X--- Eliminando usuario en proyectos ---X---
-
-      // ------- Eliminando usuario en reuniones -------
-      const meetings = Object.values(db.meetings)
-
-      for (let i = 0; i < meetings.length; i++) {
-        const meetingId = await meetings[i].id
-        const meeting = await db.meetingPeople[meetingId][personId]
-
-        if (meeting) {
-          delete db.meetingPeople[meetingId][personId]
-        }
-      }
-      // ---X--- Eliminando usuario en reuniones ---X---
-
-      // ------- Eliminando usuario en tareas -------
-      const tasks = Object.values(db.tasks)
-
-      for (let i = 0; i < tasks.length; i++) {
-        const taskId = await tasks[i].id
-        const task = await db.taskPeople[taskId][personId]
-
-        if (task) {
-          delete db.taskPeople[taskId][personId]
-        }
-      }
-      // ---X--- Eliminando usuario en tareas ---X---
-
-      delete db.people[personId]
-      delete db.peopleMeetings[personId]
-      delete db.peopleProjects[personId]
-      delete db.peopleTasks[personId]
-
-      localStorage.setItem(dbName, JSON.stringify(db))
-
-      commit('SET_PERSON', true)
+      commit('SET_PERSON', person)
     } catch (error) {
       // eslint-disable-next-line no-useless-return
       if (error) return
