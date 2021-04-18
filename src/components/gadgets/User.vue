@@ -1,6 +1,6 @@
 <template>
   <router-link
-    :to="{ name: 'Person', params: { person: person.id } }"
+    :to="{ name: 'Person', params: { person: person._id } }"
     class="main__section__user"
   >
     <img

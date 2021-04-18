@@ -1,7 +1,7 @@
 <template>
   <div class="main__section__item">
     <router-link
-      :to="{ name: 'Project', params: { project: project.id } }"
+      :to="{ name: 'Project', params: { project: project._id } }"
       class="main__section__link"
     >
       <span class="main__section__link__text">
