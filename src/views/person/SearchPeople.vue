@@ -16,7 +16,7 @@
               />
             </form>
           </div>
-          <User v-for="person in people" :key="person.id" :person="person" />
+          <User v-for="person in people" :key="person._id" :person="person" />
           <div class="my-3" v-if="show">No hay resultados</div>
         </section>
       </transition>
@@ -25,6 +25,7 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
 import { db } from '@/main'
 
 import TheNavbar from '@/components/TheNavbar'
@@ -64,15 +65,28 @@ export default {
       q: ''
     }
   },
+  created () {
+    this.fetchAllPeople()
+  },
   methods: {
+    ...mapActions(['fetchAllPeople']),
     async search () {
-      const people = Object.values(db.people)
+      const res = await fetch(`${db}/people/all`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        }
+      })
+
+      const peopleData = await res.json()
+
+      const people = await peopleData.data
       const texto = this.q.toLowerCase()
 
       this.people = []
 
       for (let person of people) {
-        let data = person.name.toLowerCase()
+        let data = await person.name.toLowerCase()
 
         if (data.indexOf(texto) !== -1) {
           this.people = this.people
@@ -98,6 +112,12 @@ export default {
         }
       }
     }
+  },
+  computed: {
+    ...mapGetters(['getPeople'])
+  },
+  watch: {
+    $route: ['fetchAllPeople']
   }
 }
 </script>

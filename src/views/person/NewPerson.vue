@@ -74,7 +74,7 @@ export default {
       },
       person: {
         name: '',
-        emali: '',
+        email: '',
         role: ''
       }
     }
@@ -92,10 +92,6 @@ export default {
           }, 4000)
         } else {
           await this.addPerson(this.person)
-
-          this.person.name = ''
-          this.person.email = ''
-          this.person.role = ''
 
           await this.$router.replace({ name: 'People' })
         }

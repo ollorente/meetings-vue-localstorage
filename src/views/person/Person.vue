@@ -8,30 +8,30 @@
             <p class="main__section__person__avatar">
               <img
                 :src="
-                  person.photoURL
-                    ? person.photoURL
+                  getPerson.photoURL
+                    ? getPerson.photoURL
                     : `https://res.cloudinary.com/dbszizqh4/image/upload/v1592198427/images_lvwix2.png`
                 "
-                :alt="person.name"
+                :alt="getPerson.name"
                 class="main__section__person__avatar--img"
               />
             </p>
-            <h1 class="main__section__person__title">{{ person.name }}</h1>
+            <h1 class="main__section__person__title">{{ getPerson.name }}</h1>
             <h3 class="main__section__person__subtitle">
-              {{ person.role }}
+              {{ getPerson.role }}
             </h3>
             <p class="main__section__person__block">
               <span class="main__section__person__block__label">Email:</span
               ><br />
               <span class="main__section__person__block__content">{{
-                person.email
+                getPerson.email
               }}</span>
             </p>
-            <p class="main__section__person__block" v-if="person.phone">
+            <p class="main__section__person__block" v-if="getPerson.phone">
               <span class="main__section__person__block__label">Teléfono:</span
               ><br />
               <span class="main__section__person__block__content">{{
-                person.phone
+                getPerson.phone
               }}</span>
             </p>
             <p class="main__section__person__block">
@@ -39,31 +39,31 @@
                 >Creado:</span
               ><br />
               <span class="main__section__person__block__content">{{
-                new Date(person.createdAt).toLocaleDateString()
+                new Date(getPerson.createdAt).toLocaleDateString()
               }}</span>
             </p>
             <p
-              v-if="person.createdAt !== person.updatedAt"
+              v-if="getPerson.createdAt !== getPerson.updatedAt"
               class="main__section__person__block"
             >
               <span class="main__section__person__block__label"
                 >Actualizado:</span
               ><br />
               <span class="main__section__person__block__content">{{
-                new Date(person.updatedAt).toLocaleDateString()
+                new Date(getPerson.updatedAt).toLocaleDateString()
               }}</span>
             </p>
             <p class="main__section__person__block">
               <span class="main__section__person__block__content"
                 ><i
-                  :class="person.isActive ? 'fas' : 'far'"
+                  :class="getPerson.isActive ? 'fas' : 'far'"
                   class="fa-circle"
                 ></i>
-                {{ person.isActive ? "Activo" : "Inactivo" }}</span
+                {{ getPerson.isActive ? "Activo" : "Inactivo" }}</span
               ><br />
               <span class="main__section__person__block__content">
-                <i class="fas" :class="person.isLock ? 'fa-lock' : 'fa-lock-open'"></i>
-                {{ person.isLock ? "Oculto" : "Público" }}</span
+                <i class="fas" :class="getPerson.isLock ? 'fa-lock' : 'fa-lock-open'"></i>
+                {{ getPerson.isLock ? "Oculto" : "Público" }}</span
               >
             </p>
             <div class="main__section__person__block--flex">
@@ -82,8 +82,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import { db } from '@/main'
+import { mapActions, mapGetters } from 'vuex'
 
 import TheNavbar from '@/components/TheNavbar'
 
@@ -130,35 +129,14 @@ export default {
             }
           ]
         }
-      ],
-      person: ''
+      ]
     }
   },
   created () {
-    this.getPerson()
+    this.fetchPerson(this.$route.params.person)
   },
   methods: {
-    ...mapActions(['deletePerson']),
-    async getPerson () {
-      const data = await db.people[this.$route.params.person]
-
-      if (data === undefined) {
-        await this.$router.replace({ name: 'Error' })
-      } else {
-        this.person = {
-          id: await data.id,
-          name: await data.name,
-          email: await data.email,
-          photoURL: await data.photoURL,
-          phone: await data.phone,
-          role: await data.role,
-          isActive: await data.isActive,
-          isLock: await data.isLock,
-          createdAt: await data.createdAt,
-          updatedAt: await data.updatedAt
-        }
-      }
-    },
+    ...mapActions(['deletePerson', 'fetchPerson']),
     async editPerson () {
       await this.$router.replace({
         name: 'EditPerson',
@@ -173,8 +151,11 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters(['getPerson'])
+  },
   watch: {
-    $route: ['getPerson']
+    $route: ['fetchPerson']
   }
 }
 </script>

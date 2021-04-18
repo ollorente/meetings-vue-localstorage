@@ -23,8 +23,8 @@
               <select multiple v-model="project.collaborators">
                 <option
                   v-for="person in getAllPeople"
-                  :key="person.id"
-                  :value="person.id"
+                  :key="person._id"
+                  :value="person._id"
                 >
                   {{ person.name }} - {{ person.email }}
                 </option>
@@ -91,10 +91,6 @@ export default {
           }, 4000)
         } else {
           await this.addProject(this.project)
-
-          this.project.name = ''
-          this.project.description = ''
-          this.project.collaborators = []
 
           await this.$router.replace({ name: 'Projects' })
         }

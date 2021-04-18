@@ -59,8 +59,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import { db } from '@/main'
+import { mapActions, mapGetters } from 'vuex'
 
 import TheNavbar from '@/components/TheNavbar'
 
@@ -88,7 +87,7 @@ export default {
         msg: null
       },
       person: {
-        id: '',
+        _id: '',
         name: '',
         email: '',
         photoURL: '',
@@ -101,36 +100,25 @@ export default {
       }
     }
   },
+  mounted () {
+    this.person = {
+      _id: this.getPerson._id,
+      name: this.getPerson.name,
+      email: this.getPerson.email,
+      photoURL: this.getPerson.photoURL,
+      phone: this.getPerson.phone,
+      role: this.getPerson.role,
+      isLock: this.getPerson.isLock,
+      isActive: this.getPerson.isActive,
+      createdAt: this.getPerson.createdAt,
+      updatedAt: this.getPerson.updatedAt
+    }
+  },
   created () {
-    this.getPerson()
+    this.fetchPerson(this.$route.params.person)
   },
   methods: {
-    ...mapActions(['getPerson', 'updatePerson']),
-    async getPerson () {
-      try {
-        const data = await db.people[this.$route.params.person]
-
-        if (data === undefined) {
-          await this.$router.replace({ name: 'Error' })
-        } else {
-          this.person = {
-            id: await data.id,
-            name: await data.name,
-            email: await data.email,
-            photoURL: await data.photoURL,
-            phone: await data.phone,
-            role: await data.role,
-            isLock: await data.isLock,
-            isActive: await data.isActive,
-            createdAt: await data.createdAt,
-            updatedAt: await data.updatedAt
-          }
-        }
-      } catch (error) {
-        // eslint-disable-next-line no-useless-return
-        if (error) return
-      }
-    },
+    ...mapActions(['fetchPerson', 'updatePerson']),
     async putPerson () {
       try {
         if (this.person.name.trim() === '' || this.person.email.trim() === '') {
@@ -143,12 +131,6 @@ export default {
         } else {
           await this.updatePerson(this.person)
 
-          this.person.name = ''
-          this.person.email = ''
-          this.person.photoURL = ''
-          this.person.phone = ''
-          this.person.role = ''
-
           await this.$router.replace({
             name: 'Person',
             params: { person: this.$route.params.person }
@@ -160,8 +142,11 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters(['getPerson'])
+  },
   watch: {
-    $route: ['getPerson']
+    $route: ['fetchPerson']
   }
 }
 </script>

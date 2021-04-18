@@ -6,8 +6,7 @@
 
       <transition name="bounce">
         <section class='section'>
-          <User v-for='person in people' :key='person.id' :person='person' />
-          <infinite-loading @infinite="infiniteHandler"></infinite-loading>
+          <User v-for='person in getPeople' :key='person._id' :person='person' />
         </section>
       </transition>
     </main>
@@ -16,7 +15,6 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import InfiniteLoading from 'vue-infinite-loading'
 
 import TheNavbar from '@/components/TheNavbar'
 import TheSecondNavbar from '@/components/TheSecondNavbar'
@@ -27,8 +25,7 @@ export default {
   components: {
     TheNavbar,
     TheSecondNavbar,
-    User,
-    InfiniteLoading
+    User
   },
   data () {
     return {
@@ -54,28 +51,17 @@ export default {
       ],
       people: [],
       limit: 10,
-      page: 0
+      page: 1
     }
   },
+  created () {
+    this.fetchPeople({
+      limit: this.limit,
+      page: this.page
+    })
+  },
   methods: {
-    ...mapActions(['fetchPeople']),
-    async infiniteHandler ($state) {
-      this.page++
-
-      this.fetchPeople({
-        limit: this.limit,
-        page: this.page
-      })
-
-      let people = await this.getPeople
-
-      if (people.length) {
-        this.people = this.people.concat(people)
-        $state.loaded()
-      } else {
-        $state.complete()
-      }
-    }
+    ...mapActions(['fetchPeople'])
   },
   computed: {
     ...mapGetters(['getPeople'])

@@ -6,8 +6,8 @@
 
       <transition name="fade">
         <section class="section">
-          <Project v-for='project in projects' :key='project.id' :project='project' />
-          <infinite-loading @infinite="infiniteHandler"></infinite-loading>
+          <Project v-for='project in getProjects' :key='project._id' :project='project' />
+          <!-- <infinite-loading @infinite="infiniteHandler"></infinite-loading> -->
         </section>
       </transition>
     </main>
@@ -16,7 +16,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import InfiniteLoading from 'vue-infinite-loading'
+// import InfiniteLoading from 'vue-infinite-loading'
 
 import TheNavbar from '@/components/TheNavbar'
 import TheSecondNavbar from '@/components/TheSecondNavbar'
@@ -27,8 +27,8 @@ export default {
   components: {
     TheNavbar,
     TheSecondNavbar,
-    Project,
-    InfiniteLoading
+    // InfiniteLoading,
+    Project
   },
   data () {
     return {
@@ -54,28 +54,34 @@ export default {
       ],
       projects: [],
       limit: 10,
-      page: 0
+      page: 1
     }
   },
+  created () {
+    this.fetchProjects({
+      limit: this.limit,
+      page: this.page
+    })
+  },
   methods: {
-    ...mapActions(['fetchProjects']),
-    async infiniteHandler ($state) {
-      this.page++
+    ...mapActions(['fetchProjects'])
+    // async infiniteHandler ($state) {
+    //   this.page++
 
-      this.fetchProjects({
-        limit: this.limit,
-        page: this.page
-      })
+    //   this.fetchProjects({
+    //     limit: this.limit,
+    //     page: this.page
+    //   })
 
-      let projects = await this.getProjects
+    //   let projects = await this.getProjects
 
-      if (projects.length) {
-        this.projects = this.projects.concat(projects)
-        $state.loaded()
-      } else {
-        $state.complete()
-      }
-    }
+    //   if (projects.length) {
+    //     this.projects = this.projects.concat(projects)
+    //     $state.loaded()
+    //   } else {
+    //     $state.complete()
+    //   }
+    // }
   },
   computed: {
     ...mapGetters(['getProjects'])
