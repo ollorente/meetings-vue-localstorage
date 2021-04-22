@@ -10,18 +10,22 @@
               <input
                 type="text"
                 class="navbar__search--input mb-3"
-                placeholder="Buscar..."
+                placeholder="Buscar encuentro..."
                 v-model="q"
                 @keyup="search"
                 autofocus
               />
             </form>
           </div>
-          <Meeting v-for='meeting in meetings' :key='meeting.id' :meeting='meeting' />
+         <Meeting
+            v-for="meeting in meetings"
+            :key="meeting._id"
+            :meeting="meeting"
+          />
           <div class="my-3" v-if="show">No hay resultados</div>
         </section>
       </transition>
-    </main>
+    </main><pre class="container">{{ $data }}</pre>
   </div>
 </template>
 
@@ -55,7 +59,8 @@ export default {
       show: true,
       meetings: [],
       limit: 10,
-      page: 0
+      page: 0,
+      q: ''
     }
   },
   created () {
@@ -64,7 +69,19 @@ export default {
   methods: {
     ...mapActions(['fetchPerson']),
     async search () {
-      const meetings = Object.values(db.peopleMeetings[this.$route.params.person])
+      const res = await fetch(
+        `${db}/people/${this.$route.params.person}/meetings`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        }
+      )
+
+      const meetingsData = await res.json()
+
+      const meetings = meetingsData.data
       const texto = this.q.toLowerCase()
 
       this.meetings = []
@@ -75,7 +92,6 @@ export default {
         if (data.indexOf(texto) !== -1) {
           this.meetings = this.meetings
             .concat(meeting)
-            .filter((e) => e.isActive === true)
             .sort(function (a, b) {
               if (a.name > b.name) {
                 return 1
