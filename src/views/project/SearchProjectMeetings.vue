@@ -17,7 +17,11 @@
               />
             </form>
           </div>
-          <Meeting v-for='meeting in meetings' :key='meeting.id' :meeting='meeting' />
+          <Meeting
+            v-for="meeting in meetings"
+            :key="meeting._id"
+            :meeting="meeting"
+          />
           <div class="my-3" v-if="show">No hay resultados</div>
         </section>
       </transition>
@@ -58,7 +62,7 @@ export default {
       show: true,
       meetings: [],
       limit: 10,
-      page: 0,
+      page: 1,
       q: ''
     }
   },
@@ -68,12 +72,22 @@ export default {
   methods: {
     ...mapActions(['fetchProject']),
     async search () {
-      const meetings = Object.values(db.projectMeetings[this.$route.params.project])
+      const res = await fetch(
+        `${db}/projects/${this.$route.params.project}/meetings?limit=${this.limit}&page=${this.page}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        }
+      )
+
+      const meetings = await res.json()
       const texto = this.q.toLowerCase()
 
       this.meetings = []
 
-      for (let meeting of meetings) {
+      for (let meeting of meetings.data) {
         let data = meeting.name.toLowerCase()
 
         if (data.indexOf(texto) !== -1) {
@@ -89,7 +103,6 @@ export default {
               }
               return 0
             })
-            .splice(this.page, this.limit)
         }
 
         if (this.meetings.length === 0) {
