@@ -5,7 +5,11 @@
       <transition name="fade">
         <section class="section">
           <h1 class="title">{{ getPerson.name }}</h1>
-          <Meeting v-for='meeting in meetings' :key='meeting.id' :meeting='meeting' />
+          <Meeting
+            v-for="meeting in meetings"
+            :key="meeting._id"
+            :meeting="meeting"
+          />
           <infinite-loading @infinite="infiniteHandler"></infinite-loading>
         </section>
       </transition>
@@ -15,6 +19,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import { db } from '@/main'
 import InfiniteLoading from 'vue-infinite-loading'
 
 import TheNavbar from '@/components/TheNavbar'
@@ -24,8 +29,8 @@ export default {
   name: 'PersonPeopleMeetings',
   components: {
     TheNavbar,
-    Meeting,
-    InfiniteLoading
+    InfiniteLoading,
+    Meeting
   },
   data () {
     return {
@@ -35,7 +40,10 @@ export default {
         icon: 'fas fa-arrow-left',
         status: false,
         search: true,
-        linkSearch: { name: 'SearchPersonMeetings', params: { person: this.$route.params.person } }
+        linkSearch: {
+          name: 'SearchPersonMeetings',
+          params: { person: this.$route.params.person }
+        }
       },
       options: [
         {
@@ -47,24 +55,25 @@ export default {
       page: 0
     }
   },
-  created () {
-    this.fetchPerson(this.$route.params.person)
-  },
   methods: {
-    ...mapActions(['fetchPeopleMeetings', 'fetchPerson']),
+    ...mapActions(['fetchPerson']),
     async infiniteHandler ($state) {
       this.page++
 
-      this.fetchPeopleMeetings({
-        id: this.$route.params.person,
-        limit: this.limit,
-        page: this.page
-      })
+      const res = await fetch(
+        `${db}/people/${this.$route.params.person}/meetings?limit=${this.limit}&page=${this.page}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        }
+      )
 
-      let meetings = await this.getPeopleMeetings
+      let meetings = await res.json()
 
-      if (meetings.length) {
-        this.meetings = this.meetings.concat(meetings)
+      if (meetings.data.length) {
+        this.meetings = this.meetings.concat(meetings.data)
         $state.loaded()
       } else {
         $state.complete()
@@ -72,10 +81,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getPeopleMeetings', 'getPerson'])
+    ...mapGetters(['getPerson'])
   },
   watch: {
-    $route: ['fetchPeopleMeetings', 'fetchPerson']
+    $route: ['fetchPerson']
   }
 }
 </script>
