@@ -10,7 +10,7 @@
               <input
                 type="text"
                 class="navbar__search--input mb-3"
-                placeholder="Buscar..."
+                placeholder="Buscar encuentro..."
                 v-model="q"
                 @keyup="search"
                 autofocus
