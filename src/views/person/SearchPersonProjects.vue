@@ -10,14 +10,18 @@
               <input
                 type="text"
                 class="navbar__search--input mb-3"
-                placeholder="Buscar..."
+                placeholder="Buscar proyecto..."
                 v-model="q"
                 @keyup="search"
                 autofocus
               />
             </form>
           </div>
-          <Project v-for='project in projects' :key='project.id' :project='project' />
+          <Project
+            v-for="project in projects"
+            :key="project._id"
+            :project="project"
+          />
           <div class="my-3" v-if="show">No hay resultados</div>
         </section>
       </transition>
@@ -42,7 +46,10 @@ export default {
     return {
       path: {
         title: 'Buscar proyectos usuario',
-        link: { name: 'PersonProjects', params: { person: this.$route.params.person } },
+        link: {
+          name: 'PersonProjects',
+          params: { person: this.$route.params.person }
+        },
         icon: 'fas fa-arrow-left',
         status: false,
         search: false
@@ -55,7 +62,7 @@ export default {
       show: true,
       projects: [],
       limit: 10,
-      page: 0,
+      page: 1,
       q: ''
     }
   },
@@ -65,7 +72,16 @@ export default {
   methods: {
     ...mapActions(['fetchPerson']),
     async search () {
-      const projects = Object.values(db.peopleProjects[this.$route.params.person])
+      const res = await fetch(`${db}/people/${this.$route.params.person}/projects?limit=${this.limit}&page=${this.page}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        }
+      })
+
+      const projectsData = await res.json()
+
+      const projects = await projectsData.data
       const texto = this.q.toLowerCase()
 
       this.projects = []
@@ -76,7 +92,6 @@ export default {
         if (data.indexOf(texto) !== -1) {
           this.projects = this.projects
             .concat(project)
-            .filter((e) => e.isActive === true)
             .sort(function (a, b) {
               if (a.name > b.name) {
                 return 1
@@ -86,7 +101,6 @@ export default {
               }
               return 0
             })
-            .splice(this.page, this.limit)
         }
 
         if (this.projects.length === 0) {
