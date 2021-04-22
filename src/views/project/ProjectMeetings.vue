@@ -5,7 +5,11 @@
       <transition name="fade">
         <section class="section">
           <h1 class="title">{{ getProject.name }}</h1>
-          <Meeting v-for='meeting in meetings' :key='meeting.id' :meeting='meeting' />
+          <Meeting
+            v-for="meeting in meetings"
+            :key="meeting._id"
+            :meeting="meeting"
+          />
           <infinite-loading @infinite="infiniteHandler"></infinite-loading>
         </section>
       </transition>
@@ -15,6 +19,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import { db } from '@/main'
 import InfiniteLoading from 'vue-infinite-loading'
 
 import TheNavbar from '@/components/TheNavbar'
@@ -64,20 +69,24 @@ export default {
     this.fetchProject(this.$route.params.project)
   },
   methods: {
-    ...mapActions(['fetchProjectMeetings', 'fetchProject']),
+    ...mapActions(['fetchProject']),
     async infiniteHandler ($state) {
       this.page++
 
-      this.fetchProjectMeetings({
-        id: this.$route.params.project,
-        limit: this.limit,
-        page: this.page
-      })
+      const res = await fetch(
+        `${db}/projects/${this.$route.params.project}/meetings?limit=${this.limit}&page=${this.page}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        }
+      )
 
-      let meetings = await this.getProjectMeetings
+      let meetings = await res.json()
 
-      if (meetings.length) {
-        this.meetings = this.meetings.concat(meetings)
+      if (meetings.data.length) {
+        this.meetings = this.meetings.concat(meetings.data)
         $state.loaded()
       } else {
         $state.complete()
@@ -85,10 +94,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getProjectMeetings', 'getProject'])
+    ...mapGetters(['getProject'])
   },
   watch: {
-    $route: ['fetchProjectMeetings', 'fetchProject']
+    $route: ['fetchProject']
   }
 }
 </script>
