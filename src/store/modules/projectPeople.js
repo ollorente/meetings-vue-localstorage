@@ -1,6 +1,6 @@
-import {
-  db
-} from '@/main'
+import { db } from '@/main'
+
+const token = 'Bearer ' + localStorage.getItem('token')
 
 const state = {
   people: []
@@ -15,32 +15,18 @@ const actions = {
   async fetchProjectPeople ({ commit }, data) {
     try {
       const limit = data.limit ? data.limit : 20
-      const page = (data.page - 1) * data.limit || 0
+      const page = (data.page - 1) * data.limit || 1
 
-      const people = Object.values(db.projectPeople[data.id])
-        .filter((e) => e.isLock === false)
-        .filter((e) => e.isActive === true)
-        .sort(function (a, b) {
-          if (a.name > b.name) {
-            return 1
-          }
-          if (a.name < b.name) {
-            return -1
-          }
-          return 0
-        })
-        .splice(page, limit)
-        .map((e) => {
-          return {
-            id: e.id,
-            name: e.name,
-            email: e.email,
-            photoURL: e.photoURL,
-            isActive: e.isActive
-          }
-        })
+      const res = await fetch(`${db}/projects/${data._id}/people?limit=${limit}&page=${page}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      })
 
-      commit('SET_PROJECT_PEOPLE', people)
+      const people = await res.json()
+
+      commit('SET_PROJECT_PEOPLE', people.data)
     } catch (error) {
       // eslint-disable-next-line no-useless-return
       if (error) return
