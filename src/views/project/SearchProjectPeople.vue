@@ -10,14 +10,14 @@
               <input
                 type="text"
                 class="navbar__search--input mb-3"
-                placeholder="Buscar..."
+                placeholder="Buscar colaborador..."
                 v-model="q"
                 @keyup="search"
                 autofocus
               />
             </form>
           </div>
-          <User v-for='person in people' :key='person.id' :person='person' />
+          <User v-for='person in people' :key='person._id' :person='person' />
           <div class="my-3" v-if="show">No hay resultados</div>
         </section>
       </transition>
@@ -55,7 +55,7 @@ export default {
       show: true,
       people: [],
       limit: 10,
-      page: 0,
+      page: 1,
       q: ''
     }
   },
@@ -65,7 +65,19 @@ export default {
   methods: {
     ...mapActions(['fetchProject']),
     async search () {
-      const people = Object.values(db.projectPeople[this.$route.params.project])
+      const res = await fetch(
+        `${db}/projects/${this.$route.params.project}/people?limit=${this.limit}&page=${this.page}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        }
+      )
+
+      const peopleData = await res.json()
+
+      const people = peopleData.data
       const texto = this.q.toLowerCase()
 
       this.people = []
@@ -86,7 +98,6 @@ export default {
               }
               return 0
             })
-            .splice(this.page, this.limit)
         }
 
         if (this.people.length === 0) {
