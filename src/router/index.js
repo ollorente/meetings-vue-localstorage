@@ -32,7 +32,7 @@ const routes = [
     }
   },
   {
-    path: '/proyectos', // TODO -> Hacer paginación infinita
+    path: '/proyectos',
     name: 'Projects',
     component: () => import('../views/project/Projects.vue'),
     meta: {
@@ -41,7 +41,7 @@ const routes = [
     }
   },
   {
-    path: '/proyecto/buscar', // TODO -> Hacer lógica de la vista
+    path: '/proyecto/buscar',
     name: 'SearchProjects',
     component: () => import('../views/project/SearchProjects.vue'),
     meta: {
@@ -122,7 +122,7 @@ const routes = [
     }
   },
   {
-    path: '/proyecto/:project/usuarios', // TODO -> Hacer paginación infinita
+    path: '/proyecto/:project/usuarios',
     name: 'ProjectPeople',
     component: () => import('../views/project/ProjectPeople.vue'),
     meta: {
@@ -275,7 +275,7 @@ const routes = [
     }
   },
   {
-    path: '/usuarios', // TODO -> Hacer paginación infinita
+    path: '/usuarios',
     name: 'People',
     component: () => import('../views/person/People.vue'),
     meta: {
@@ -320,7 +320,7 @@ const routes = [
     }
   },
   {
-    path: '/usuario/:person/proyectos', // TODO -> Hacer lógica de la vista
+    path: '/usuario/:person/proyectos',
     name: 'PersonProjects',
     component: () => import('../views/person/PersonProjects.vue'),
     meta: {
@@ -329,7 +329,7 @@ const routes = [
     }
   },
   {
-    path: '/usuario/:person/proyecto/buscar', // TODO -> Hacer lógica de la vista
+    path: '/usuario/:person/proyecto/buscar',
     name: 'SearchPersonProjects',
     component: () => import('../views/person/SearchPersonProjects.vue'),
     meta: {
@@ -347,7 +347,7 @@ const routes = [
     }
   },
   {
-    path: '/usuario/:person/encuentro/buscar', // TODO -> Hacer lógica de la vista
+    path: '/usuario/:person/encuentro/buscar',
     name: 'SearchPersonMeetings',
     component: () => import('../views/person/SearchPersonMeetings.vue'),
     meta: {
