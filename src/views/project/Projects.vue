@@ -6,8 +6,12 @@
 
       <transition name="fade">
         <section class="section">
-          <Project v-for='project in getProjects' :key='project._id' :project='project' />
-          <!-- <infinite-loading @infinite="infiniteHandler"></infinite-loading> -->
+          <Project
+            v-for="project in projects"
+            :key="project._id"
+            :project="project"
+          />
+          <infinite-loading @infinite="infiniteHandler"></infinite-loading>
         </section>
       </transition>
     </main>
@@ -15,8 +19,8 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
-// import InfiniteLoading from 'vue-infinite-loading'
+import { DB } from '@/main'
+import InfiniteLoading from 'vue-infinite-loading'
 
 import TheNavbar from '@/components/TheNavbar'
 import TheSecondNavbar from '@/components/TheSecondNavbar'
@@ -27,7 +31,7 @@ export default {
   components: {
     TheNavbar,
     TheSecondNavbar,
-    // InfiniteLoading,
+    InfiniteLoading,
     Project
   },
   data () {
@@ -54,40 +58,37 @@ export default {
       ],
       projects: [],
       limit: 10,
-      page: 1
+      page: 0
     }
   },
-  created () {
-    this.fetchProjects({
-      limit: this.limit,
-      page: this.page
-    })
-  },
   methods: {
-    ...mapActions(['fetchProjects'])
-    // async infiniteHandler ($state) {
-    //   this.page++
+    async infiniteHandler ($state) {
+      try {
+        this.page++
 
-    //   this.fetchProjects({
-    //     limit: this.limit,
-    //     page: this.page
-    //   })
+        const res = await fetch(
+          `${DB}/users/projects?limit=${this.limit}&page=${this.page}`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + localStorage.getItem('token')
+            }
+          }
+        )
 
-    //   let projects = await this.getProjects
+        const projects = await res.json()
 
-    //   if (projects.length) {
-    //     this.projects = this.projects.concat(projects)
-    //     $state.loaded()
-    //   } else {
-    //     $state.complete()
-    //   }
-    // }
-  },
-  computed: {
-    ...mapGetters(['getProjects'])
-  },
-  watch: {
-    $route: ['fetchProjects']
+        if (projects.data.length) {
+          this.projects = this.projects.concat(projects.data)
+          $state.loaded()
+        } else {
+          $state.complete()
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-useless-return
+        if (error) return
+      }
+    }
   }
 }
 </script>
