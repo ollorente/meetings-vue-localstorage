@@ -16,7 +16,11 @@
               />
             </form>
           </div>
-          <Project v-for='project in projects' :key='project.id' :project='project' />
+          <Project
+            v-for="project in projects"
+            :key="project._id"
+            :project="project"
+          />
           <div class="my-3" v-if="show">No hay resultados</div>
         </section>
       </transition>
@@ -25,7 +29,7 @@
 </template>
 
 <script>
-import { db } from '@/main'
+import { DB } from '@/main'
 
 import TheNavbar from '@/components/TheNavbar'
 import Project from '@/components/gadgets/Project'
@@ -60,13 +64,25 @@ export default {
       show: true,
       projects: [],
       limit: 10,
-      page: 0,
+      page: 1,
       q: ''
     }
   },
   methods: {
     async search () {
-      const projects = Object.values(db.projects)
+      const res = await fetch(
+        `${DB}/users/projects?limit=${this.limit}&page=${this.page}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        }
+      )
+
+      const projectsData = await res.json()
+
+      const projects = projectsData.data
       const texto = this.q.toLowerCase()
 
       this.projects = []
@@ -87,7 +103,6 @@ export default {
               }
               return 0
             })
-            .splice(this.page, this.limit)
         }
 
         if (this.projects.length === 0) {
