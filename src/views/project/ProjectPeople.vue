@@ -5,7 +5,11 @@
       <transition name="fade">
         <section class="section">
           <h1 class="title">{{ getProject.name }}</h1>
-          <User v-for='person in people' :key='person.id' :person='person' />
+          <User
+            v-for="person in people"
+            :key="person._id"
+            :person="person"
+          />
           <infinite-loading @infinite="infiniteHandler"></infinite-loading>
         </section>
       </transition>
@@ -15,6 +19,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import { db } from '@/main'
 import InfiniteLoading from 'vue-infinite-loading'
 
 import TheNavbar from '@/components/TheNavbar'
@@ -24,18 +29,24 @@ export default {
   name: 'ProjectProjectPeople',
   components: {
     TheNavbar,
-    User,
-    InfiniteLoading
+    InfiniteLoading,
+    User
   },
   data () {
     return {
       path: {
         title: 'Usuarios proyecto',
-        link: { name: 'Project', params: { project: this.$route.params.project } },
+        link: {
+          name: 'Project',
+          params: { project: this.$route.params.project }
+        },
         icon: 'fas fa-arrow-left',
         status: false,
         search: true,
-        linkSearch: { name: 'SearchProjectPeople', params: { project: this.$route.params.project } }
+        linkSearch: {
+          name: 'SearchProjectPeople',
+          params: { project: this.$route.params.project }
+        }
       },
       options: [
         {
@@ -51,20 +62,24 @@ export default {
     this.fetchProject(this.$route.params.project)
   },
   methods: {
-    ...mapActions(['fetchProjectPeople', 'fetchProject']),
+    ...mapActions(['fetchProject']),
     async infiniteHandler ($state) {
       this.page++
 
-      this.fetchProjectPeople({
-        id: this.$route.params.project,
-        limit: this.limit,
-        page: this.page
-      })
+      const res = await fetch(
+        `${db}/projects/${this.$route.params.project}/people?limit=${this.limit}&page=${this.page}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        }
+      )
 
-      let people = await this.getProjectPeople
+      let people = await res.json()
 
-      if (people.length) {
-        this.people = this.people.concat(people)
+      if (people.data.length) {
+        this.people = this.people.concat(people.data)
         $state.loaded()
       } else {
         $state.complete()
@@ -72,10 +87,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getProjectPeople', 'getProject'])
+    ...mapGetters(['getProject'])
   },
   watch: {
-    $route: ['fetchProjectPeople', 'fetchProject']
+    $route: ['fetchProject']
   }
 }
 </script>
