@@ -6,7 +6,8 @@
 
       <transition name="bounce">
         <section class='section'>
-          <User v-for='person in getPeople' :key='person._id' :person='person' />
+          <User v-for='person in people' :key='person._id' :person='person' />
+          <infinite-loading @infinite="infiniteHandler"></infinite-loading>
         </section>
       </transition>
     </main>
@@ -14,7 +15,8 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { db } from '@/main'
+import InfiniteLoading from 'vue-infinite-loading'
 
 import TheNavbar from '@/components/TheNavbar'
 import TheSecondNavbar from '@/components/TheSecondNavbar'
@@ -25,6 +27,7 @@ export default {
   components: {
     TheNavbar,
     TheSecondNavbar,
+    InfiniteLoading,
     User
   },
   data () {
@@ -51,23 +54,34 @@ export default {
       ],
       people: [],
       limit: 10,
-      page: 1
+      page: 0
     }
   },
-  created () {
-    this.fetchPeople({
-      limit: this.limit,
-      page: this.page
-    })
-  },
   methods: {
-    ...mapActions(['fetchPeople'])
-  },
-  computed: {
-    ...mapGetters(['getPeople'])
-  },
-  watch: {
-    $route: ['fetchPeople']
+    async infiniteHandler ($state) {
+      try {
+        this.page++
+
+        const res = await fetch(`${db}/people?limit=${this.limit}&page=${this.page}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        })
+
+        const person = await res.json()
+
+        if (person.data.length) {
+          this.people = this.people.concat(person.data)
+          $state.loaded()
+        } else {
+          $state.complete()
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-useless-return
+        if (error) return
+      }
+    }
   }
 }
 </script>
