@@ -18,7 +18,11 @@
             </form>
             </form>
           </div>
-          <Meeting v-for='meeting in meetings' :key='meeting.id' :meeting='meeting' />
+          <Meeting
+            v-for="meeting in meetings"
+            :key="meeting._id"
+            :meeting="meeting"
+          />
           <div class="card" v-if="show">No hay resultados</div>
         </section>
       </transition>
@@ -27,7 +31,7 @@
 </template>
 
 <script>
-import { db } from '@/main'
+import { DB } from '@/main'
 
 import TheNavbar from '@/components/TheNavbar'
 import Meeting from '@/components/gadgets/Meeting'
@@ -55,18 +59,28 @@ export default {
       show: true,
       meetings: [],
       limit: 10,
-      page: 0,
+      page: 1,
       q: ''
     }
   },
   methods: {
     async search () {
-      const meetings = Object.values(db.meetings)
+      const res = await fetch(
+        `${DB}/users/meetings?limit=${this.limit}&page=${this.page}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        }
+      )
+
+      const meetings = await res.json()
       const texto = this.q.toLowerCase()
 
       this.meetings = []
 
-      for (let meeting of meetings) {
+      for (let meeting of meetings.data) {
         let data = meeting.name.toLowerCase()
 
         if (data.indexOf(texto) !== -1) {
@@ -82,7 +96,6 @@ export default {
               }
               return 0
             })
-            .splice(this.page, this.limit)
         }
 
         if (this.meetings.length === 0) {
