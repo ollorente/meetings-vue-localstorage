@@ -158,7 +158,7 @@ const routes = [
     }
   },
   {
-    path: '/encuentro/:meeting', // TODO -> Hacer lógica de la vista
+    path: '/encuentro/:meeting',
     name: 'Meeting',
     component: () => import('../views/meeting/Meeting.vue'),
     meta: {
@@ -221,7 +221,7 @@ const routes = [
     }
   },
   {
-    path: '/actividades', // TODO -> Hacer lógica de la vista
+    path: '/actividades',
     name: 'Tasks',
     component: () => import('../views/task/Tasks.vue'),
     meta: {
