@@ -1,6 +1,6 @@
 <template>
   <router-link
-    :to="{ name: 'Task', params: { task: taskItem.id } }"
+    :to="{ name: 'Task', params: { task: taskItem._id } }"
     class="main__section__task"
     :class="taskItem.isLock ? 'lock' : ''"
   >
@@ -27,7 +27,7 @@ export default {
   data () {
     return {
       taskItem: {
-        id: '',
+        _id: '',
         name: '',
         isActive: '',
         isLock: ''
@@ -35,24 +35,33 @@ export default {
       project: ''
     }
   },
+  mounted () {
+    this.taskItem = {
+      _id: this.$props.task._id,
+      name: this.$props.task.name,
+      isActive: this.$props.task.isActive,
+      isLock: this.$props.task.isLock
+    }
+    this.getProject(this.$props.task.project._id)
+  },
   methods: {
     async getProject (id) {
       try {
-        this.project = await db.projects[id]
+        const res = await fetch(`${db}/projects/${id}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        })
+
+        const project = await res.json()
+
+        this.project = await project.data
       } catch (error) {
         // eslint-disable-next-line no-useless-return
         if (error) return
       }
     }
-  },
-  mounted () {
-    this.taskItem = {
-      id: this.$props.task.id,
-      name: this.$props.task.name,
-      isActive: this.$props.task.isActive,
-      isLock: this.$props.task.isLock
-    }
-    this.getProject(this.$props.task.project)
   },
   watch: {
     $route: ['getProject']
