@@ -39,7 +39,7 @@
                 >Creado:</span
               ><br />
               <span class="main__section__person__block__content">{{
-                new Date(getPerson.createdAt).toLocaleDateString()
+                new Date(getPerson.createdAt).toDateString()
               }}</span>
             </p>
             <p
@@ -50,7 +50,7 @@
                 >Actualizado:</span
               ><br />
               <span class="main__section__person__block__content">{{
-                new Date(getPerson.updatedAt).toLocaleDateString()
+                new Date(getPerson.updatedAt).toDateString()
               }}</span>
             </p>
             <p class="main__section__person__block">
