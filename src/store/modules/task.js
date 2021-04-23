@@ -1,7 +1,6 @@
-import {
-  db,
-  dbName
-} from '@/main'
+import { db } from '@/main'
+
+const token = 'Bearer ' + localStorage.getItem('token')
 
 const state = {
   task: '',
@@ -17,99 +16,26 @@ const getters = {
 const actions = {
   async addTask ({ commit }, data) {
     try {
-      const date = Date.now()
-
-      const task = {
-        id: date,
+      const info = {
         name: await data.name.trim(),
         description: await data.description.trim(),
         collaborators: await data.collaborators,
         project: await data.project,
-        meeting: await data.meeting,
-        isActive: true,
-        isLock: false,
-        createdAt: date,
-        updatedAt: date
+        meeting: await data.meeting
       }
 
-      db.tasks[task.id] = task
+      const res = await fetch(`${db}/tasks`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        },
+        body: JSON.stringify(info)
+      })
 
-      // ------- Agregando tarea a reunión -------
-      const taskMeeting = await db.meetingTasks[task.meeting]
+      const task = await res.json()
 
-      if (!taskMeeting) {
-        db.meetingTasks[task.meeting] = {}
-      }
-
-      db.meetingTasks[task.meeting][task.id] = {
-        id: task.id,
-        name: task.name,
-        project: task.project,
-        isActive: task.isActive,
-        isLock: task.isLock
-      }
-      // ---X--- Agregando tarea a reunión ---X---
-
-      // ------- Agregando usuarios a tarea -------
-      const collaborators = task.collaborators
-
-      for (let i = 0; i < collaborators.length; i++) {
-        const person = await db.people[collaborators[i]]
-
-        if (person) {
-          const personTask = await db.taskPeople[task.id]
-
-          if (!personTask) {
-            db.taskPeople[task.id] = {}
-          }
-
-          db.taskPeople[task.id][person.id] = {
-            id: person.id,
-            name: person.name,
-            email: person.email,
-            photoURL: person.photoURL,
-            isActive: person.isActive,
-            isLock: person.isLock
-          }
-
-          // ------- Agregando tarea a usuario -------
-          const taskpPerson = await db.peopleTasks[person.id]
-
-          if (!taskpPerson) {
-            db.peopleTasks[person.id] = {}
-          }
-
-          db.peopleTasks[person.id][task.id] = {
-            id: task.id,
-            name: task.name,
-            project: task.project,
-            isActive: task.isActive,
-            isLock: task.isLock
-          }
-          // ---X--- Agregando tarea a usuarios ---X---
-        }
-      }
-      // ---X--- Agregando usuarios a tarea ---X---
-
-      // ------- Agregando tarea a proyecto -------
-      const project = await db.projectTasks[task.project]
-
-      if (!project) {
-        db.projectTasks[task.project] = {}
-      }
-
-      db.projectTasks[task.project][task.id] = {
-        id: task.id,
-        name: task.name,
-        project: task.project,
-        isActive: task.isActive,
-        isLock: task.isLock
-      }
-      // ---X--- Agregando tarea a proyecto ---X---
-
-      localStorage.setItem(dbName, JSON.stringify(db))
-
-      commit('SET_TASK', task)
+      commit('SET_TASK', task.data)
     } catch (error) {
       // eslint-disable-next-line no-useless-return
       if (error) return
@@ -118,7 +44,32 @@ const actions = {
 
   async fetchTask ({ commit }, id) {
     try {
-      const task = await db.tasks[id]
+      const res = await fetch(`${db}/tasks/${id}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      })
+
+      const info = await res.json()
+
+      const task = {
+        _id: await info.data._id,
+        _collaborators: await info.data._collaborators,
+        _collaboratorsCount: await info.data._collaboratorsCount,
+        isActive: await info.data.isActive,
+        isLock: await info.data.isLock,
+        name: await info.data.name,
+        description: await info.data.description,
+        meetingId: await info.data.meeting._id,
+        meetingName: await info.data.meeting.name,
+        meetingDateEnd: await info.data.meeting.dateEnd,
+        meetingDateInt: await info.data.meeting.dateInt,
+        projectId: await info.data.project._id,
+        projectName: await info.data.project.name,
+        createdAt: await info.data.createdAt,
+        updatedAt: await info.data.updatedAt
+      }
 
       commit('SET_TASK', task)
     } catch (error) {
@@ -132,30 +83,16 @@ const actions = {
       const limit = data.limit ? data.limit : 20
       const page = (data.page - 1) * data.limit || 0
 
-      const tasks = Object.values(db.tasks)
-        .filter((e) => e.isLock === false)
-        .filter((e) => e.isActive === true)
-        .sort(function (a, b) {
-          if (a.id > b.id) {
-            return 1
-          }
-          if (a.id < b.id) {
-            return -1
-          }
-          return 0
-        })
-        .splice(page, limit)
-        .map((e) => {
-          return {
-            id: e.id,
-            name: e.name,
-            project: e.project,
-            isActive: e.isActive,
-            isLock: e.isLock
-          }
-        })
+      const res = await fetch(`${db}/tasks?limit?${limit}&page=${page}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      })
 
-      commit('SET_TASKS', tasks)
+      const tasks = await res.json()
+
+      commit('SET_TASKS', tasks.data)
     } catch (error) {
       // eslint-disable-next-line no-useless-return
       if (error) return
@@ -164,29 +101,16 @@ const actions = {
 
   async fetchAllTasks ({ commit }) {
     try {
-      const tasks = Object.values(db.tasks)
-        .filter((e) => e.isLock === false)
-        .filter((e) => e.isActive === true)
-        .sort(function (a, b) {
-          if (a.id > b.id) {
-            return 1
-          }
-          if (a.id < b.id) {
-            return -1
-          }
-          return 0
-        })
-        .map((e) => {
-          return {
-            id: e.id,
-            name: e.name,
-            project: e.project,
-            isActive: e.isActive,
-            isLock: e.isLock
-          }
-        })
+      const res = await fetch(`${db}/all-tasks`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      })
 
-      commit('SET_TASKS', tasks)
+      const tasks = await res.json()
+
+      commit('SET_TASKS', tasks.data)
     } catch (error) {
       // eslint-disable-next-line no-useless-return
       if (error) return
@@ -195,117 +119,28 @@ const actions = {
 
   async updateTask ({ commit }, data) {
     try {
-      const task = {
-        id: await data.id,
+      const info = {
         name: await data.name.trim(),
         description: await data.description.trim(),
         collaborators: await data.collaborators,
         project: await data.project,
         meeting: await data.meeting,
         isActive: await data.isActive,
-        isLock: await data.isLock,
-        createdAt: await data.createdAt,
-        updatedAt: Date.now()
+        isLock: await data.isLock
       }
 
-      db.tasks[task.id] = task
+      const res = await fetch(`${db}/tasks/${data._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        },
+        body: JSON.stringify(info)
+      })
 
-      // ------- Actualizando tarea en reunión -------
-      const tasksMeeting = await db.meetingTasks[task.meeting]
+      const task = await res.json()
 
-      if (!tasksMeeting) {
-        db.meetingTasks[task.meeting] = {}
-      }
-
-      db.meetingTasks[task.meeting][task.id] = {
-        id: task.id,
-        name: task.name,
-        project: task.project,
-        isActive: task.isActive,
-        isLock: task.isLock
-      }
-      // ---X--- Actualizando tarea en reunión ---X---
-
-      // ------- Editando usuarios en tarea -------
-      const collaborators = task.collaborators
-
-      for (let i = 0; i < collaborators.length; i++) {
-        const personTask = await db.peopleTasks[collaborators[i]]
-
-        if (!personTask) {
-          db.peopleTasks[collaborators[i]] = {}
-        }
-
-        db.peopleTasks[collaborators[i]][task.id] = {
-          id: task.id,
-          name: task.name,
-          project: task.project,
-          isActive: task.isActive,
-          isLock: task.isLock
-        }
-      }
-      // ---X--- Editando usuarios en tarea ---X---
-
-      // ------- Agregando usuarios a tarea -------
-      delete db.taskPeople[task.id]
-
-      for (let i = 0; i < collaborators.length; i++) {
-        const person = await db.people[collaborators[i]]
-
-        if (person) {
-          const personTask = await db.taskPeople[task.id]
-
-          if (!personTask) {
-            db.taskPeople[task.id] = {}
-          }
-
-          db.taskPeople[task.id][person.id] = {
-            id: person.id,
-            name: person.name,
-            email: person.email,
-            photoURL: person.photoURL,
-            isActive: person.isActive,
-            isLock: person.isLock
-          }
-
-          // ------- Agregando tarea a usuario -------
-          const taskpPerson = await db.peopleTasks[person.id]
-
-          if (!taskpPerson) {
-            db.peopleTasks[person.id] = {}
-          }
-
-          db.peopleTasks[person.id][task.id] = {
-            id: task.id,
-            name: task.name,
-            project: task.project,
-            isActive: task.isActive,
-            isLock: task.isLock
-          }
-          // ---X--- Agregando tarea a usuarios ---X---
-        }
-      }
-      // ---X--- Agregando usuarios a tarea ---X---
-
-      // ------- Editando tarea en proyecto -------
-      const tasksProject = await db.projectTasks[task.project]
-
-      if (!tasksProject) {
-        db.projectTasks[task.project] = {}
-      }
-
-      db.projectTasks[task.project][task.id] = {
-        id: task.id,
-        name: task.name,
-        project: task.project,
-        isActive: task.isActive,
-        isLock: task.isLock
-      }
-      // ---X--- Editando tarea en proyecto ---X---
-
-      localStorage.setItem(dbName, JSON.stringify(db))
-
-      commit('SET_TASK', task)
+      commit('SET_TASK', task.data)
     } catch (error) {
       // eslint-disable-next-line no-useless-return
       if (error) return
@@ -314,20 +149,17 @@ const actions = {
 
   async deleteTask ({ commit }, id) {
     try {
-      // ------- Eliminando tarea de reuniones -------
-      const tasksMeeting = Object.values(db.meetingTasks)
+      const res = await fetch(`${db}/tasks/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      })
 
-      for (let i = 0; i < tasksMeeting.length; i++) {
-        console.log('tasksMeeting->', tasksMeeting)
-        console.log('tasksMeeting[i]->', tasksMeeting[i])
-      }
-      // ---X--- Eliminando tarea de reuniones ---X---
+      const task = await res.json()
 
-      // delete db.tasks[id]
-
-      // localStorage.setItem(dbName, JSON.stringify(db))
-
-      commit('SET_TASK', true)
+      commit('SET_TASK', task.data)
     } catch (error) {
       // eslint-disable-next-line no-useless-return
       if (error) return
