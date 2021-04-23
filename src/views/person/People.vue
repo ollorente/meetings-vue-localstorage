@@ -5,7 +5,7 @@
       <TheSecondNavbar />
 
       <transition name="bounce">
-        <section class='section'>
+        <section class='section pt-3'>
           <User v-for='person in people' :key='person._id' :person='person' />
           <infinite-loading @infinite="infiniteHandler"></infinite-loading>
         </section>
