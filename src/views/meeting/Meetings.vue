@@ -5,7 +5,7 @@
       <TheSecondNavbar />
 
       <transition name="fade">
-        <section class="section">
+        <section class="section pt-3">
           <Meeting
             v-for="meeting in meetings"
             :key="meeting._id"
