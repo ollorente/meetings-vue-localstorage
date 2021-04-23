@@ -5,7 +5,7 @@
       <TheSecondNavbar />
 
       <transition name="fade">
-        <section class="section">
+        <section class="section pt-3">
           <Project
             v-for="project in projects"
             :key="project._id"
