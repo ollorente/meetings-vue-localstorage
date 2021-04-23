@@ -483,6 +483,34 @@ body {
     margin-right: 1rem !important;
   }
 
+  .p-3 {
+    padding: 1rem !important;
+  }
+
+  .py-3 {
+    padding: 1rem 0 !important;
+  }
+
+  .px-3 {
+    padding: 0 1rem !important;
+  }
+
+  .pt-3 {
+    padding-top: 1rem !important;
+  }
+
+  .pb-3 {
+    padding-bottom: 1rem !important;
+  }
+
+  .pl-3 {
+    padding-left: 1rem !important;
+  }
+
+  .pr-3 {
+    padding-right: 1rem !important;
+  }
+
   .ck.ck-editor__main>.ck-editor__editable:not(.ck-focused) {
     border-color: var(--primary);
     margin-bottom: 1rem;
