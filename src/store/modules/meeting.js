@@ -1,7 +1,8 @@
 import {
-  db,
-  dbName
+  db
 } from '@/main'
+
+const token = 'Bearer ' + localStorage.getItem('token')
 
 const state = {
   meeting: '',
@@ -96,7 +97,7 @@ const actions = {
       }
       // ---X--- Usuarios por reunión ---X---
 
-      localStorage.setItem(dbName, JSON.stringify(db))
+      // localStorage.setItem(dbName, JSON.stringify(db))
 
       commit('SET_MEETING', meeting)
     } catch (error) {
@@ -107,7 +108,32 @@ const actions = {
 
   async fetchMeeting ({ commit }, id) {
     try {
-      const meeting = await db.meetings[id]
+      const res = await fetch(`${db}/meetings/${id}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      })
+
+      const Data = await res.json()
+
+      const meeting = {
+        _id: await Data.data._id,
+        name: await Data.data.name,
+        description: await Data.data.description,
+        projectId: await Data.data.project._id,
+        projectName: await Data.data.project.name,
+        dateEnd: await Data.data.dateEnd,
+        dateInt: await Data.data.dateInt,
+        _collaborators: await Data.data._collaborators_collaborators,
+        _collaboratorsCount: await Data.data._collaboratorsCount,
+        _tasks: await Data.data._tasks,
+        _tasksCount: await Data.data._tasksCount,
+        isActive: await Data.data.isActive,
+        isLock: await Data.data.isLock,
+        createdAt: await Data.data.createdAt,
+        updatedAt: await Data.data.updatedAt
+      }
 
       commit('SET_MEETING', meeting)
     } catch (error) {
@@ -276,7 +302,7 @@ const actions = {
       }
       // ---X--- Usuarios por reunión ---X---
 
-      localStorage.setItem(dbName, JSON.stringify(db))
+      // localStorage.setItem(dbName, JSON.stringify(db))
 
       commit('SET_MEETING', meeting)
     } catch (error) {
