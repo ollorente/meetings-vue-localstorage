@@ -96,7 +96,7 @@ export default {
               status: false
             },
             {
-              title: 'Usuarios',
+              title: 'Contactos',
               link: { name: 'ProjectPeople' },
               icon: 'fas fa-users',
               status: false

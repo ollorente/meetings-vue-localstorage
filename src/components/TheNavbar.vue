@@ -13,7 +13,7 @@
             <span>Opciones</span> <i class="fas fa-chevron-up" @click="isVisible"></i>
           </li>
           <li class="options__card__item">
-            <router-link :to="{ name: 'Profile' }" class="options__card__link"><i class="fas fa-user"></i> Perfil</router-link>
+            <router-link :to="{ name: 'Profile' }" class="options__card__link text-primary"><i class="fas fa-user"></i> <b>Perfil</b></router-link>
           </li>
           <hr class="options__card__item" v-if="!options[0].menus.length > 0">
           <li v-for="(menu, index) in options[0].menus" :key="index" class="options__card__item">

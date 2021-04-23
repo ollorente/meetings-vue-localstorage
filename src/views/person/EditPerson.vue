@@ -71,7 +71,7 @@ export default {
   data () {
     return {
       path: {
-        title: 'Editar usuario',
+        title: 'Editar contacto',
         link: { name: 'Person', params: { person: this.$route.params.person } },
         icon: 'fas fa-arrow-left',
         status: false,

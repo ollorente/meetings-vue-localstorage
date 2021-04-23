@@ -45,7 +45,7 @@ export default {
   data () {
     return {
       path: {
-        title: 'Buscar encuentro usuario',
+        title: 'Buscar encuentro contacto',
         link: { name: 'PersonMeetings', params: { person: this.$route.params.person } },
         icon: 'fas fa-arrow-left',
         status: false,

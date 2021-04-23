@@ -45,7 +45,7 @@ export default {
   data () {
     return {
       path: {
-        title: 'Buscar proyectos usuario',
+        title: 'Buscar proyectos contacto',
         link: {
           name: 'PersonProjects',
           params: { person: this.$route.params.person }

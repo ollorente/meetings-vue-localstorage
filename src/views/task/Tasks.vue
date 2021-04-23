@@ -6,7 +6,7 @@
 
       <transition name="fade">
         <section class="section">
-          <Task v-for='task in tasks' :key='task.id' :task='task' />
+          <Task v-for='task in tasks' :key='task._id' :task='task' />
           <infinite-loading @infinite="infiniteHandler"></infinite-loading>
         </section>
       </transition>
@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { DB } from '@/main'
 import InfiniteLoading from 'vue-infinite-loading'
 
 import TheNavbar from '@/components/TheNavbar'
@@ -27,8 +27,8 @@ export default {
   components: {
     TheNavbar,
     TheSecondNavbar,
-    Task,
-    InfiniteLoading
+    InfiniteLoading,
+    Task
   },
   data () {
     return {
@@ -52,30 +52,28 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['fetchTasks']),
     async infiniteHandler ($state) {
       this.page++
 
-      this.fetchTasks({
-        limit: this.limit,
-        page: this.page
-      })
+      const res = await fetch(
+        `${DB}/users/tasks?limit=${this.limit}&page=${this.page}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        }
+      )
 
-      let tasks = await this.getTasks
+      let tasks = await res.json()
 
-      if (tasks.length) {
-        this.tasks = this.tasks.concat(tasks)
+      if (tasks.data.length) {
+        this.tasks = this.tasks.concat(tasks.data)
         $state.loaded()
       } else {
         $state.complete()
       }
     }
-  },
-  computed: {
-    ...mapGetters(['getTasks'])
-  },
-  watch: {
-    $route: ['fetchTasks']
   }
 }
 </script>

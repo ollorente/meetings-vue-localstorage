@@ -41,7 +41,7 @@ export default {
   data () {
     return {
       path: {
-        title: 'Buscar usuario proyecto',
+        title: 'Buscar contacto proyecto',
         link: { name: 'ProjectPeople', params: { project: this.$route.params.project } },
         icon: 'fas fa-arrow-left',
         status: false,

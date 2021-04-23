@@ -494,7 +494,7 @@ body {
   main {
     width: 100%;
     height: calc(100vh - 3rem);
-    margin-top: 3rem;
+    margin-top: 2rem;
 
     .main__body__menu {
       width: calc(100vw - 1rem);
@@ -503,6 +503,7 @@ body {
       background: var(--primary);
       color: var(--light);
       padding: 0 0.5rem;
+      padding-top: 1rem;
 
       .main__body__menu__item {
         width: 100%;
@@ -546,7 +547,7 @@ body {
 
     .section {
       width: calc(100% - 2rem);
-      padding: 1rem;
+      padding: 2rem 1rem;
 
       .title {
         margin: 0 0 1rem;

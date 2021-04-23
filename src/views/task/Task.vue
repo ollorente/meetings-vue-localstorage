@@ -121,7 +121,7 @@ export default {
               status: false
             },
             {
-              title: 'Usuarios',
+              title: 'Contactos',
               link: { name: 'TaskPeople' },
               icon: 'fas fa-users',
               status: false

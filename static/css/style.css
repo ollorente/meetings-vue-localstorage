@@ -687,7 +687,7 @@ body .ck.ck-editor__main > .ck-editor__editable:not(.ck-focused) {
 body main {
   width: 100%;
   height: calc(100vh - 3rem);
-  margin-top: 3rem;
+  margin-top: 2rem;
 }
 
 body main .main__body__menu {
@@ -697,6 +697,7 @@ body main .main__body__menu {
   background: var(--primary);
   color: var(--light);
   padding: 0 0.5rem;
+  padding-top: 1rem;
 }
 
 body main .main__body__menu .main__body__menu__item {
@@ -746,7 +747,7 @@ body main .main__body__menu .main__body__menu__nav .main__body__menu__link .text
 
 body main .section {
   width: calc(100% - 2rem);
-  padding: 1rem;
+  padding: 2rem 1rem;
 }
 
 body main .section .title {

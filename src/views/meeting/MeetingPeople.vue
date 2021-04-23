@@ -5,7 +5,7 @@
       <transition name="fade">
         <section class="section">
           <h1 class="title">{{ getMeeting.name }}</h1>
-          <User v-for='person in people' :key='person.id' :person='person' />
+          <User v-for='person in people' :key='person._id' :person='person' />
           <infinite-loading @infinite="infiniteHandler"></infinite-loading>
         </section>
       </transition>
@@ -15,6 +15,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import { db } from '@/main'
 import InfiniteLoading from 'vue-infinite-loading'
 
 import TheNavbar from '@/components/TheNavbar'
@@ -30,7 +31,7 @@ export default {
   data () {
     return {
       path: {
-        title: 'Usuarios encuentro',
+        title: 'Contactos encuentro',
         link: { name: 'Meeting', params: { meeting: this.$route.params.meeting } },
         icon: 'fas fa-arrow-left',
         status: false,
@@ -51,20 +52,24 @@ export default {
     this.fetchMeeting(this.$route.params.meeting)
   },
   methods: {
-    ...mapActions(['fetchMeetingPeople', 'fetchMeeting']),
+    ...mapActions(['fetchMeeting']),
     async infiniteHandler ($state) {
       this.page++
 
-      this.fetchMeetingPeople({
-        id: this.$route.params.meeting,
-        limit: parseInt(this.limit),
-        page: parseInt(this.page)
-      })
+      const res = await fetch(
+        `${db}/meetings/${this.$route.params.meeting}/people?limit=${this.limit}&page=${this.page}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        }
+      )
 
-      let people = await this.getMeetingPeople
+      let people = await res.json()
 
-      if (people.length) {
-        this.people = this.people.concat(people)
+      if (people.data.length) {
+        this.people = this.people.concat(people.data)
         $state.loaded()
       } else {
         $state.complete()
@@ -72,10 +77,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getMeetingPeople', 'getMeeting'])
+    ...mapGetters(['getMeeting'])
   },
   watch: {
-    $route: ['fetchMeetingPeople', 'fetchMeeting']
+    $route: ['fetchMeeting']
   }
 }
 </script>

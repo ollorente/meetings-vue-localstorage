@@ -33,8 +33,8 @@ export default {
   data () {
     return {
       path: {
-        title: 'Usuarios',
-        link: { name: 'Home' },
+        title: 'Contactos',
+        link: { name: 'People' },
         icon: 'fas fa-users',
         status: true,
         search: true,

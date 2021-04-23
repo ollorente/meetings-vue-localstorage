@@ -40,7 +40,7 @@ export default {
   data () {
     return {
       path: {
-        title: 'Buscar usuario',
+        title: 'Buscar contacto',
         link: { name: 'People' },
         icon: 'fas fa-arrow-left',
         status: false,
@@ -48,14 +48,7 @@ export default {
       },
       options: [
         {
-          menus: [
-            {
-              title: 'Crear usuario',
-              link: { name: 'NewPerson' },
-              icon: 'fas fa-users',
-              status: false
-            }
-          ]
+          menus: []
         }
       ],
       show: true,

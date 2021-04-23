@@ -41,7 +41,7 @@ export default {
   data () {
     return {
       path: {
-        title: 'Buscar actividad usuario',
+        title: 'Buscar actividad contacto',
         link: { name: 'PersonTasks', params: { person: this.$route.params.person } },
         icon: 'fas fa-arrow-left',
         status: false,

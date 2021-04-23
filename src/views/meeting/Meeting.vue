@@ -7,27 +7,17 @@
           <div class="main__section__person">
             <h1 class="title">{{ meeting.name }}</h1>
             <p>
-              {{ new Date(meeting.dateInt).toString().split(" ")[0] }}
-              {{ new Date(meeting.dateInt).toString().split(" ")[1] }}
-              {{ new Date(meeting.dateInt).toString().split(" ")[2] }} &bull;
-              {{
-                new Date(meeting.dateInt - 1000 * 60 * 60 * 5)
-                  .toISOString()
-                  .substr(11, 5)
-              }}
+              {{ new Date(meeting.dateInt).toDateString().substr(0, 10) }} &bull;
+              {{ meeting.dateInt.substr(11, 5) }}
               -
-              {{
-                new Date(meeting.dateEnd - 1000 * 60 * 60 * 5)
-                  .toISOString()
-                  .substr(11, 5)
-              }}
+              {{ meeting.dateEnd.substr(11, 5) }}
             </p>
             <div v-html="meeting.description"></div>
             <p class="main__section__person__block">
               <span class="main__section__person__block__content">
-                <b>{{ meeting.collaborators.length }}</b>
+                <b>{{ meeting._collaboratorsCount }}</b>
                 {{
-                  meeting.collaborators.length === 1 ? "Invitado" : "Invitados"
+                  meeting._collaboratorsCount === 1 ? "Invitado" : "Invitados"
                 }}
               </span>
             </p>
@@ -36,9 +26,9 @@
               ><br />
               <span class="main__section__person__block__content">
                 <router-link
-                  :to="{ name: 'Project', params: { project: project.id } }"
+                  :to="{ name: 'Project', params: { project: meeting.project._id } }"
                   class="text-p-light text-500"
-                  >{{ project.name }}</router-link
+                  >{{ meeting.project.name }}</router-link
                 >
               </span>
             </p>
@@ -47,7 +37,7 @@
                 >Programada:</span
               ><br />
               <span class="main__section__person__block__content">{{
-                new Date(meeting.createdAt).toLocaleDateString()
+                new Date(meeting.createdAt).toDateString().substr(0, 10)
               }}</span>
             </p>
             <p
@@ -58,7 +48,7 @@
                 >Actualizada:</span
               ><br />
               <span class="main__section__person__block__content">{{
-                new Date(meeting.updatedAt).toLocaleDateString()
+                new Date(meeting.updatedAt).toDateString().substr(0, 10)
               }}</span>
             </p>
             <p class="main__section__person__block">
@@ -88,7 +78,7 @@
           </div>
         </section>
       </transition>
-    </main>
+    </main>{{ project }}
   </div>
 </template>
 
@@ -130,7 +120,7 @@ export default {
               status: false
             },
             {
-              title: 'Usuarios',
+              title: 'Contactos',
               link: { name: 'MeetingPeople' },
               icon: 'fas fa-users',
               status: false
@@ -138,21 +128,12 @@ export default {
           ]
         }
       ],
-      meeting: {
-        id: '',
-        name: '',
-        description: '',
-        collaborators: [],
-        project: '',
-        dateInt: '',
-        dateEnd: '',
-        isActive: '',
-        isLock: '',
-        createdAt: '',
-        updatedAt: ''
-      },
+      meeting: '',
       project: ''
     }
+  },
+  mounted () {
+    this.project = this.meeting.project
   },
   created () {
     this.getMeeting()
@@ -161,35 +142,16 @@ export default {
     ...mapActions(['deleteMeeting']),
     async getMeeting () {
       try {
-        const data = await db.meetings[this.$route.params.meeting]
-
-        if (data === undefined) {
-          await this.$router.replace({ name: 'Error' })
-        } else {
-          this.meeting = {
-            id: await data.id,
-            name: await data.name,
-            description: await data.description,
-            collaborators: await data.collaborators,
-            project: await data.project,
-            dateInt: await data.dateInt,
-            dateEnd: await data.dateEnd,
-            isActive: await data.isActive,
-            isLock: await data.isLock,
-            createdAt: await data.createdAt,
-            updatedAt: await data.updatedAt
+        const res = await fetch(`${db}/meetings/${this.$route.params.meeting}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
           }
+        })
 
-          await this.getProject(this.meeting.project)
-        }
-      } catch (error) {
-        // eslint-disable-next-line no-useless-return
-        if (error) return
-      }
-    },
-    async getProject (id) {
-      try {
-        this.project = await db.projects[id]
+        let meetings = await res.json()
+
+        this.meeting = await meetings.data
       } catch (error) {
         // eslint-disable-next-line no-useless-return
         if (error) return

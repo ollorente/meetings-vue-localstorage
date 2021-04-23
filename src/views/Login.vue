@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <MainNavbar :path="path" :options="options" />
-    <main>
+    <main class="full flex bg-p-light">
       <transition name="fade">
         <section class="section">
           <Alert :msg="alert.msg" v-if="alert.error" />

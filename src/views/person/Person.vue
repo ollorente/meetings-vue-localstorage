@@ -94,7 +94,7 @@ export default {
   data () {
     return {
       path: {
-        title: 'Usuario',
+        title: 'Contacto',
         link: { name: 'People' },
         icon: 'fas fa-arrow-left',
         status: false,

@@ -57,7 +57,7 @@ export default {
   data () {
     return {
       path: {
-        title: 'Crear usuario',
+        title: 'Crear contacto',
         link: { name: 'People' },
         icon: 'fas fa-arrow-left',
         status: false,
