@@ -5,7 +5,7 @@
       <TheSecondNavbar />
 
       <transition name="fade">
-        <section class="section">
+        <section class="section pt-3">
           <Task v-for='task in tasks' :key='task._id' :task='task' />
           <infinite-loading @infinite="infiniteHandler"></infinite-loading>
         </section>
@@ -65,7 +65,7 @@ export default {
         }
       )
 
-      let tasks = await res.json()
+      const tasks = await res.json()
 
       if (tasks.data.length) {
         this.tasks = this.tasks.concat(tasks.data)
