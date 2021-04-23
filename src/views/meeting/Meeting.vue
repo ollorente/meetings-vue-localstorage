@@ -5,19 +5,19 @@
       <transition name="fade">
         <section class="section">
           <div class="main__section__person">
-            <h1 class="title">{{ meeting.name }}</h1>
+            <h1 class="title">{{ getMeeting.name }}</h1>
             <p>
-              {{ new Date(meeting.dateInt).toDateString().substr(0, 10) }} &bull;
-              {{ meeting.dateInt.substr(11, 5) }}
+              {{ new Date(getMeeting.dateInt).toDateString('es') }} &bull;
+              {{ new Date(getMeeting.dateInt).getUTCHours() }}:{{ new Date(getMeeting.dateInt).getUTCMinutes() }}
               -
-              {{ meeting.dateEnd.substr(11, 5) }}
+              {{ new Date(getMeeting.dateEnd).getUTCHours() }}:{{ new Date(getMeeting.dateEnd).getUTCMinutes() }}
             </p>
-            <div v-html="meeting.description"></div>
+            <div v-html="getMeeting.description"></div>
             <p class="main__section__person__block">
               <span class="main__section__person__block__content">
-                <b>{{ meeting._collaboratorsCount }}</b>
+                <b>{{ getMeeting._collaboratorsCount }}</b>
                 {{
-                  meeting._collaboratorsCount === 1 ? "Invitado" : "Invitados"
+                  getMeeting._collaboratorsCount === 1 ? "Invitado" : "Invitados"
                 }}
               </span>
             </p>
@@ -26,9 +26,9 @@
               ><br />
               <span class="main__section__person__block__content">
                 <router-link
-                  :to="{ name: 'Project', params: { project: meeting.project._id } }"
+                  :to="{ name: 'Project', params: { project: getMeeting.projectId } }"
                   class="text-p-light text-500"
-                  >{{ meeting.project.name }}</router-link
+                  >{{ getMeeting.projectName }}</router-link
                 >
               </span>
             </p>
@@ -37,34 +37,34 @@
                 >Programada:</span
               ><br />
               <span class="main__section__person__block__content">{{
-                new Date(meeting.createdAt).toDateString().substr(0, 10)
+                new Date(getMeeting.createdAt).toDateString()
               }}</span>
             </p>
             <p
-              v-if="meeting.createdAt !== meeting.updatedAt"
+              v-if="getMeeting.createdAt !== getMeeting.updatedAt"
               class="main__section__person__block"
             >
               <span class="main__section__person__block__label"
                 >Actualizada:</span
               ><br />
               <span class="main__section__person__block__content">{{
-                new Date(meeting.updatedAt).toDateString().substr(0, 10)
+                new Date(getMeeting.updatedAt).toDateString()
               }}</span>
             </p>
             <p class="main__section__person__block">
               <span class="main__section__person__block__content"
                 ><i
-                  :class="meeting.isActive ? 'fas' : 'far'"
+                  :class="getMeeting.isActive ? 'fas' : 'far'"
                   class="fa-circle"
                 ></i>
-                {{ meeting.isActive ? "Activa" : "Cancelada" }}</span
+                {{ getMeeting.isActive ? "Activa" : "Cancelada" }}</span
               ><br />
               <span class="main__section__person__block__content">
                 <i
                   class="fas"
-                  :class="meeting.isLock ? 'fa-lock' : 'fa-lock-open'"
+                  :class="getMeeting.isLock ? 'fa-lock' : 'fa-lock-open'"
                 ></i>
-                {{ meeting.isLock ? "Oculta" : "Pública" }}</span
+                {{ getMeeting.isLock ? "Oculta" : "Pública" }}</span
               >
             </p>
             <div class="main__section__person__block--flex">
@@ -78,13 +78,12 @@
           </div>
         </section>
       </transition>
-    </main>{{ project }}
+    </main>
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import { db } from '@/main'
+import { mapActions, mapGetters } from 'vuex'
 
 import LinkProject from '@/components/gadgets/LinkProject'
 import TheNavbar from '@/components/TheNavbar'
@@ -128,35 +127,14 @@ export default {
           ]
         }
       ],
-      meeting: '',
-      project: ''
+      meeting: ''
     }
   },
-  mounted () {
-    this.project = this.meeting.project
-  },
   created () {
-    this.getMeeting()
+    this.fetchMeeting(this.$route.params.meeting)
   },
   methods: {
-    ...mapActions(['deleteMeeting']),
-    async getMeeting () {
-      try {
-        const res = await fetch(`${db}/meetings/${this.$route.params.meeting}`, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + localStorage.getItem('token')
-          }
-        })
-
-        let meetings = await res.json()
-
-        this.meeting = await meetings.data
-      } catch (error) {
-        // eslint-disable-next-line no-useless-return
-        if (error) return
-      }
-    },
+    ...mapActions(['deleteMeeting', 'fetchMeeting']),
     async editMeeting () {
       await this.$router.replace({
         name: 'EditMeeting',
@@ -171,8 +149,11 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters(['getMeeting'])
+  },
   watch: {
-    $route: ['getMeeting']
+    $route: ['fetchMeeting']
   }
 }
 </script>
