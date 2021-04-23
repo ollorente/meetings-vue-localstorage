@@ -1,6 +1,5 @@
 import {
-  db,
-  dbName
+  db
 } from '@/main'
 
 const state = {
@@ -87,7 +86,7 @@ const actions = {
       delete db.peopleMeetings[id]
       // ---X--- Eliminando usuario ---X---
 
-      localStorage.setItem(dbName, JSON.stringify(db))
+      // localStorage.setItem(dbName, JSON.stringify(db))
 
       commit('SET_PEOPLE_MEETINGS', true)
     } catch (error) {
