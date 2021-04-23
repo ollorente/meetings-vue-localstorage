@@ -15,7 +15,7 @@
             <p class="main__section__person__block">
               <span class="main__section__person__block__label">Creado:</span><br />
               <span class="main__section__person__block__content">{{
-                new Date(getProject.createdAt).toLocaleDateString()
+                new Date(getProject.createdAt).toDateString()
               }}</span>
             </p>
             <p
@@ -25,7 +25,7 @@
               <span class="main__section__person__block__label">Actualizado:</span
               ><br />
               <span class="main__section__person__block__content">{{
-                new Date(getProject.updatedAt).toLocaleDateString()
+                new Date(getProject.updatedAt).toDateString()
               }}</span>
             </p>
             <p class="main__section__person__block">
