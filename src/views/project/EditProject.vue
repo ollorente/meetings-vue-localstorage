@@ -24,8 +24,8 @@
               <select multiple v-model="project.collaborators">
                 <option
                   v-for="person in getAllPeople"
-                  :key="person.id"
-                  :value="person.id"
+                  :key="person._id"
+                  :value="person._id"
                 >
                   {{ person.name }} - {{ person.email }}
                 </option>
@@ -35,13 +35,12 @@
           </form>
         </section>
       </transition>
-    </main>
+    </main>{{project}}
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import { db } from '@/main'
 
 import TheNavbar from '@/components/TheNavbar'
 import Alert from '@/components/gadgets/Alert'
@@ -71,7 +70,7 @@ export default {
         msg: null
       },
       project: {
-        id: '',
+        _id: '',
         name: '',
         description: '',
         collaborators: [],
@@ -82,35 +81,24 @@ export default {
       }
     }
   },
+  mounted () {
+    this.project = {
+      _id: this.getProject._id,
+      name: this.getProject.name,
+      description: this.getProject.description,
+      collaborators: this.getProject._collaborators,
+      isLock: this.getProject.isLock,
+      isActive: this.getProject.isActive,
+      createdAt: this.getProject.createdAt,
+      updatedAt: this.getProject.updatedAt
+    }
+  },
   created () {
-    this.getProject()
+    this.fetchProject(this.$route.params.project)
     this.fetchAllPeople()
   },
   methods: {
-    ...mapActions(['updateProject', 'fetchAllPeople']),
-    async getProject () {
-      try {
-        const data = await db.projects[this.$route.params.project]
-
-        if (data === undefined) {
-          await this.$router.replace({ name: 'Error' })
-        } else {
-          this.project = {
-            id: await data.id,
-            name: await data.name,
-            description: await data.description,
-            collaborators: await data.collaborators,
-            isLock: await data.isLock,
-            isActive: await data.isActive,
-            createdAt: await data.createdAt,
-            updatedAt: await data.updatedAt
-          }
-        }
-      } catch (error) {
-        // eslint-disable-next-line no-useless-return
-        if (error) return
-      }
-    },
+    ...mapActions(['updateProject', 'fetchAllPeople', 'fetchProject']),
     async putProject () {
       try {
         if (
@@ -127,12 +115,6 @@ export default {
         } else {
           await this.updateProject(this.project)
 
-          this.name = ''
-          this.description = ''
-          this.collaborators = ''
-          this.isLock = ''
-          this.isActive = ''
-
           await this.$router.replace({
             name: 'Project',
             params: { project: this.$route.params.project }
@@ -145,10 +127,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getAllPeople'])
+    ...mapGetters(['getAllPeople', 'getProject'])
   },
   watch: {
-    $route: ['getProject', 'fetchAllPeople']
+    $route: ['fetchAllPeople', 'fetchProject']
   }
 }
 </script>
