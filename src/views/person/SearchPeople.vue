@@ -26,7 +26,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import { db } from '@/main'
+import { DB } from '@/main'
 
 import TheNavbar from '@/components/TheNavbar'
 import User from '@/components/gadgets/User'
@@ -64,7 +64,7 @@ export default {
   methods: {
     ...mapActions(['fetchAllPeople']),
     async search () {
-      const res = await fetch(`${db}/people/all`, {
+      const res = await fetch(`${DB}/users/all-people`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + localStorage.getItem('token')
