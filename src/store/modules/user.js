@@ -1,11 +1,14 @@
 import { DB } from '@/main'
 
+const token = 'Bearer ' + localStorage.getItem('token')
+
 const state = {
   user: '',
   users: []
 }
 
 const getters = {
+  getAllUsers: state => state.users,
   getUser: state => state.user,
   getUsers: state => state.users
 }
@@ -43,9 +46,34 @@ const actions = {
 
   async fetchUsers ({ commit }) {
     try {
-      const users = ''
+      const res = await fetch(`${DB}/users`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      })
 
-      commit('SET_USERS', users)
+      const users = await res.json()
+
+      commit('SET_USERS', users.data)
+    } catch (error) {
+      // eslint-disable-next-line no-useless-return
+      if (error) return
+    }
+  },
+
+  async fetchAllUsers ({ commit }) {
+    try {
+      const res = await fetch(`${DB}/users/all-people`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      })
+
+      const users = await res.json()
+
+      commit('SET_USERS', users.data)
     } catch (error) {
       // eslint-disable-next-line no-useless-return
       if (error) return
