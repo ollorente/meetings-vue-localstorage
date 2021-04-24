@@ -17,7 +17,7 @@
               />
             </form>
           </div>
-          <User v-for='person in people' :key='person.id' :person='person' />
+          <User v-for='person in people' :key='person._id' :person='person' />
           <div class="my-3" v-if="show">No hay resultados</div>
         </section>
       </transition>
@@ -65,7 +65,19 @@ export default {
   methods: {
     ...mapActions(['fetchMeeting']),
     async search () {
-      const people = Object.values(db.meetingPeople[this.$route.params.meeting])
+      const res = await fetch(
+        `${db}/meetings/${this.$route.params.meeting}/all-people`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        }
+      )
+
+      let peopleData = await res.json()
+
+      const people = await peopleData.data
       const texto = this.q.toLowerCase()
 
       this.people = []
