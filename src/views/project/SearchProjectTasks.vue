@@ -17,7 +17,7 @@
               />
             </form>
           </div>
-          <Task v-for='task in tasks' :key='task.id' :task='task' />
+          <Task v-for='task in tasks' :key='task._id' :task='task' />
           <div class="my-3" v-if="show">No hay resultados</div>
         </section>
       </transition>
@@ -65,7 +65,19 @@ export default {
   methods: {
     ...mapActions(['fetchProject']),
     async search () {
-      const tasks = Object.values(db.projectTasks[this.$route.params.project])
+      const res = await fetch(
+        `${db}/projects/${this.$route.params.project}/all-tasks`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        }
+      )
+
+      let tasksData = await res.json()
+
+      const tasks = await tasksData.data
       const texto = this.q.toLowerCase()
 
       this.tasks = []
