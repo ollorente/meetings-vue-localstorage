@@ -17,7 +17,7 @@
               />
             </form>
           </div>
-          <User v-for='person in people' :key='person.id' :person='person' />
+          <User v-for='person in people' :key='person._id' :person='person' />
           <div class="my-3" v-if="show">No hay resultados</div>
         </section>
       </transition>
@@ -65,7 +65,16 @@ export default {
   methods: {
     ...mapActions(['fetchTask']),
     async search () {
-      const people = Object.values(db.taskPeople[this.$route.params.task])
+      const res = await fetch(`${db}/tasks/${this.$route.params.task}/all-people`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        }
+      })
+
+      const peopleData = await res.json()
+
+      let people = await peopleData.data
       const texto = this.q.toLowerCase()
 
       this.people = []
@@ -76,7 +85,6 @@ export default {
         if (data.indexOf(texto) !== -1) {
           this.people = this.people
             .concat(person)
-            .filter((e) => e.isActive === true)
             .sort(function (a, b) {
               if (a.name > b.name) {
                 return 1
