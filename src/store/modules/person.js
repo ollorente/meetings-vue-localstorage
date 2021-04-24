@@ -75,7 +75,7 @@ const actions = {
 
   async fetchAllPeople ({ commit }) {
     try {
-      const res = await fetch(`${db}/people/all`, {
+      const res = await fetch(`${db}/all-people`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': token
