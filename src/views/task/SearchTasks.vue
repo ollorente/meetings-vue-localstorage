@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { db } from '@/main'
+import { DB } from '@/main'
 
 import TheNavbar from '@/components/TheNavbar'
 import Task from '@/components/gadgets/Task'
@@ -60,7 +60,16 @@ export default {
   },
   methods: {
     async search () {
-      const tasks = Object.values(db.tasks)
+      const res = await fetch(`${DB}/users/all-tasks`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        }
+      })
+
+      const tasksData = await res.json()
+
+      const tasks = await tasksData.data
       const texto = this.q.toLowerCase()
 
       this.tasks = []
