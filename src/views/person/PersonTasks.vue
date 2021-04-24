@@ -5,7 +5,7 @@
       <transition name="fade">
         <section class="section">
           <h1 class="title">{{ getPerson.name }}</h1>
-          <Task v-for='task in tasks' :key='task.id' :task='task' />
+          <Task v-for='task in tasks' :key='task._id' :task='task' />
           <infinite-loading @infinite="infiniteHandler"></infinite-loading>
         </section>
       </transition>
@@ -15,6 +15,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import { db } from '@/main'
 import InfiniteLoading from 'vue-infinite-loading'
 
 import TheNavbar from '@/components/TheNavbar'
@@ -51,20 +52,24 @@ export default {
     this.fetchPerson(this.$route.params.person)
   },
   methods: {
-    ...mapActions(['fetchPersonTasks', 'fetchPerson']),
+    ...mapActions(['fetchPerson']),
     async infiniteHandler ($state) {
       this.page++
 
-      this.fetchPersonTasks({
-        id: this.$route.params.person,
-        limit: this.limit,
-        page: this.page
-      })
+      const res = await fetch(
+        `${db}/people/${this.$route.params.person}/tasks?limit=${this.limit}&page=${this.page}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        }
+      )
 
-      let tasks = await this.getPersonTasks
+      let tasks = await res.json()
 
-      if (tasks.length) {
-        this.tasks = this.tasks.concat(tasks)
+      if (tasks.data.length) {
+        this.tasks = this.tasks.concat(tasks.data)
         $state.loaded()
       } else {
         $state.complete()
@@ -72,10 +77,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getPersonTasks', 'getPerson'])
+    ...mapGetters(['getPerson'])
   },
   watch: {
-    $route: ['fetchPersonTasks', 'fetchPerson']
+    $route: ['fetchPerson']
   }
 }
 </script>
