@@ -65,7 +65,19 @@ export default {
   methods: {
     ...mapActions(['fetchPerson']),
     async search () {
-      const tasks = Object.values(db.peopleTasks[this.$route.params.person])
+      const res = await fetch(
+        `${db}/people/${this.$route.params.person}/all-tasks`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        }
+      )
+
+      let tasksData = await res.json()
+
+      const tasks = await tasksData.data
       const texto = this.q.toLowerCase()
 
       this.tasks = []
