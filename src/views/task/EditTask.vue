@@ -10,21 +10,21 @@
             <div>
               <input
                 type="text"
-                v-model="task.name"
-                placeholder="Nombre de proyecto"
+                v-model="getTask.name"
+                placeholder="Nombre de tarea"
                 autofocus
                 required
               />
             </div>
             <div>
-              <textarea v-model="task.description" rows="10"></textarea>
+              <textarea v-model="getTask.description" rows="10" placeholder="Descripción de la tarea"></textarea>
             </div>
             <div>
-              <select multiple v-model="task.collaborators">
+              <select multiple v-model="getTask._collaborators">
                 <option
                   v-for="person in people"
-                  :key="person.id"
-                  :value="person.id"
+                  :key="person._id"
+                  :value="person._id"
                 >
                   {{ person.name }} - {{ person.email }}
                 </option>
@@ -34,13 +34,14 @@
           </form>
         </section>
       </transition>
+      <pre class="container">{{ getTask }}</pre>
+      <pre class="container">{{ $data }}</pre>
     </main>
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import { db } from '@/main'
+import { mapActions, mapGetters } from 'vuex'
 
 import TheNavbar from '@/components/TheNavbar'
 import Alert from '@/components/gadgets/Alert'
@@ -83,42 +84,24 @@ export default {
       people: []
     }
   },
+  mounted () {
+    this.fetchAllMeetingPeople(this.getTask.meeting)
+    this.people = this.getAllMeetingPeople
+    this.task.collaborators = this.getTaskPeople(this.getTask._collaborators)
+  },
   created () {
-    this.getTask()
+    this.fetchTask(this.$route.params.task)
   },
   methods: {
-    ...mapActions(['updateTask']),
-    async getTask () {
+    ...mapActions(['updateTask', 'fetchTask', 'fetchAllMeetingPeople']),
+    async getTaskPeople (data) {
       try {
-        const data = await db.tasks[this.$route.params.task]
+        const info = await data.map(async e => {
+          console.log('E->', e._id)
+          return [e._id]
+        })
 
-        if (data === undefined) {
-          await this.$router.replace({ name: 'Error' })
-        } else {
-          this.task = {
-            id: await data.id,
-            name: await data.name,
-            description: await data.description,
-            collaborators: await data.collaborators,
-            meeting: await data.meeting,
-            project: await data.project,
-            isActive: await data.isActive,
-            isLock: await data.isLock,
-            createdAt: await data.createdAt
-          }
-
-          await this.getMeetingPeople(this.task.meeting)
-        }
-      } catch (error) {
-        // eslint-disable-next-line no-useless-return
-        if (error) return
-      }
-    },
-    async getMeetingPeople (id) {
-      try {
-        const data = Object.values(db.meetingPeople[id])
-
-        this.people = data
+        return info
       } catch (error) {
         // eslint-disable-next-line no-useless-return
         if (error) return
@@ -139,10 +122,6 @@ export default {
       } else {
         await this.updateTask(this.task)
 
-        this.task.name = ''
-        this.task.description = ''
-        this.task.collaborators = ''
-
         await this.$router.replace({
           name: 'Task',
           params: { task: this.$route.params.task }
@@ -150,8 +129,11 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters(['getTask', 'getAllMeetingPeople'])
+  },
   watch: {
-    $route: ['getTask']
+    $route: ['fetchTask', 'fetchAllMeetingPeople']
   }
 }
 </script>
