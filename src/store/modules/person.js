@@ -103,7 +103,6 @@ const actions = {
       })
 
       const person = await res.json()
-      console.log('person->', person)
 
       commit('SET_PERSON', person)
     } catch (error) {
