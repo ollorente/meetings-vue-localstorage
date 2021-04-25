@@ -8,7 +8,11 @@
         <i class="fas fa-user-tie"></i>
         <span class="main__section__link__text__content">
           <span class="text-title">{{ project.name }}</span>
-          <span class="text-content"><input type="range" name="progress" class="text-content__progress" disabled></span>
+          <span class="text-content mt-3" style="width:100%;">
+            <span class="text-content__progress">
+              <span class="range" :style="`width: ${percent}%`">&nbsp;</span>
+            </span>
+          </span>
         </span>
       </span>
       <span class="main__section__link__icon">
@@ -22,6 +26,24 @@
 <script>
 export default {
   name: 'Project',
-  props: ['project']
+  props: ['project'],
+  computed: {
+    percent: function () {
+      // const name = this.$props.project.name
+      const task = this.$props.project._tasks
+      const count = this.$props.project._tasksCount
+      // console.log('Name->', name)
+      // console.log('Task->', task.length)
+      // console.log('Count->', count)
+      // console.log('--------------------------------------------------')
+
+      if (task.length > 0) {
+        const operation = 100 - (parseInt(task.length * 100) / parseInt(count))
+        return operation
+      } else {
+        return 0
+      }
+    }
+  }
 }
 </script>
