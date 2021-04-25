@@ -156,7 +156,7 @@ export default {
     async checkTask () {
       this.getTask.isLock = !this.getTask.isLock
 
-      await this.updateTask(this.task)
+      await this.updateTask(this.getTask)
     },
     async removeTask () {
       if (window.confirm(`Está a punto de borrar un elemento`)) {
