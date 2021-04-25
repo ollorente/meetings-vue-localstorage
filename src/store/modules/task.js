@@ -16,21 +16,13 @@ const getters = {
 const actions = {
   async addTask ({ commit }, data) {
     try {
-      const info = {
-        name: await data.name.trim(),
-        description: await data.description.trim(),
-        collaborators: await data.collaborators,
-        project: await data.project,
-        meeting: await data.meeting
-      }
-
-      const res = await fetch(`${db}/tasks`, {
+      const res = await fetch(`${db}/meetings/${data.meeting}/tasks`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': token
         },
-        body: JSON.stringify(info)
+        body: JSON.stringify(data)
       })
 
       const task = await res.json()
@@ -119,23 +111,13 @@ const actions = {
 
   async updateTask ({ commit }, data) {
     try {
-      const info = {
-        name: await data.name.trim(),
-        description: await data.description.trim(),
-        collaborators: await data.collaborators,
-        project: await data.project,
-        meeting: await data.meeting,
-        isActive: await data.isActive,
-        isLock: await data.isLock
-      }
-
       const res = await fetch(`${db}/tasks/${data._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': token
         },
-        body: JSON.stringify(info)
+        body: JSON.stringify(data)
       })
 
       const task = await res.json()
