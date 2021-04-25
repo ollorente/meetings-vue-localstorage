@@ -35,7 +35,8 @@
           </form>
         </section>
       </transition>
-    </main>{{project}}
+      <pre class="container" hidden>{{ getProject }}</pre>
+    </main>
   </div>
 </template>
 
@@ -70,27 +71,22 @@ export default {
         msg: null
       },
       project: {
-        _id: '',
         name: '',
         description: '',
         collaborators: [],
         isLock: '',
-        isActive: '',
-        createdAt: '',
-        updatedAt: ''
-      }
+        isActive: ''
+      },
+      collaborators: []
     }
   },
   mounted () {
     this.project = {
-      _id: this.getProject._id,
       name: this.getProject.name,
       description: this.getProject.description,
       collaborators: this.getProject._collaborators,
       isLock: this.getProject.isLock,
-      isActive: this.getProject.isActive,
-      createdAt: this.getProject.createdAt,
-      updatedAt: this.getProject.updatedAt
+      isActive: this.getProject.isActive
     }
   },
   created () {
