@@ -75,7 +75,7 @@ const actions = {
 
   async fetchAllProjects ({ commit }) {
     try {
-      const res = await fetch(`${db}/projects/all`, {
+      const res = await fetch(`${db}/all-projects`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': token
