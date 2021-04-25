@@ -23,8 +23,8 @@
               <select multiple v-model="task.collaborators">
                 <option
                   v-for="person in getAllMeetingPeople"
-                  :key="person.id"
-                  :value="person.id"
+                  :key="person._id"
+                  :value="person._id"
                 >
                   {{ person.name }} - {{ person.email }}
                 </option>
@@ -75,7 +75,8 @@ export default {
         name: '',
         description: '',
         collaborators: [],
-        project: ''
+        project: '',
+        meeting: this.$route.params.meeting
       }
     }
   },
@@ -104,19 +105,7 @@ export default {
         // eslint-disable-next-line no-useless-return
         return
       } else {
-        const task = {
-          name: await this.task.name,
-          description: await this.task.description,
-          collaborators: await this.task.collaborators,
-          project: await this.task.project,
-          meeting: parseInt(this.$route.params.meeting)
-        }
-
-        await this.addTask(task)
-
-        this.task.name = ''
-        this.task.description = ''
-        this.task.collaborators = ''
+        await this.addTask(this.task)
 
         await this.$router.replace({
           name: 'MeetingTasks',
