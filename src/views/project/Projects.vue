@@ -76,10 +76,14 @@ export default {
           }
         )
 
-        const projects = await res.json()
+        const projectsData = await res.json()
 
-        if (projects.data.length) {
-          this.projects = this.projects.concat(projects.data)
+        const projects = await projectsData.data
+          .filter(e => e.isLock === false)
+          .filter(e => e.isActive === true)
+
+        if (projects.length) {
+          this.projects = this.projects.concat(projects)
           $state.loaded()
         } else {
           $state.complete()
