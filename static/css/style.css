@@ -39,11 +39,14 @@ abbr[title] {
           text-decoration: underline dotted;
 }
 
-b, strong {
+b,
+strong {
   font-weight: bolder;
 }
 
-code, kbd, samp {
+code,
+kbd,
+samp {
   font-family: monospace, monospace;
   font-size: 1em;
 }
@@ -52,7 +55,8 @@ small {
   font-size: 80%;
 }
 
-sub, sup {
+sub,
+sup {
   font-size: 75%;
   line-height: 0;
   position: relative;
@@ -71,31 +75,46 @@ img {
   border-style: none;
 }
 
-button, input, optgroup, select, textarea {
+button,
+input,
+optgroup,
+select,
+textarea {
   font-family: inherit;
   font-size: 100%;
   line-height: 1.15;
   margin: 0;
 }
 
-button, input {
+button,
+input {
   overflow: visible;
 }
 
-button, select {
+button,
+select {
   text-transform: none;
 }
 
-[type="button"], [type="reset"], [type="submit"], button {
+[type="button"],
+[type="reset"],
+[type="submit"],
+button {
   -webkit-appearance: button;
 }
 
-[type="button"]::-moz-focus-inner, [type="reset"]::-moz-focus-inner, [type="submit"]::-moz-focus-inner, button::-moz-focus-inner {
+[type="button"]::-moz-focus-inner,
+[type="reset"]::-moz-focus-inner,
+[type="submit"]::-moz-focus-inner,
+button::-moz-focus-inner {
   border-style: none;
   padding: 0;
 }
 
-[type="button"]:-moz-focusring, [type="reset"]:-moz-focusring, [type="submit"]:-moz-focusring, button:-moz-focusring {
+[type="button"]:-moz-focusring,
+[type="reset"]:-moz-focusring,
+[type="submit"]:-moz-focusring,
+button:-moz-focusring {
   outline: 1px dotted ButtonText;
 }
 
@@ -121,13 +140,15 @@ textarea {
   overflow: auto;
 }
 
-[type="checkbox"], [type="radio"] {
+[type="checkbox"],
+[type="radio"] {
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
   padding: 0;
 }
 
-[type="number"]::-webkit-inner-spin-button, [type="number"]::-webkit-outer-spin-button {
+[type="number"]::-webkit-inner-spin-button,
+[type="number"]::-webkit-outer-spin-button {
   height: auto;
 }
 
@@ -880,11 +901,23 @@ body main .section .main__section__item .main__section__link .main__section__lin
 }
 
 body main .section .main__section__item .main__section__link .main__section__link__text .main__section__link__text__content .text-content .text-content__progress {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
   width: 100%;
-  margin-top: 0.5rem;
+  margin-top: 0.25rem;
+  background: var(--gray);
+  border-radius: 0.25rem;
 }
 
-body main .section .main__section__item .main__section__link .main__section__link__icon {
+body main .section .main__section__item .main__section__link .main__section__link__text .main__section__link__text__content .text-content .text-content__progress .range {
+  width: 100%;
+  padding: 0.05rem 0;
+  background: var(--p-light);
+  border-radius: 0.25rem;
+}
+
+body main .section .main__section__item .main__section__link__icon {
   min-width: 1.5rem;
   margin-left: 0.5rem;
   font-size: 0.8rem;
@@ -899,11 +932,11 @@ body main .section .main__section__item .main__section__link .main__section__lin
   text-align: right;
 }
 
-body main .section .main__section__item .main__section__link .main__section__link__icon i {
+body main .section .main__section__item .main__section__link__icon i {
   padding: 0 0 0.5rem 0.5rem;
 }
 
-body main .section .main__section__card {
+body main .main__section__card {
   width: calc(100% - 0.5rem);
   margin-bottom: 1rem;
   display: -webkit-box;
@@ -914,7 +947,7 @@ body main .section .main__section__card {
           align-items: center;
 }
 
-body main .section .main__section__card .main__section__card__date {
+body main .main__section__card .main__section__card__date {
   width: 4rem;
   margin-right: 0.75rem;
   display: -webkit-box;
@@ -927,21 +960,21 @@ body main .section .main__section__card .main__section__card__date {
   text-align: center;
 }
 
-body main .section .main__section__card .main__section__card__date .main__section__card__month {
+body main .main__section__card .main__section__card__date .main__section__card__month {
   margin: 0;
   padding: 0;
   font-size: 1rem;
   text-transform: uppercase;
 }
 
-body main .section .main__section__card .main__section__card__date .main__section__card__day {
+body main .main__section__card .main__section__card__date .main__section__card__day {
   margin: 0;
   padding: 0;
   font-size: 2rem;
   font-weight: 500;
 }
 
-body main .section .main__section__card .main__section__card__body {
+body main .main__section__card .main__section__card__body {
   width: 100%;
   padding: 0.5rem 1rem;
   background: var(--light);
@@ -956,7 +989,7 @@ body main .section .main__section__card .main__section__card__body {
           justify-content: space-between;
 }
 
-body main .section .main__section__card .main__section__card__body .main__section__link__text__content {
+body main .main__section__card .main__section__card__body .main__section__link__text__content {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -966,35 +999,35 @@ body main .section .main__section__card .main__section__card__body .main__sectio
           flex-direction: column;
 }
 
-body main .section .main__section__card .main__section__card__body .main__section__link__text__content .text-title {
+body main .main__section__card .main__section__card__body .main__section__link__text__content .text-title {
   font-weight: 700;
 }
 
-body main .section .main__section__card .main__section__card__body .main__section__link__text__content .text-content {
+body main .main__section__card .main__section__card__body .main__section__link__text__content .text-content {
   font-size: 1rem;
 }
 
-body main .section .main__section__card.active {
+body main .main__section__card.active {
   color: var(--light) !important;
   border: solid 1px transparent !important;
   background: var(--p-light) !important;
 }
 
-body main .section .main__section__card.active .text-title {
+body main .main__section__card.active .text-title {
   font-weight: 500;
 }
 
-body main .section .main__section__card.done {
+body main .main__section__card.done {
   color: var(--dark) !important;
   border: solid 1px transparent !important;
   background: var(--secondary) !important;
 }
 
-body main .section .main__section__card.done .text-title {
+body main .main__section__card.done .text-title {
   font-weight: 500;
 }
 
-body main .section .main__section__task {
+body main .main__section__task {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -1009,7 +1042,7 @@ body main .section .main__section__task {
   border-bottom: solid 1px var(--gray);
 }
 
-body main .section .main__section__task .main__section__task__text {
+body main .main__section__task .main__section__task__text {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -1018,13 +1051,13 @@ body main .section .main__section__task .main__section__task__text {
           align-items: flex-start;
 }
 
-body main .section .main__section__task .main__section__task__text i {
+body main .main__section__task .main__section__task__text i {
   font-size: 2rem;
   margin-right: 0.75rem;
   color: var(--secondary);
 }
 
-body main .section .main__section__task .main__section__task__text .main__section__task__body {
+body main .main__section__task .main__section__task__text .main__section__task__body {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -1034,16 +1067,16 @@ body main .section .main__section__task .main__section__task__text .main__sectio
           flex-direction: column;
 }
 
-body main .section .main__section__task .main__section__task__text .main__section__task__body .main__section__task__title {
+body main .main__section__task .main__section__task__text .main__section__task__body .main__section__task__title {
   font-size: 1.1rem;
   font-weight: 700;
 }
 
-body main .section .main__section__task .main__section__task__text .main__section__task__body .main__section__task__content {
+body main .main__section__task .main__section__task__text .main__section__task__body .main__section__task__content {
   font-weight: 300;
 }
 
-body main .section .main__section__task .main__section__task__icon {
+body main .main__section__task .main__section__task__icon {
   min-width: 1.5rem;
   margin-left: 0.5rem;
   font-size: 0.8rem;
@@ -1058,32 +1091,32 @@ body main .section .main__section__task .main__section__task__icon {
   text-align: right;
 }
 
-body main .section .main__section__task .main__section__task__icon i {
+body main .main__section__task .main__section__task__icon i {
   padding: 0 0 0.5rem 0.5rem;
 }
 
-body main .section .main__section__task.lock {
+body main .main__section__task.lock {
   color: var(--gray);
 }
 
-body main .section .main__section__task.lock .main__section__task__text i {
+body main .main__section__task.lock .main__section__task__text i {
   color: var(--gray);
 }
 
-body main .section .main__section__task.lock .main__section__task__text .main__section__task__body .main__section__task__title {
+body main .main__section__task.lock .main__section__task__text .main__section__task__body .main__section__task__title {
   font-weight: 500;
 }
 
-body main .section .main__section__task.lock .main__section__task__icon {
+body main .main__section__task.lock .main__section__task__icon {
   color: var(--gray);
 }
 
-body main .section .main__section__person .main__section__person__avatar {
+body main .main__section__person .main__section__person__avatar {
   width: calc(100vw - 2rem);
   text-align: center;
 }
 
-body main .section .main__section__person .main__section__person__avatar .main__section__person__avatar--img {
+body main .main__section__person .main__section__person__avatar .main__section__person__avatar--img {
   width: 10rem;
   height: 10rem;
   -o-object-fit: cover;
@@ -1093,13 +1126,13 @@ body main .section .main__section__person .main__section__person__avatar .main__
   border-radius: 50%;
 }
 
-body main .section .main__section__person .main__section__person__title {
+body main .main__section__person .main__section__person__title {
   margin: 0 0 1rem;
   text-align: center;
   margin: 0;
 }
 
-body main .section .main__section__person .main__section__person__subtitle {
+body main .main__section__person .main__section__person__subtitle {
   text-align: center;
   font-size: 1.1rem;
   font-weight: 500;
@@ -1107,19 +1140,19 @@ body main .section .main__section__person .main__section__person__subtitle {
   margin-bottom: 2rem;
 }
 
-body main .section .main__section__person .main__section__person__block {
+body main .main__section__person .main__section__person__block {
   width: calc(100vw - 2rem);
 }
 
-body main .section .main__section__person .main__section__person__block .main__section__person__block__label {
+body main .main__section__person .main__section__person__block .main__section__person__block__label {
   font-weight: 700;
 }
 
-body main .section .main__section__person .main__section__person__block .main__section__person__block__content i {
+body main .main__section__person .main__section__person__block .main__section__person__block__content i {
   color: var(--primary);
 }
 
-body main .section .main__section__person .main__section__person__block--flex {
+body main .main__section__person .main__section__person__block--flex {
   width: calc(100vw - 2rem);
   display: -webkit-box;
   display: -ms-flexbox;
@@ -1127,47 +1160,47 @@ body main .section .main__section__person .main__section__person__block--flex {
   padding: 1rem 0;
 }
 
-body main .section .main__section__person .main__section__person__block--flex button {
+body main .main__section__person .main__section__person__block--flex button {
   margin: 0 0.5rem;
 }
 
-body main .section .main__section__person .main__section__person__block--flex .main__section__person__block__label {
+body main .main__section__person .main__section__person__block--flex .main__section__person__block__label {
   font-weight: 700;
 }
 
-body main .section .main__section__person .main__section__person__block--flex .main__section__person__block__content i {
+body main .main__section__person .main__section__person__block--flex .main__section__person__block__content i {
   color: var(--primary);
 }
 
-body main .section .card-alert {
+body main .card-alert {
   padding: 1rem 0;
 }
 
-body main .section.error {
+body main.error {
   text-align: center;
 }
 
-body main .section.error i {
+body main.error i {
   font-size: 10rem;
   margin: 1rem;
   color: var(--gray);
 }
 
-body main .section.error .title {
+body main.error .title {
   margin-bottom: 1rem;
 }
 
-body main .section.error .title .title--first {
+body main.error .title .title--first {
   font-size: 4rem;
   font-weight: 700;
 }
 
-body main .section.error .title .title--second {
+body main.error .title .title--second {
   font-weight: 300;
   font-size: 1.5rem;
 }
 
-body main .section.error a {
+body main.error a {
   font-weight: 500;
   color: var(--primary);
 }
