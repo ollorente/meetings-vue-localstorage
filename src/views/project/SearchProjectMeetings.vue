@@ -73,7 +73,7 @@ export default {
     ...mapActions(['fetchProject']),
     async search () {
       const res = await fetch(
-        `${db}/projects/${this.$route.params.project}/meetings?limit=${this.limit}&page=${this.page}`,
+        `${db}/projects/${this.$route.params.project}/all-meetings`,
         {
           headers: {
             'Content-Type': 'application/json',

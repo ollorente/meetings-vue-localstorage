@@ -90,7 +90,6 @@ export default {
               }
               return 0
             })
-            .splice(this.page, this.limit)
         }
 
         if (this.tasks.length === 0) {

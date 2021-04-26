@@ -821,6 +821,11 @@ body main .section .main__section__user {
 body main .section .main__section__user .main__section__user__logo {
   width: 3rem;
   height: 3rem;
+  -o-object-fit: cover;
+     object-fit: cover;
+  position: center center;
+  border-radius: 50%;
+  border: solid 1px var(--gray);
   margin-right: 0.75rem;
 }
 

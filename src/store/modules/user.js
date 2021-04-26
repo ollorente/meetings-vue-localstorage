@@ -78,6 +78,25 @@ const actions = {
       // eslint-disable-next-line no-useless-return
       if (error) return
     }
+  },
+
+  async deleteTask ({ commit }, id) {
+    try {
+      const res = await fetch(`${DB}/users/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      })
+
+      const user = await res.json()
+
+      commit('SET_TASK', user.data)
+    } catch (error) {
+      // eslint-disable-next-line no-useless-return
+      if (error) return
+    }
   }
 }
 

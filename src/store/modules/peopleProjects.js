@@ -1,6 +1,6 @@
-import {
-  db
-} from '@/main'
+import { db } from '@/main'
+
+const token = 'Beaer ' + localStorage.getItem('token')
 
 const state = {
   projects: []
@@ -17,29 +17,16 @@ const actions = {
       const limit = data.limit ? data.limit : 20
       const page = (data.page - 1) * data.limit || 0
 
-      const projects = Object.values(db.peopleProjects[data.id])
-        .filter((e) => e.isLock === false)
-        .filter((e) => e.isActive === true)
-        .sort(function (a, b) {
-          if (a.name > b.name) {
-            return 1
-          }
-          if (a.name < b.name) {
-            return -1
-          }
-          return 0
-        })
-        .splice(page, limit)
-        .map((e) => {
-          return {
-            id: e.id,
-            name: e.name,
-            isActive: e.isActive,
-            isLock: e.isLock
-          }
-        })
+      const res = fetch(`${db}/people/${data._id}/projects?limit=${limit}&page=${page}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      })
 
-      commit('SET_PEOPLE_PROJECTS', projects)
+      const projects = await (await res).json()
+
+      commit('SET_PEOPLE_PROJECTS', projects.data)
     } catch (error) {
       // eslint-disable-next-line no-useless-return
       if (error) return
@@ -48,43 +35,16 @@ const actions = {
 
   async fetchAllPeopleProjects ({ commit }, id) {
     try {
-      const projects = Object.values(db.peopleProjects[id])
-        .filter((e) => e.isLock === false)
-        .filter((e) => e.isActive === true)
-        .sort(function (a, b) {
-          if (a.name > b.name) {
-            return 1
-          }
-          if (a.name < b.name) {
-            return -1
-          }
-          return 0
-        })
-        .map((e) => {
-          return {
-            id: e.id,
-            name: e.name,
-            isActive: e.isActive,
-            isLock: e.isLock
-          }
-        })
+      const res = fetch(`${db}/people/${id}/all-projects`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      })
 
-      commit('SET_PEOPLE_PROJECTS', projects)
-    } catch (error) {
-      // eslint-disable-next-line no-useless-return
-      if (error) return
-    }
-  },
+      const projects = await (await res).json()
 
-  async deletePeopleProjects ({ commit }, id) {
-    try {
-      // ------- Eliminando usuario -------
-      delete db.peopleProjects[id]
-      // ---X--- Eliminando usuario ---X---
-
-      // localStorage.setItem(dbName, JSON.stringify(db))
-
-      commit('SET_PEOPLE_PROJECTS', true)
+      commit('SET_PEOPLE_PROJECTS', projects.data)
     } catch (error) {
       // eslint-disable-next-line no-useless-return
       if (error) return

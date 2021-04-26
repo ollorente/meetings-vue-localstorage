@@ -66,7 +66,7 @@ export default {
   methods: {
     async search () {
       const res = await fetch(
-        `${DB}/users/meetings?limit=${this.limit}&page=${this.page}`,
+        `${DB}/users/all-meetings`,
         {
           headers: {
             'Content-Type': 'application/json',

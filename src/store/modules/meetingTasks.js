@@ -1,6 +1,6 @@
-import {
-  db
-} from '@/main'
+import { db } from '@/main'
+
+const token = 'Bearer ' + localStorage.getItem('token')
 
 const state = {
   tasks: []
@@ -17,29 +17,16 @@ const actions = {
       const limit = data.limit ? data.limit : 20
       const page = (data.page - 1) * data.limit || 0
 
-      const tasks = Object.values(db.meetingTasks[data.id])
-        .filter((e) => e.isActive === true)
-        .sort(function (a, b) {
-          if (a.id > b.id) {
-            return 1
-          }
-          if (a.id < b.id) {
-            return -1
-          }
-          return 0
-        })
-        .splice(page, limit)
-        .map((e) => {
-          return {
-            id: e.id,
-            name: e.name,
-            project: e.project,
-            isActive: e.isActive,
-            isLock: e.isLock
-          }
-        })
+      const res = fetch(`${db}/meetings/${data._id}/tasks?limit=${limit}&page=${page}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      })
 
-      commit('SET_MEETING_TASKS', tasks)
+      const tasks = await (await res).json()
+
+      commit('SET_MEETING_TASKS', tasks.data)
     } catch (error) {
       // eslint-disable-next-line no-useless-return
       if (error) return
@@ -48,28 +35,16 @@ const actions = {
 
   async fetchAllMeetingTasks ({ commit }, id) {
     try {
-      const tasks = Object.values(db.meetingTasks[id])
-        .filter((e) => e.isActive === true)
-        .sort(function (a, b) {
-          if (a.id > b.id) {
-            return 1
-          }
-          if (a.id < b.id) {
-            return -1
-          }
-          return 0
-        })
-        .map((e) => {
-          return {
-            id: e.id,
-            name: e.name,
-            project: e.project,
-            isActive: e.isActive,
-            isLock: e.isLock
-          }
-        })
+      const res = fetch(`${db}/meetings/${id}/all-tasks`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      })
 
-      commit('SET_MEETING_TASKS', tasks)
+      const tasks = await (await res).json()
+
+      commit('SET_MEETING_TASKS', tasks.data)
     } catch (error) {
       // eslint-disable-next-line no-useless-return
       if (error) return

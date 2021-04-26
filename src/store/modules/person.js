@@ -1,4 +1,4 @@
-import { db } from '@/main'
+import { db, DB } from '@/main'
 
 const token = 'Bearer ' + localStorage.getItem('token')
 
@@ -75,7 +75,7 @@ const actions = {
 
   async fetchAllPeople ({ commit }) {
     try {
-      const res = await fetch(`${db}/all-people`, {
+      const res = await fetch(`${DB}/users/all-people`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': token

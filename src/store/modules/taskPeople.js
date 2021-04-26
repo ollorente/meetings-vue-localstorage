@@ -1,6 +1,6 @@
-import {
-  db
-} from '@/main'
+import { db } from '@/main'
+
+const token = 'Bearer ' + localStorage.getItem('token')
 
 const state = {
   people: []
@@ -17,30 +17,16 @@ const actions = {
       const limit = data.limit ? data.limit : 20
       const page = (data.page - 1) * data.limit || 0
 
-      const people = Object.values(db.taskPeople[data.id])
-        .filter((e) => e.isLock === false)
-        .filter((e) => e.isActive === true)
-        .sort(function (a, b) {
-          if (a.name > b.name) {
-            return 1
-          }
-          if (a.name < b.name) {
-            return -1
-          }
-          return 0
-        })
-        .splice(page, limit)
-        .map((e) => {
-          return {
-            id: e.id,
-            name: e.name,
-            email: e.email,
-            photoURL: e.photoURL,
-            isActive: e.isActive
-          }
-        })
+      const res = fetch(`${db}/tasks/${data._id}/people?limit=${limit}&page=${page}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      })
 
-      commit('SET_TASK_PEOPLE', people)
+      const people = await (await res).json()
+
+      commit('SET_TASK_PEOPLE', people.data)
     } catch (error) {
       // eslint-disable-next-line no-useless-return
       if (error) return
@@ -49,29 +35,16 @@ const actions = {
 
   async fetchAllTaskPeople ({ commit }, id) {
     try {
-      const people = Object.values(db.taskPeople[id])
-        .filter((e) => e.isLock === false)
-        .filter((e) => e.isActive === true)
-        .sort(function (a, b) {
-          if (a.name > b.name) {
-            return 1
-          }
-          if (a.name < b.name) {
-            return -1
-          }
-          return 0
-        })
-        .map((e) => {
-          return {
-            id: e.id,
-            name: e.name,
-            email: e.email,
-            photoURL: e.photoURL,
-            isActive: e.isActive
-          }
-        })
+      const res = fetch(`${db}/tasks/${id}/all-people`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      })
 
-      commit('SET_TASK_PEOPLE', people)
+      const people = await (await res).json()
+
+      commit('SET_TASK_PEOPLE', people.data)
     } catch (error) {
       // eslint-disable-next-line no-useless-return
       if (error) return

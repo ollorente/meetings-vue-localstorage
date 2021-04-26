@@ -772,6 +772,10 @@ body {
         .main__section__user__logo {
           width: 3rem;
           height: 3rem;
+          object-fit: cover;
+          position: center center;
+          border-radius: 50%;
+          border: solid 1px var(--gray);
           margin-right: 0.75rem;
         }
 

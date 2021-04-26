@@ -1,6 +1,6 @@
-import {
-  db
-} from '@/main'
+import { db } from '@/main'
+
+const token = 'Bearer ' + localStorage.getItem('token')
 
 const state = {
   meetings: []
@@ -17,31 +17,16 @@ const actions = {
       const limit = data.limit ? data.limit : 20
       const page = (data.page - 1) * data.limit || 0
 
-      const meetings = Object.values(db.projectMeetings[data.id])
-        .filter((e) => e.isLock === false)
-        .filter((e) => e.isActive === true)
-        .sort(function (a, b) {
-          if (a.dateInt > b.dateInt) {
-            return 1
-          }
-          if (a.dateInt < b.dateInt) {
-            return -1
-          }
-          return 0
-        })
-        .splice(page, limit)
-        .map((e) => {
-          return {
-            id: e.id,
-            name: e.name,
-            dateEnd: e.dateEnd,
-            dateInt: e.dateInt,
-            isActive: e.isActive,
-            isLock: e.isLock
-          }
-        })
+      const res = fetch(`${db}/projects/${data._id}/meetings?limit=${limit}&page=${page}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      })
 
-      commit('SET_PROJECT_MEETINGS', meetings)
+      const meetings = await (await res).json()
+
+      commit('SET_PROJECT_MEETINGS', meetings.data)
     } catch (error) {
       // eslint-disable-next-line no-useless-return
       if (error) return
@@ -50,30 +35,16 @@ const actions = {
 
   async fetchAllProjectMeetings ({ commit }, id) {
     try {
-      const meetings = Object.values(db.projectMeetings[id])
-        .filter((e) => e.isLock === false)
-        .filter((e) => e.isActive === true)
-        .sort(function (a, b) {
-          if (a.dateInt > b.dateInt) {
-            return 1
-          }
-          if (a.dateInt < b.dateInt) {
-            return -1
-          }
-          return 0
-        })
-        .map((e) => {
-          return {
-            id: e.id,
-            name: e.name,
-            dateEnd: e.dateEnd,
-            dateInt: e.dateInt,
-            isActive: e.isActive,
-            isLock: e.isLock
-          }
-        })
+      const res = fetch(`${db}/projects/${id}/all-meetings`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      })
 
-      commit('SET_PROJECT_MEETINGS', meetings)
+      const meetings = await (await res).json()
+
+      commit('SET_PROJECT_MEETINGS', meetings.data)
     } catch (error) {
       // eslint-disable-next-line no-useless-return
       if (error) return

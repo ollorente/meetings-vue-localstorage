@@ -70,7 +70,7 @@ export default {
     ...mapActions(['fetchPerson']),
     async search () {
       const res = await fetch(
-        `${db}/people/${this.$route.params.person}/meetings`,
+        `${db}/people/${this.$route.params.person}/all-meetings`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -101,7 +101,6 @@ export default {
               }
               return 0
             })
-            .splice(this.page, this.limit)
         }
 
         if (this.meetings.length === 0) {

@@ -72,7 +72,7 @@ export default {
   methods: {
     ...mapActions(['fetchPerson']),
     async search () {
-      const res = await fetch(`${db}/people/${this.$route.params.person}/projects?limit=${this.limit}&page=${this.page}`, {
+      const res = await fetch(`${db}/people/${this.$route.params.person}/all-projects`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + localStorage.getItem('token')

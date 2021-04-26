@@ -71,7 +71,7 @@ export default {
   methods: {
     async search () {
       const res = await fetch(
-        `${DB}/users/projects?limit=${this.limit}&page=${this.page}`,
+        `${DB}/users/all-projects`,
         {
           headers: {
             'Content-Type': 'application/json',
