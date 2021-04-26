@@ -129,7 +129,7 @@ const actions = {
     }
   },
 
-  async deleteMeetings ({ commit }, id) {
+  async deleteMeeting ({ commit }, id) {
     try {
       const res = await fetch(`${db}/meetings/${id}`, {
         method: 'DELETE',
