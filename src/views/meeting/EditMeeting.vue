@@ -41,8 +41,8 @@
               <select multiple v-model="meeting.collaborators">
                 <option
                   v-for="person in people"
-                  :key="person.id"
-                  :value="person.id"
+                  :key="person._id"
+                  :value="person._id"
                 >
                   {{ person.name }} - {{ person.email }}
                 </option>
@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import { db } from '@/main'
 
 import TheNavbar from '@/components/TheNavbar'
@@ -88,59 +88,48 @@ export default {
         msg: null
       },
       meeting: {
-        id: '',
+        _id: '',
         name: '',
         description: '',
         collaborators: [],
-        project: '',
         dateInt: '',
         dateEnd: '',
         isActive: '',
-        isLock: '',
-        createdAt: ''
+        isLock: ''
       },
       people: []
     }
   },
+  mounted () {
+    this.getProjectPeople()
+    this.meeting = {
+      _id: this.getMeeting._id,
+      name: this.getMeeting.name,
+      description: this.getMeeting.description,
+      collaborators: this.getMeeting._collaborators,
+      dateInt: this.getMeeting.dateInt.slice(0, 19),
+      dateEnd: this.getMeeting.dateEnd.slice(0, 19),
+      isActive: this.getMeeting.isActive,
+      isLock: this.getMeeting.isLock
+    }
+  },
   created () {
-    this.getMeeting()
+    this.fetchMeeting(this.$route.params.meeting)
   },
   methods: {
-    ...mapActions(['updateMeeting']),
-    async getMeeting () {
-      try {
-        const data = await db.meetings[this.$route.params.meeting]
-
-        if (data === undefined) {
-          await this.$router.replace({ name: 'Error' })
-        } else {
-          this.meeting = {
-            id: await data.id,
-            name: await data.name,
-            description: await data.description,
-            collaborators: await data.collaborators,
-            project: await data.project,
-            dateInt: new Date(await data.dateInt - (1000 * 60 * 60 * 5)).toISOString().substr(0, 16),
-            dateEnd: new Date(await data.dateEnd - (1000 * 60 * 60 * 5)).toISOString().substr(0, 16),
-            isActive: await data.isActive,
-            isLock: await data.isLock,
-            createdAt: await data.createdAt
+    ...mapActions(['updateMeeting', 'fetchMeeting']),
+    async getProjectPeople () {
+      const res = await fetch(`${db}/projects/${this.getMeeting.project._id}/all-people`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
           }
+        })
 
-          await this.getProjectPeople(this.meeting.project)
-        }
-      } catch (error) {
-        // eslint-disable-next-line no-useless-return
-        if (error) return
-      }
-    },
-    async getProjectPeople (id) {
-      try {
-        this.people = Object.values(db.projectPeople[id])
-      } catch (error) {
-        // eslint-disable-next-line no-useless-return
-        if (error) return
-      }
+      const info = await res.json()
+
+      this.people = info.data
     },
     async putMeeting () {
       if (
@@ -157,10 +146,6 @@ export default {
       } else {
         await this.updateMeeting(this.meeting)
 
-        this.meeting.name = ''
-        this.meeting.description = ''
-        this.meeting.collaborators = ''
-
         await this.$router.replace({
           name: 'Meeting',
           params: { meeting: this.$route.params.meeting }
@@ -168,8 +153,11 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters(['getMeeting'])
+  },
   watch: {
-    $route: ['getMeeting']
+    $route: ['fetchMeeting', 'getProjectPeople']
   }
 }
 </script>
