@@ -103,7 +103,7 @@ export default {
   methods: {
     ...mapActions(['updateTask', 'fetchTask']),
     async getMeetingPeople () {
-      const res = await fetch(`${db}/meetings/${this.getTask.meeting._id}/people`,
+      const res = await fetch(`${db}/meetings/${this.getTask.meeting._id}/all-people`,
         {
           headers: {
             'Content-Type': 'application/json',
