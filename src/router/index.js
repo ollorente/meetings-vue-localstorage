@@ -68,7 +68,7 @@ const routes = [
     }
   },
   {
-    path: '/proyecto/:project/editar', // TODO -> Hacer lógica de la vista
+    path: '/proyecto/:project/editar',
     name: 'EditProject',
     component: () => import('../views/project/EditProject.vue'),
     meta: {
@@ -167,7 +167,7 @@ const routes = [
     }
   },
   {
-    path: '/encuentro/:meeting/editar', // TODO -> Hacer lógica de la vista
+    path: '/encuentro/:meeting/editar',
     name: 'EditMeeting',
     component: () => import('../views/meeting/EditMeeting.vue'),
     meta: {
@@ -248,7 +248,7 @@ const routes = [
     }
   },
   {
-    path: '/actividad/:task/editar', // TODO -> Hacer lógica de la vista
+    path: '/actividad/:task/editar',
     name: 'EditTask',
     component: () => import('../views/task/EditTask.vue'),
     meta: {
@@ -375,6 +375,24 @@ const routes = [
   },
   {
     path: '/perfil', // TODO -> Hacer lógica de la vista
+    name: 'Profile',
+    component: () => import('../views/profile/Profile.vue'),
+    meta: {
+      title: `Perfil ${BASE_URL_TITLE}`,
+      requireAuth: true
+    }
+  },
+  {
+    path: '/perfil/editar', // TODO -> Hacer lógica de la vista
+    name: 'Profile',
+    component: () => import('../views/profile/Profile.vue'),
+    meta: {
+      title: `Perfil ${BASE_URL_TITLE}`,
+      requireAuth: true
+    }
+  },
+  {
+    path: '/perfil/cambiar-clve', // TODO -> Hacer lógica de la vista
     name: 'Profile',
     component: () => import('../views/profile/Profile.vue'),
     meta: {
