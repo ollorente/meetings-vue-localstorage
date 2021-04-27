@@ -9,7 +9,17 @@
             <div v-html="getProject.description"></div>
             <p class="main__section__person__block">
               <span class="main__section__person__block__content">
-                <b>{{ getProject._collaboratorsCount }}</b> {{ getProject._collaboratorsCount === 1 ? 'Colaborador' : 'Colaboradores' }}
+                <b class="main__section__person__block__label">{{ getProject._collaboratorsCount }}</b> {{ getProject._collaboratorsCount === 1 ? 'Colaborador' : 'Colaboradores' }}
+              </span>
+            </p>
+            <p class="main__section__person__block">
+              <span class="main__section__person__block__content">
+                <b class="main__section__person__block__label">{{ getProject._meetingsCount }}</b> {{ getProject._meetingsCount === 1 ? 'Encuentro' : 'Encuentros' }}
+              </span>
+            </p>
+            <p class="main__section__person__block">
+              <span class="main__section__person__block__content">
+                <b class="main__section__person__block__label">{{ getProject._tasksCount }}</b> {{ getProject._tasksCount === 1 ? 'Tarea' : 'Tareas' }}
               </span>
             </p>
             <p class="main__section__person__block">
