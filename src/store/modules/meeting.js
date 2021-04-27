@@ -54,7 +54,7 @@ const actions = {
         projectName: await Data.data.project.name,
         dateEnd: await Data.data.dateEnd,
         dateInt: await Data.data.dateInt,
-        _collaborators: await Data.data._collaborators_collaborators,
+        _collaborators: await Data.data._collaborators,
         _collaboratorsCount: await Data.data._collaboratorsCount,
         _tasks: await Data.data._tasks,
         _tasksCount: await Data.data._tasksCount,
