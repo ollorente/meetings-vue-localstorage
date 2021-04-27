@@ -49,6 +49,7 @@ const actions = {
         _id: await Data.data._id,
         name: await Data.data.name,
         description: await Data.data.description,
+        project: await Data.data.project,
         projectId: await Data.data.project._id,
         projectName: await Data.data.project.name,
         dateEnd: await Data.data.dateEnd,
