@@ -71,17 +71,18 @@ export default {
         msg: null
       },
       project: {
+        _id: '',
         name: '',
         description: '',
         collaborators: [],
         isLock: '',
         isActive: ''
-      },
-      collaborators: []
+      }
     }
   },
   mounted () {
     this.project = {
+      _id: this.getProject._id,
       name: this.getProject.name,
       description: this.getProject.description,
       collaborators: this.getProject._collaborators,
