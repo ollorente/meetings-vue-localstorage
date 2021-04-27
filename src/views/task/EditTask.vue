@@ -10,17 +10,17 @@
             <div>
               <input
                 type="text"
-                v-model="getTask.name"
+                v-model="task.name"
                 placeholder="Nombre de tarea"
                 autofocus
                 required
               />
             </div>
             <div>
-              <textarea v-model="getTask.description" rows="10" placeholder="Descripción de la tarea"></textarea>
+              <textarea v-model="task.description" rows="10" placeholder="Descripción de la tarea"></textarea>
             </div>
             <div>
-              <select multiple v-model="getTask._collaborators">
+              <select multiple v-model="task.collaborators">
                 <option
                   v-for="person in people"
                   :key="person._id"
@@ -34,14 +34,15 @@
           </form>
         </section>
       </transition>
-      <pre class="container">{{ getTask }}</pre>
-      <pre class="container">{{ $data }}</pre>
+      <pre class="container" hidden>{{ getTask }}</pre>
+      <pre class="container" hidden>{{ $data }}</pre>
     </main>
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import { db } from '@/main'
 
 import TheNavbar from '@/components/TheNavbar'
 import Alert from '@/components/gadgets/Alert'
@@ -71,41 +72,48 @@ export default {
         msg: null
       },
       task: {
-        id: '',
+        _id: '',
         name: '',
         description: '',
         collaborators: [],
         meeting: '',
         project: '',
         isActive: '',
-        isLock: '',
-        createdAt: ''
+        isLock: ''
       },
       people: []
     }
   },
   mounted () {
-    this.fetchAllMeetingPeople(this.getTask.meeting)
-    this.people = this.getAllMeetingPeople
-    this.task.collaborators = this.getTaskPeople(this.getTask._collaborators)
+    this.getMeetingPeople()
+    this.task = {
+      _id: this.getTask._id,
+      name: this.getTask.name,
+      description: this.getTask.description,
+      collaborators: this.getTask._collaborators,
+      meeting: this.getTask.meeting._id,
+      project: this.getTask.project._id,
+      isActive: this.getTask.isActive,
+      isLock: this.getTask.isLock
+    }
   },
   created () {
     this.fetchTask(this.$route.params.task)
   },
   methods: {
-    ...mapActions(['updateTask', 'fetchTask', 'fetchAllMeetingPeople']),
-    async getTaskPeople (data) {
-      try {
-        const info = await data.map(async e => {
-          console.log('E->', e._id)
-          return [e._id]
+    ...mapActions(['updateTask', 'fetchTask']),
+    async getMeetingPeople () {
+      const res = await fetch(`${db}/meetings/${this.getTask.meeting._id}/people`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
         })
 
-        return info
-      } catch (error) {
-        // eslint-disable-next-line no-useless-return
-        if (error) return
-      }
+      const info = await res.json()
+
+      this.people = info.data
     },
     async putTask () {
       if (
@@ -130,10 +138,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getTask', 'getAllMeetingPeople'])
+    ...mapGetters(['getTask'])
   },
   watch: {
-    $route: ['fetchTask', 'fetchAllMeetingPeople']
+    $route: ['fetchTask', 'getMeetingPeople']
   }
 }
 </script>
