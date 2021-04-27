@@ -19,7 +19,7 @@
             </p>
             <p class="main__section__person__block">
               <span class="main__section__person__block__content">
-                <b class="main__section__person__block__label">{{ getProject._tasksCount }}</b> {{ getProject._tasksCount === 1 ? 'Tarea' : 'Tareas' }}
+                <b class="main__section__person__block__label">{{ getProject._tasksCount }}</b> {{ getProject._tasksCount === 1 ? 'Actividad' : 'Actividades' }}
               </span>
             </p>
             <p class="main__section__person__block">
