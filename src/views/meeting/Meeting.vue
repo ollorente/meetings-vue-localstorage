@@ -15,9 +15,17 @@
             <div v-html="getMeeting.description"></div>
             <p class="main__section__person__block">
               <span class="main__section__person__block__content">
-                <b>{{ getMeeting._collaboratorsCount }}</b>
+                <b class="main__section__person__block__label">{{ getMeeting._collaboratorsCount }}</b>
                 {{
                   getMeeting._collaboratorsCount === 1 ? "Invitado" : "Invitados"
+                }}
+              </span>
+            </p>
+            <p class="main__section__person__block">
+              <span class="main__section__person__block__content">
+                <b class="main__section__person__block__label">{{ getMeeting._tasksCount }}</b>
+                {{
+                  getMeeting._tasksCount === 1 ? "Actividad" : "Actividades"
                 }}
               </span>
             </p>
