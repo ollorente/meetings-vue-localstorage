@@ -27,7 +27,7 @@ const actions = {
 
       const person = await res.json()
 
-      commit('SET_PERSON', person)
+      commit('SET_PERSON', person.data)
     } catch (error) {
       // eslint-disable-next-line no-useless-return
       if (error) return
