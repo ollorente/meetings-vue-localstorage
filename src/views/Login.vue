@@ -31,6 +31,7 @@
         </section>
       </transition>
     </main>
+    <pre class="container" hiddens>{{ $data }}</pre>
   </div>
 </template>
 
