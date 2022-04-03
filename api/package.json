@@ -1,0 +1,12 @@
+{
+  "name": "api",
+  "version": "0.0.1",
+  "description": "api",
+  "main": "users.js",
+  "scripts": {
+    "start": "node users.js",
+  },
+  "keywords": [],
+  "author": "llorente_oscar@hotmail.com",
+  "license": "ISC"
+}

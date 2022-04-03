@@ -17,7 +17,11 @@
               />
             </div>
             <div>
-              <textarea v-model="task.description" rows="10" placeholder="Descripción de la tarea"></textarea>
+              <textarea
+                v-model="task.description"
+                rows="10"
+                placeholder="Descripción de la tarea"
+              ></textarea>
             </div>
             <div>
               <select multiple v-model="task.collaborators">
@@ -41,51 +45,51 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
-import { db } from '@/main'
+import { mapActions, mapGetters } from "vuex";
+import { db } from "@/main";
 
-import TheNavbar from '@/components/TheNavbar'
-import Alert from '@/components/gadgets/Alert'
+import TheNavbar from "@/components/TheNavbar";
+import Alert from "@/components/gadgets/Alert";
 
 export default {
-  name: 'EditTask',
+  name: "EditTask",
   components: {
     Alert,
-    TheNavbar
+    TheNavbar,
   },
-  data () {
+  data() {
     return {
       path: {
-        title: 'Editar actividad',
-        link: { name: 'Task', params: { task: this.$route.params.task } },
-        icon: 'fas fa-arrow-left',
+        title: "Editar actividad",
+        link: { name: "Task", params: { task: this.$route.params.task } },
+        icon: "fas fa-arrow-left",
         status: false,
-        search: false
+        search: false,
       },
       options: [
         {
-          menus: []
-        }
+          menus: [],
+        },
       ],
       alert: {
         error: false,
-        msg: null
+        msg: null,
       },
       task: {
-        _id: '',
-        name: '',
-        description: '',
+        _id: "",
+        name: "",
+        description: "",
         collaborators: [],
-        meeting: '',
-        project: '',
-        isActive: '',
-        isLock: ''
+        meeting: "",
+        project: "",
+        isActive: "",
+        isLock: "",
       },
-      people: []
-    }
+      people: [],
+    };
   },
-  mounted () {
-    this.getMeetingPeople()
+  mounted() {
+    this.getMeetingPeople();
     this.task = {
       _id: this.getTask._id,
       name: this.getTask.name,
@@ -94,54 +98,56 @@ export default {
       meeting: this.getTask.meeting._id,
       project: this.getTask.project._id,
       isActive: this.getTask.isActive,
-      isLock: this.getTask.isLock
-    }
+      isLock: this.getTask.isLock,
+    };
   },
-  created () {
-    this.fetchTask(this.$route.params.task)
+  created() {
+    this.fetchTask(this.$route.params.task);
   },
   methods: {
-    ...mapActions(['updateTask', 'fetchTask']),
-    async getMeetingPeople () {
-      const res = await fetch(`${db}/meetings/${this.getTask.meeting._id}/all-people`,
+    ...mapActions(["updateTask", "fetchTask"]),
+    async getMeetingPeople() {
+      const res = await fetch(
+        `${db}/meetings/${this.getTask.meeting._id}/all-people`,
         {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + localStorage.getItem('token')
-          }
-        })
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        }
+      );
 
-      const info = await res.json()
+      const info = await res.json();
 
-      this.people = info.data
+      this.people = info.data;
     },
-    async putTask () {
+    async putTask() {
       if (
-        this.task.name.trim() === '' ||
-        this.task.description.trim() === '' ||
-        this.task.collaborators === ''
+        this.task.name.trim() === "" ||
+        this.task.description.trim() === "" ||
+        this.task.collaborators === ""
       ) {
-        this.alert.error = true
-        this.alert.msg = `Los campos no pueden estar vacios.`
+        this.alert.error = true;
+        this.alert.msg = `Los campos no pueden estar vacios.`;
 
         setTimeout(() => {
-          this.alert.error = false
-        }, 4000)
+          this.alert.error = false;
+        }, 4000);
       } else {
-        await this.updateTask(this.task)
+        await this.updateTask(this.task);
 
         await this.$router.replace({
-          name: 'Task',
-          params: { task: this.$route.params.task }
-        })
+          name: "Task",
+          params: { task: this.$route.params.task },
+        });
       }
-    }
+    },
   },
   computed: {
-    ...mapGetters(['getTask'])
+    ...mapGetters(["getTask"]),
   },
   watch: {
-    $route: ['fetchTask', 'getMeetingPeople']
-  }
-}
+    $route: ["fetchTask", "getMeetingPeople"],
+  },
+};
 </script>
